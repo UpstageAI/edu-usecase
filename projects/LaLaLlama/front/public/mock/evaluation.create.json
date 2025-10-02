@@ -1,0 +1,23 @@
+{
+  "batchId": "b-001",
+  "accepted": true,
+  "message": "started",
+  "status": "completed",
+  "progress": 100,
+  "estNextUpdateSec": 0,
+  "proposals": [
+    {
+      "proposalId": "p-abc",
+      "companyName": "A사"
+    },
+    {
+      "proposalId": "p-def",
+      "companyName": "B사"
+    },
+    {
+      "proposalId": "p-ghi",
+      "companyName": "C사"
+    }
+  ]
+}
+
