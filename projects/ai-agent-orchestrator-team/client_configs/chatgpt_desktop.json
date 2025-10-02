@@ -1,0 +1,12 @@
+{
+  "mcp_servers": {
+    "ai_agent_orchestrator": {
+      "command": "uv",
+      "args": ["run", "python", "mcp_server/server.py"],
+      "working_directory": "/home/super/workspace/study/meta/ai-prompt-history-llama",
+      "environment": {
+        "PYTHONPATH": "/home/super/workspace/study/meta/ai-prompt-history-llama"
+      }
+    }
+  }
+}

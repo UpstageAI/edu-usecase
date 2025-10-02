@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Management - Context Registry</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #333; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .nav { margin: 20px 0; }
+        .nav a { margin-right: 20px; padding: 10px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+        .panel { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .experimental { border-left: 4px solid #ff9800; background: #fff3cd; }
+        .experimental-label { color: #ff9800; font-weight: bold; font-size: 12px; text-transform: uppercase; }
+        .toggle-switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #2196F3; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .job-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #ddd; margin: 10px 0; border-radius: 5px; }
+        .btn { padding: 10px 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 0 5px; }
+        .btn:hover { background: #218838; }
+        .btn-primary { background: #007bff; }
+        .btn-primary:hover { background: #0056b3; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .form-group { margin: 15px 0; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: white; margin: 5% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 600px; }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close:hover { color: black; }
+        .empty-state { text-align: center; padding: 40px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Job Management</h1>
+            <p>Manage scheduled jobs and experimental ambient features</p>
+        </div>
+        
+        <div class="nav">
+            <a href="/">Dashboard</a>
+            <a href="/registry">Registry</a>
+            <a href="/jobs">Jobs</a>
+        </div>
+
+        <!-- Cron Jobs Panel (Top) -->
+        <div class="panel">
+            <h2>Cron Jobs</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <p>Create and manage scheduled agent jobs</p>
+                <button class="btn btn-primary" onclick="showCreateJobModal()">+ Create Job</button>
+            </div>
+            
+            <div id="cron-jobs-list">
+                {% if custom_jobs %}
+                    {% for job in custom_jobs %}
+                    <div class="job-item">
+                        <div>
+                            <h4><a href="/jobs/{{ job.id }}/history" style="color: #007bff; text-decoration: none;">{{ job.name }}</a></h4>
+                            <p>Status: {{ job.status }}
+                            {% if job.last_run %}
+                                | Last Run: {{ job.last_run }}
+                            {% endif %}
+                            </p>
+                            {% if job.schedule %}
+                            <small>Schedule: {{ job.schedule }} | Next: {{ job.next_run or 'Not scheduled' }}</small>
+                            {% else %}
+                            <small>Manual execution only</small>
+                            {% endif %}
+                            {% if job.params.message %}
+                            <br><small>Message: "{{ job.params.message }}"</small>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <button class="btn" onclick="runJob('{{ job.id }}')">Run Now</button>
+                            <button class="btn btn-primary" onclick="editJob('{{ job.id }}', '{{ job.name }}', '{{ job.params.message or '' }}', '{{ job.schedule or '' }}')">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteJob('{{ job.id }}')">Delete</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No cron jobs created yet. Create your first job to get started!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Ambient Jobs Panel (Bottom - Experimental) -->
+        <div class="panel experimental">
+            <div class="experimental-label">Experimental Feature</div>
+            <h2>Ambient Jobs</h2>
+            <p>Background jobs that run automatically (experimental)</p>
+
+            <div class="job-item">
+                <div>
+                    <h3>Daily Briefing Report</h3>
+                    <p>Automated daily briefing with AI-powered priority analysis (7:00 AM daily)</p>
+                    <small>Collects data from Gmail, Slack, Notion and creates Notion briefing page</small>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="daily_briefing"
+                           {% if ambient_status.daily_briefing %}checked{% endif %}
+                           onchange="toggleAmbientJob('daily_briefing', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="job-item">
+                <div>
+                    <h3>Knowledge Cards</h3>
+                    <p>Generate learning reinforcement cards from conversations (7:30 AM daily)</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="knowledge_cards"
+                           {% if ambient_status.knowledge_cards %}checked{% endif %}
+                           onchange="toggleAmbientJob('knowledge_cards', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Job Modal -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideJobModal()">&times;</span>
+            <h2 id="modalTitle">Create New Job</h2>
+            <form id="jobForm">
+                <div class="form-group">
+                    <label>Job Name:</label>
+                    <input type="text" id="jobName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Message (sent to Agent Orchestrator):</label>
+                    <textarea id="jobMessage" rows="3" placeholder="Enter message to send to agent orchestrator" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Schedule (cron format, leave empty for manual execution):</label>
+                    <input type="text" id="jobSchedule" placeholder="e.g., 0 9 * * * (9 AM daily)">
+                    <small>Format: minute hour day month dayofweek</small>
+                </div>
+                
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn" onclick="hideJobModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Create Job</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    let editingJobId = null;
+
+    // Toggle ambient job
+    async function toggleAmbientJob(jobType, enabled) {
+        try {
+            const response = await fetch('/api/ambient-jobs/toggle', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({job_type: jobType, enabled: enabled})
+            });
+            const data = await response.json();
+            if (!data.success) {
+                alert('Error: ' + data.error);
+                location.reload();
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+            location.reload();
+        }
+    }
+
+    // Show create job modal
+    function showCreateJobModal() {
+        editingJobId = null;
+        document.getElementById('modalTitle').textContent = 'Create New Job';
+        document.getElementById('submitBtn').textContent = 'Create Job';
+        document.getElementById('jobForm').reset();
+        document.getElementById('jobModal').style.display = 'block';
+    }
+
+    // Edit job
+    function editJob(jobId, name, message, schedule) {
+        editingJobId = jobId;
+        document.getElementById('modalTitle').textContent = 'Edit Job';
+        document.getElementById('submitBtn').textContent = 'Update Job';
+        document.getElementById('jobName').value = name;
+        document.getElementById('jobMessage').value = message;
+        document.getElementById('jobSchedule').value = schedule;
+        document.getElementById('jobModal').style.display = 'block';
+    }
+
+    function hideJobModal() {
+        document.getElementById('jobModal').style.display = 'none';
+        document.getElementById('jobForm').reset();
+        editingJobId = null;
+    }
+
+    // Create or update job
+    document.getElementById('jobForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = {
+            name: document.getElementById('jobName').value,
+            schedule: document.getElementById('jobSchedule').value || null,
+            params: {
+                message: document.getElementById('jobMessage').value,
+                request_type: 'general'
+            }
+        };
+
+        try {
+            let response;
+            if (editingJobId) {
+                // Update existing job
+                response = await fetch(`/api/jobs/${editingJobId}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+            } else {
+                // Create new job
+                response = await fetch('/api/jobs', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                hideJobModal();
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    });
+
+    // Run job
+    async function runJob(jobId) {
+        try {
+            const response = await fetch(`/api/jobs/${jobId}/run`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            });
+            const data = await response.json();
+            alert(data.success ? 'Job started successfully' : 'Error: ' + data.error);
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+
+    // Delete job
+    async function deleteJob(jobId) {
+        if (!confirm('Are you sure you want to delete this job?')) return;
+        
+        try {
+            const response = await fetch(`/api/jobs/${jobId}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('jobModal');
+        if (event.target === modal) {
+            hideJobModal();
+        }
+    }
+    </script>
+</body>
+</html>

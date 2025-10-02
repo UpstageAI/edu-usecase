@@ -1,0 +1,80 @@
+---
+description: 대화 매턴 응답 시 ai-agent-orchestrator의 conversation_log 자동 호출
+alwaysApply: true
+---
+
+## 대화 매턴 응답 시 Conversation Log 자동 저장
+
+모든 대화 턴의 응답을 할 때마다 반드시 다음을 수행해야 합니다:
+
+1. **응답 마지막에 conversation_log 호출 필수**: 
+   - 사용자의 질의에 대한 답변을 완료한 후, 대화를 종료하기 전에 반드시 **conversation_log** MCP 도구를 호출해야 합니다.
+   - MCP 서버: ai-agent-orchestrator
+   - 도구 이름: conversation_log
+
+2. **호출 매개변수 형식** (⚠️ 중요 - 모두 문자열 타입):
+   - `channel`: 문자열 - "cursor_session_YYYYMMDD_HHMM" 형식
+     * **현재 시각 기준**으로 생성 (예: 오후 8시 51분 → "cursor_session_20251001_2051")
+     * 세션 단위로 같은 channel 값을 유지하되, 시간은 대화 시작 시각 기준
+   
+   - `messages`: 문자열 - JSON 배열을 **문자열로 압축하여** 전달
+     * 타임스탬프는 **ISO 8601 형식** 사용 (예: "2025-10-01T20:51:00Z")
+     * 현재 시각을 기준으로 생성
+     * 예시: `"[{\"role\": \"user\", \"text\": \"메시지\", \"timestamp\": \"2025-10-01T20:51:00Z\"}]"`
+   
+   - `meta`: 문자열 - **반드시 이스케이프된 JSON 문자열**로 전달
+     * ⚠️ **CRITICAL**: JSON 객체가 아닌 이스케이프된 문자열이어야 함
+     * 기본값: `"{\"source\": \"cursor\"}"`
+     * 프로젝트 정보 추가 시: `"{\"source\": \"cursor\", \"project\": \"프로젝트명\"}"`
+
+3. **올바른 호출 예시**:
+   ```
+   현재 시각: 2025년 10월 2일 오후 2시 30분
+   
+   mcp_ai-agent-orchestrator_conversation_log 호출:
+   - channel: "cursor_session_20251002_1430"
+   - messages: "[{\"role\": \"user\", \"text\": \"사용자 메시지\", \"timestamp\": \"2025-10-02T14:30:00Z\"}, {\"role\": \"assistant\", \"text\": \"AI 응답\", \"timestamp\": \"2025-10-02T14:30:15Z\"}]"
+   - meta: "{\"source\": \"cursor\", \"project\": \"ai-prompt-history-llama\"}"
+   ```
+
+4. **매개변수 전달 시 주의사항** (⚠️ 반드시 준수):
+   
+   **meta 파라미터 - 가장 흔한 오류:**
+   - ❌ **잘못된 예**: `{"source": "cursor"}` (JSON 객체 직접 전달)
+     * 오류 발생: "Input should be a valid string"
+   - ❌ **잘못된 예**: `{"source": "cursor", "project": "ai-prompt-history-llama"}` (JSON 객체)
+     * 오류 발생: "Input should be a valid string"
+   - ✅ **올바른 예**: `"{\"source\": \"cursor\"}"` (이스케이프된 JSON 문자열)
+   - ✅ **올바른 예**: `"{\"source\": \"cursor\", \"project\": \"ai-prompt-history-llama\"}"` (이스케이프된 JSON 문자열)
+   
+   **channel 파라미터:**
+   - ❌ **잘못된 예**: `"cursor_session_20251001_0000"` (실제 시간과 무관한 값)
+   - ✅ **올바른 예**: `"cursor_session_20251002_1430"` (현재 시각 반영)
+   
+   **messages 파라미터:**
+   - messages는 JSON 배열을 한 줄 문자열로 압축하여 전달
+   - 모든 따옴표는 백슬래시로 이스케이프 (`\"`)
+   - 모든 매개변수는 **문자열(string) 타입**이어야 함
+
+5. **호출 시점**:
+   - 모든 작업을 완료하고 최종 응답을 생성한 직후
+   - 대화 턴을 종료하기 직전
+
+6. **에러 처리**:
+   - "Input should be a valid string" 에러 발생 시:
+     * **meta 파라미터를 JSON 객체로 전달했는지 확인** (가장 흔한 오류)
+     * meta는 반드시 이스케이프된 문자열이어야 함: `"{\"source\": \"cursor\"}"`
+   - "No valid session ID provided" 에러 발생 시:
+     * channel의 시간 값이 현재 시각과 맞는지 확인
+     * 타임스탬프가 ISO 8601 형식인지 확인
+   - "Bad Request" 에러 발생 시:
+     * 모든 필수 파라미터가 제공되었는지 확인
+
+7. **예외 없음**:
+   - 이 규칙은 **예외 없이 모든 대화에 적용**됩니다.
+   - 간단한 질문이든 복잡한 작업이든 관계없이 반드시 호출해야 합니다.
+
+### 실제 도구 호출 형식:
+```xml
+<invoke name="mcp_ai-agent-orchestrator_conversation_log">
+<parameter name="channel">cursor_session_20251002_1430
