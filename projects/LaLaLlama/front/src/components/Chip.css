@@ -1,0 +1,37 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-size: var(--font-caption-size);
+  line-height: var(--font-caption-line);
+  font-weight: 500;
+}
+
+.chip-default {
+  background: rgba(156, 163, 175, 0.15);
+  color: var(--muted);
+}
+
+.chip-info {
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--info);
+}
+
+.chip-success {
+  background: rgba(5, 150, 105, 0.15);
+  color: var(--ok);
+}
+
+.chip-danger {
+  background: rgba(220, 38, 38, 0.15);
+  color: var(--danger);
+}
+
+.chip-pending {
+  background: rgba(156, 163, 175, 0.15);
+  color: var(--muted);
+  animation: pulse 1500ms ease-in-out infinite;
+}
+

@@ -1,0 +1,51 @@
+---
+company: 신한카드
+name: 김철수
+position: 책임
+team: 디지털플랫폼팀
+role: React 프론트엔드 개발 총괄
+email: kim.cs@shinhancard.com
+phone: 02-1234-5678
+expertise: React, TypeScript, Next.js, Redux
+years_experience: 8
+---
+company: 신한은행
+name: 이영희
+position: 선임
+team: 인터넷뱅킹개발팀
+role: 웹 프론트엔드 개발 리드
+email: lee.yh@shinhanbank.com
+phone: 02-2345-6789
+expertise: React, jQuery, Legacy Migration
+years_experience: 10
+---
+company: 신한생명
+name: 박민수
+position: 책임
+team: 모바일개발팀
+role: React Native 앱 개발
+email: park.ms@shinhanlife.com
+phone: 02-3456-7890
+expertise: React Native, iOS, Android
+years_experience: 6
+---
+company: 신한캐피탈
+name: 정수진
+position: 선임
+team: IT전략팀
+role: Vue.js 프론트엔드 개발
+email: jung.sj@shinhancapital.com
+phone: 02-4567-8901
+expertise: Vue.js, JavaScript, Node.js
+years_experience: 5
+---
+company: 신한투자증권
+name: 최동욱
+position: 책임
+team: WTS개발팀
+role: Angular 프론트엔드 아키텍트
+email: choi.dw@shinhaninvest.com
+phone: 02-5678-9012
+expertise: Angular, RxJS, WebSocket
+years_experience: 12
+---

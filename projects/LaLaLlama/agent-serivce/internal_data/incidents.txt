@@ -1,0 +1,116 @@
+---
+incident_date: 2024-01-15
+incident_time: 14:30
+company: 신한카드
+project_name: 고객포털
+technology: React
+team: 디지털플랫폼팀
+severity: 중
+description: 메모리 누수로 인한 브라우저 성능 저하
+root_cause: useEffect 클린업 함수 누락, 이벤트 리스너 미제거
+solution: |
+  1. 모든 useEffect에 클린업 함수 추가
+  2. 이벤트 리스너 등록/해제 쌍 검증
+  3. React DevTools Profiler로 재발 모니터링
+  4. ESLint 규칙 추가 (exhaustive-deps)
+impact: 사용자 1,200명 영향, 평균 응답시간 3초 증가
+resolution_time: 2시간
+contact_person: 김철수
+contact_email: kim.cs@shinhancard.com
+lessons_learned: |
+  - useEffect 사용 시 클린업 필수 체크리스트 작성
+  - 메모리 프로파일링 정기 점검 도입
+  - 코드 리뷰 시 리소스 해제 검증 항목 추가
+---
+incident_date: 2024-02-22
+incident_time: 09:15
+company: 신한은행
+project_name: 인터넷뱅킹
+technology: React
+team: 인터넷뱅킹개발팀
+severity: 상
+description: 무한 렌더링 루프로 인한 서비스 중단
+root_cause: useState의 setState를 useEffect 없이 렌더링 중 직접 호출
+solution: |
+  1. setState 호출을 useEffect 내부로 이동
+  2. 의존성 배열 최적화
+  3. useMemo, useCallback 적절히 활용
+  4. React Profiler로 렌더링 성능 분석
+impact: 서비스 전면 중단 15분, 사용자 약 5,000명 영향
+resolution_time: 15분
+contact_person: 이영희
+contact_email: lee.yh@shinhanbank.com
+lessons_learned: |
+  - 렌더링 로직과 사이드 이펙트 명확히 분리
+  - 로컬 개발 환경에서 React Strict Mode 활성화
+  - 배포 전 성능 테스트 자동화
+---
+incident_date: 2024-03-10
+incident_time: 16:00
+company: 신한생명
+project_name: 모바일 앱
+technology: React Native
+team: 모바일개발팀
+severity: 중
+description: iOS 앱 빌드 실패 (CocoaPods 의존성 충돌)
+root_cause: React Native 버전 업그레이드 후 네이티브 모듈 호환성 이슈
+solution: |
+  1. Podfile.lock 삭제 후 재설치
+  2. 특정 네이티브 모듈 버전 고정
+  3. iOS 최소 버전 요구사항 업데이트 (11.0 → 12.0)
+  4. CI/CD 파이프라인에 호환성 테스트 추가
+impact: 앱 배포 지연 1일
+resolution_time: 4시간
+contact_person: 박민수
+contact_email: park.ms@shinhanlife.com
+lessons_learned: |
+  - React Native 버전 업그레이드 전 네이티브 의존성 사전 검증
+  - 버전 고정 정책 수립
+  - 네이티브 모듈 변경사항 문서화
+---
+incident_date: 2024-04-05
+incident_time: 11:20
+company: 신한투자증권
+project_name: 트레이딩 시스템
+technology: Angular
+team: WTS개발팀
+severity: 상
+description: WebSocket 연결 끊김으로 실시간 시세 데이터 수신 불가
+root_cause: RxJS Observable 구독 해제 로직 오류, 재연결 로직 미구현
+solution: |
+  1. WebSocket 재연결 로직 구현 (exponential backoff)
+  2. RxJS takeUntil 패턴으로 구독 관리 개선
+  3. 연결 상태 모니터링 대시보드 구축
+  4. Heartbeat 메커니즘 추가
+impact: 트레이더 300명 실시간 거래 불가, 약 10분간 시세 조회 불가
+resolution_time: 10분
+contact_person: 최동욱
+contact_email: choi.dw@shinhaninvest.com
+lessons_learned: |
+  - WebSocket 재연결 로직 필수 구현
+  - RxJS 구독 관리 패턴 표준화
+  - 실시간 시스템 장애 시뮬레이션 테스트 정기 실시
+---
+incident_date: 2024-05-18
+incident_time: 13:45
+company: 신한카드
+project_name: 관리자 포털
+technology: React
+team: 디지털플랫폼팀
+severity: 하
+description: 대용량 데이터 렌더링 시 브라우저 멈춤 현상
+root_cause: 10,000개 이상의 목록을 한번에 렌더링, 가상 스크롤 미적용
+solution: |
+  1. react-window 라이브러리 도입 (가상 스크롤)
+  2. 페이지네이션 추가 (서버 사이드)
+  3. 데이터 로딩 시 스켈레톤 UI 적용
+  4. useMemo로 렌더링 최적화
+impact: 관리자 5명 불편 호소, 업무 지연 약 30분
+resolution_time: 1일 (핫픽스)
+contact_person: 김철수
+contact_email: kim.cs@shinhancard.com
+lessons_learned: |
+  - 대용량 목록은 반드시 가상 스크롤 적용
+  - 초기 설계 단계에서 성능 요구사항 정의
+  - 실제 운영 데이터 규모로 테스트
+---

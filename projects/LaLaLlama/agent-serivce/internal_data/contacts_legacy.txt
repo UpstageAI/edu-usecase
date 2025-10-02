@@ -1,0 +1,166 @@
+---
+company: 수협은행
+name: 이성호
+position: 차장
+team: 계정계시스템팀
+role: Oracle DBA 총괄
+email: lee.sh@suhyup-bank.com
+phone: 02-2240-3001
+expertise: Oracle 10g/11g/19c, RAC, SQL Tuning, PL/SQL
+years_experience: 18
+notes: 계정계 DB 야간 배치 담당, 성능 튜닝 전문가
+---
+company: 수협은행
+name: 김영수
+position: 차장
+team: 채널시스템팀
+role: WebLogic 운영 담당
+email: kim.ys@suhyup-bank.com
+phone: 02-2240-3002
+expertise: WebLogic 10g/12c, JVM 튜닝, 클러스터 구성
+years_experience: 15
+notes: WAS 장애 대응 전문, 메모리 분석 전문가
+---
+company: 수협은행
+name: 박준형
+position: 책임
+team: 채널개발팀
+role: Java 애플리케이션 개발 리드
+email: park.jh@suhyup-bank.com
+phone: 02-2240-3003
+expertise: Java 8, Spring 4.3, MyBatis, 전자정부프레임워크
+years_experience: 12
+notes: 인터넷뱅킹 핵심 모듈 개발, 레거시 코드 유지보수
+---
+company: 수협은행
+name: 정민지
+position: 선임
+team: 프레임워크팀
+role: 전자정부프레임워크 관리
+email: jung.mj@suhyup-bank.com
+phone: 02-2240-3004
+expertise: eGovFrame, Spring 4.3, Maven, 표준 프레임워크 설계
+years_experience: 9
+notes: 사내 표준 프레임워크 구축 및 가이드 작성
+---
+company: 수협은행
+name: 최동욱
+position: 대리
+team: 배치운영팀
+role: 야간 배치 작업 담당
+email: choi.dw@suhyup-bank.com
+phone: 02-2240-3005
+expertise: Pro*C, Shell Script, Oracle PL/SQL, Unix
+years_experience: 7
+notes: 배치 작업 100개 관리, 장애 대응 1차 담당자
+---
+company: 수협은행
+name: 한준혁
+position: 차장
+team: 인프라팀
+role: Windows 서버 운영
+email: han.jh@suhyup-bank.com
+phone: 02-2240-3006
+expertise: Windows Server 2012/2016, IIS, 가상화
+years_experience: 14
+notes: 물리 서버 20대 관리, Linux 전환 프로젝트 참여
+---
+company: 농협은행
+name: 김철수
+position: 부장
+team: 계정계개발팀
+role: 메인프레임 Cobol 개발 총괄
+email: kim.cs@nhbank.com
+phone: 02-2080-4001
+expertise: Cobol (MicroFocus), CICS, JCL, DB2
+years_experience: 28
+notes: 메인프레임 30년 경력, Cobol → Java 전환 프로젝트 리더
+---
+company: 농협은행
+name: 오상훈
+position: 차장
+team: 채널시스템팀
+role: Tomcat WAS 운영
+email: oh.sh@nhbank.com
+phone: 02-2080-4002
+expertise: Tomcat 8.5, Apache HTTP Server, Linux
+years_experience: 13
+notes: 모바일뱅킹 WAS 8대 관리, 성능 모니터링 전문
+---
+company: 우리은행
+name: 윤태현
+position: 차장
+team: 전산운영부
+role: WebSphere 운영 담당
+email: yoon.th@woori.com
+phone: 02-2002-5001
+expertise: IBM WebSphere 8.5, WAS ND, JVM 튜닝
+years_experience: 16
+notes: WebSphere 클러스터 10대 관리, 고가용성 구성 전문
+---
+company: 우리은행
+name: 배성호
+position: 부장
+team: DW팀
+role: 데이터웨어하우스 총괄
+email: bae.sh@woori.com
+phone: 02-2002-5002
+expertise: Oracle Exadata, ETL, SQL 튜닝, 데이터 모델링
+years_experience: 22
+notes: DW 아키텍처 설계, 50TB 대용량 데이터 관리
+---
+company: 신한은행
+name: 서지훈
+position: 차장
+team: 시스템개발팀
+role: 레거시 시스템 유지보수
+email: seo.jh@shinhan.com
+phone: 02-2151-6001
+expertise: Struts 2.5, Spring MVC, JSP, jQuery
+years_experience: 14
+notes: 관리자 시스템 30개 유지보수, Spring 전환 프로젝트 참여
+---
+company: 신한은행
+name: 임채윤
+position: 책임
+team: 인프라운영팀
+role: 형상관리 및 클라우드 전환
+email: lim.cy@shinhan.com
+phone: 02-2151-6002
+expertise: SVN, Git, Jenkins, AWS (EC2, RDS, S3)
+years_experience: 11
+notes: SVN → Git 마이그레이션 담당, AWS 클라우드 전환 추진
+---
+company: 하나은행
+name: 강희정
+position: 차장
+team: 전산센터
+role: 유닉스 서버 운영
+email: kang.hj@hana.com
+phone: 02-1588-7001
+expertise: HP-UX, Red Hat Linux, Shell Script, 시스템 관리
+years_experience: 17
+notes: 유닉스 서버 50대 관리, HP-UX → Linux 전환 프로젝트 담당
+---
+company: KB국민은행
+name: 이동훈
+position: 부장
+team: 차세대시스템팀
+role: 차세대 시스템 DB 총괄
+email: lee.dh@kbstar.com
+phone: 02-2073-8001
+expertise: Oracle 11g/19c, RAC, ASM, Exadata, 대규모 마이그레이션
+years_experience: 20
+notes: Oracle 11g → 19c 대규모 업그레이드 리더, 100TB 데이터 관리
+---
+company: KB국민은행
+name: 노은주
+position: 책임
+team: 모바일뱅킹팀
+role: 프론트엔드 개발 리드
+email: noh.ej@kbstar.com
+phone: 02-2073-8002
+expertise: jQuery, React, TypeScript, Next.js, 레거시 모던화
+years_experience: 10
+notes: jQuery → React 전환 프로젝트 리더, 모바일웹 100개 페이지 관리
+---

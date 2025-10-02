@@ -1,0 +1,44 @@
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12);
+  padding: 0 var(--space-24);
+  font-size: var(--font-body-size);
+  z-index: 999;
+}
+
+.banner-info {
+  background: var(--info);
+  color: white;
+}
+
+.banner-success {
+  background: var(--ok);
+  color: white;
+}
+
+.banner-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.banner-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 var(--space-8);
+  opacity: 0.8;
+}
+
+.banner-close:hover {
+  opacity: 1;
+}
+

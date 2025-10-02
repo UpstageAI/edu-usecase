@@ -1,0 +1,151 @@
+---
+incident_date: 2024-06-10
+incident_time: 10:30
+company: 수협은행
+project_name: 실시간 마케팅 시스템
+technology: Kafka
+team: 디지털마케팅팀
+severity: 상
+description: Kafka 브로커 다운으로 실시간 이벤트 수집 중단
+root_cause: 디스크 용량 부족으로 인한 Kafka 브로커 3대 중 2대 동시 중단
+solution: |
+  1. 디스크 용량 긴급 확보 (로그 정리)
+  2. 브로커 재시작 및 파티션 리밸런싱
+  3. 디스크 사용량 알람 임계치 하향 조정 (85% → 70%)
+  4. 로그 보관 정책 변경 (7일 → 3일)
+  5. 모니터링 대시보드에 디스크 용량 추가
+impact: 실시간 캠페인 발송 2시간 중단, 약 15만건 이벤트 유실
+resolution_time: 2시간
+contact_person: 김지훈
+contact_email: kim.jh@suhyup.co.kr
+lessons_learned: |
+  - Kafka 디스크 용량 모니터링 강화
+  - 브로커 최소 3대 이상 구성 (2대 장애 시에도 가용)
+  - 로그 보관 정책 정기 검토
+  - 디스크 Auto-scaling 검토
+---
+incident_date: 2024-07-22
+incident_time: 14:15
+company: 수협은행
+project_name: 캠페인 시스템
+technology: Kubernetes
+team: IT전략팀
+severity: 중
+description: Pod OOMKilled로 캠페인 발송 서비스 반복 재시작
+root_cause: 메모리 리크 (캠페인 대상자 데이터를 메모리에 모두 적재)
+solution: |
+  1. 메모리 한도 임시 증가 (2GB → 4GB)
+  2. 대상자 데이터 스트리밍 방식으로 변경 (배치 처리)
+  3. JVM 힙 메모리 프로파일링 (VisualVM)
+  4. 불필요한 객체 참조 제거 및 GC 튜닝
+  5. Liveness/Readiness Probe 조정
+impact: 캠페인 발송 지연 평균 10분, 고객 불만 접수 3건
+resolution_time: 4시간
+contact_person: 이수진
+contact_email: lee.sj@suhyup.co.kr
+lessons_learned: |
+  - 대용량 데이터 처리 시 스트리밍 방식 필수
+  - 메모리 프로파일링 정기 실시
+  - K8s 리소스 한도 설정 시 여유 확보
+  - OOMKilled 알람 즉시 대응 체계 구축
+---
+incident_date: 2024-08-05
+incident_time: 09:00
+company: 수협은행
+project_name: 고객 분석 시스템
+technology: PostgreSQL
+team: 마케팅운영팀
+severity: 중
+description: 데이터베이스 슬로우 쿼리로 응답시간 20초 이상
+root_cause: 인덱스 없는 대용량 테이블 Full Scan (1억건)
+solution: |
+  1. 문제 쿼리 식별 (pg_stat_statements)
+  2. 필요한 컬럼에 복합 인덱스 추가
+  3. 쿼리 실행 계획 분석 및 최적화
+  4. 파티셔닝 검토 (월별 파티션)
+  5. 슬로우 쿼리 알람 설정 (5초 이상)
+impact: 캠페인 대상자 추출 시간 3시간 → 5분 개선
+resolution_time: 1일
+contact_person: 정혜린
+contact_email: jung.hr@suhyup.co.kr
+lessons_learned: |
+  - 대용량 테이블은 인덱스 전략 필수
+  - 정기적인 쿼리 성능 리뷰
+  - 테이블 파티셔닝 사전 설계
+  - 개발 단계에서 실행 계획 검증
+---
+incident_date: 2024-09-12
+incident_time: 16:45
+company: 농협은행
+project_name: 배치 파이프라인
+technology: Apache Airflow
+team: 마케팅기획팀
+severity: 중
+description: DAG 실행 실패로 일별 집계 배치 중단
+root_cause: 업스트림 데이터 소스 API 변경으로 인한 스키마 불일치
+solution: |
+  1. API 스키마 변경 내역 확인
+  2. DAG 코드 수정 (새로운 필드 추가)
+  3. 데이터 검증 로직 추가 (Great Expectations)
+  4. 실패한 배치 작업 수동 재실행
+  5. API 변경 알림 채널 구독
+impact: 일별 집계 데이터 1일 지연, 다음날 수동 보정
+resolution_time: 3시간
+contact_person: 윤서영
+contact_email: yoon.sy@nonghyup.com
+lessons_learned: |
+  - 업스트림 API 변경 모니터링 필요
+  - 스키마 검증 로직 필수 추가
+  - 데이터 품질 테스트 자동화
+  - API 버전 관리 정책 수립
+---
+incident_date: 2024-10-01
+incident_time: 11:20
+company: 우리은행
+project_name: 서버리스 캠페인 트리거
+technology: AWS Lambda
+team: 디지털전략팀
+severity: 하
+description: Lambda 함수 Cold Start로 인한 응답 지연
+root_cause: Provisioned Concurrency 미설정, 트래픽 급증 시 Cold Start 다발
+solution: |
+  1. Provisioned Concurrency 설정 (최소 10개)
+  2. Lambda 함수 크기 최적화 (의존성 제거)
+  3. VPC 설정 검토 (ENI 생성 시간 감소)
+  4. CloudWatch 메트릭 모니터링 강화
+  5. 트래픽 예측 기반 Auto-scaling 정책 수립
+impact: 초기 요청 응답시간 5초 → 1초 개선
+resolution_time: 2일
+contact_person: 강희정
+contact_email: kang.hj@woori.com
+lessons_learned: |
+  - Provisioned Concurrency 필수 고려
+  - Lambda 함수 크기 최소화
+  - VPC 설정 시 Cold Start 증가 인지
+  - 트래픽 패턴 분석 후 용량 계획
+---
+incident_date: 2024-05-18
+incident_time: 13:30
+company: 신한은행
+project_name: AI 추천 시스템
+technology: TensorFlow Serving
+team: AI연구소
+severity: 중
+description: 모델 서빙 응답시간 3초 이상으로 SLA 위반
+root_cause: 모델 크기 과다 (500MB), GPU 메모리 부족
+solution: |
+  1. 모델 양자화 (FP32 → FP16) 적용
+  2. 모델 크기 50% 감소 (500MB → 250MB)
+  3. GPU 메모리 할당 최적화
+  4. 배치 추론 적용 (Batch Size 32)
+  5. 모델 캐싱 전략 수립
+impact: 추론 응답시간 3초 → 100ms 개선
+resolution_time: 5일
+contact_person: 임채윤
+contact_email: lim.cy@shinhan.com
+lessons_learned: |
+  - 모델 경량화 필수 (양자화, 프루닝)
+  - GPU 메모리 모니터링 강화
+  - 배치 추론으로 처리량 향상
+  - 모델 서빙 성능 테스트 사전 수행
+---

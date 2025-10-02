@@ -1,0 +1,76 @@
+---
+company: 신한은행
+project_name: 인터넷뱅킹 리뉴얼
+migration_date: 2023-06
+from_tech: jQuery + JSP
+to_tech: React 18 + TypeScript
+team: 인터넷뱅킹개발팀
+duration: 6개월
+considerations: |
+  1. 레거시 jQuery 플러그인 대체 필요 (차트, 달력 등)
+  2. SSR 미지원으로 SEO 이슈 발생 → Next.js 검토 중
+  3. IE11 지원 중단으로 사용자 고객 공지 필요
+  4. 기존 JSP 템플릿을 React 컴포넌트로 전환
+  5. 백엔드 API 리팩토링 필요 (RESTful 표준화)
+challenges: |
+  - 기존 개발자들의 React 학습 곡선
+  - jQuery 플러그인 의존성 제거
+  - 레거시 코드와 신규 코드 공존 기간 관리
+results: |
+  - 개발 생산성 30% 향상
+  - 번들 크기 40% 감소
+  - 페이지 로딩 속도 50% 개선
+  - 유지보수 비용 25% 절감
+contact_person: 이영희
+contact_email: lee.yh@shinhanbank.com
+---
+company: 신한카드
+project_name: 고객포털 모던화
+migration_date: 2023-03
+from_tech: AngularJS 1.x
+to_tech: React 18 + Next.js
+team: 디지털플랫폼팀
+duration: 8개월
+considerations: |
+  1. AngularJS EOL 대응 필요
+  2. SEO 최적화 요구사항 → Next.js SSR 적용
+  3. 기존 컴포넌트 100개 이상 마이그레이션
+  4. 사용자 인증 시스템 전면 개편
+  5. 모바일 반응형 디자인 개선
+challenges: |
+  - AngularJS 양방향 바인딩 → React 단방향 흐름 전환
+  - 대규모 컴포넌트 마이그레이션 우선순위 설정
+  - 운영 중인 서비스의 무중단 배포 전략
+results: |
+  - Core Web Vitals 점수 40% 향상
+  - SEO 검색 노출 60% 증가
+  - 사용자 만족도 조사 점수 상승 (4.2 → 4.7)
+  - 신규 기능 개발 속도 2배 향상
+contact_person: 김철수
+contact_email: kim.cs@shinhancard.com
+---
+company: 신한투자증권
+project_name: 트레이딩 시스템 웹 클라이언트 개편
+migration_date: 2023-09
+from_tech: Backbone.js
+to_tech: Angular 15
+team: WTS개발팀
+duration: 10개월
+considerations: |
+  1. 실시간 데이터 처리 성능 유지 필수
+  2. WebSocket 연동 안정성 확보
+  3. 금융 규제 준수 (보안, 감사 로그)
+  4. 기존 차트 라이브러리 호환성
+  5. 트레이더들의 사용성 저하 방지
+challenges: |
+  - Backbone.js 이벤트 시스템 → Angular RxJS 전환
+  - 실시간 시세 데이터 처리 최적화
+  - 레거시 시스템과의 복잡한 의존성 해소
+results: |
+  - 메모리 사용량 30% 감소
+  - 실시간 데이터 처리 지연 50% 개선
+  - 코드 가독성 및 유지보수성 대폭 향상
+  - 신규 개발자 온보딩 기간 단축 (2주 → 1주)
+contact_person: 최동욱
+contact_email: choi.dw@shinhaninvest.com
+---

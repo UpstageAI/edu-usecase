@@ -1,0 +1,48 @@
+.btn {
+  border: none;
+  border-radius: 8px;
+  font-size: var(--font-body-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 180ms ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-M {
+  height: 40px;
+  padding: 0 var(--space-20);
+}
+
+.btn-S {
+  height: 32px;
+  padding: 0 var(--space-12);
+  font-size: var(--font-caption-size);
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #4338CA;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg);
+}
+

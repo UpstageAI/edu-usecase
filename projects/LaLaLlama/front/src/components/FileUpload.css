@@ -1,0 +1,133 @@
+.file-upload-section {
+  background: var(--panel);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+}
+
+.file-upload-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-16) var(--space-20);
+  border-bottom: 1px solid var(--line);
+}
+
+.file-upload-header h3 {
+  margin: 0;
+  font-size: var(--font-body-size);
+  font-weight: 600;
+  color: var(--ink-1);
+}
+
+.file-upload-body {
+  padding: var(--space-20);
+}
+
+.file-upload-caption {
+  padding: 0 var(--space-20) var(--space-16);
+  color: var(--ink-3);
+  font-size: var(--font-caption-size);
+}
+
+.file-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-32) var(--space-24);
+  border: 2px dashed var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 180ms ease-in-out;
+}
+
+.file-empty:hover {
+  border-color: var(--brand);
+  background: rgba(79, 70, 229, 0.02);
+}
+
+.file-empty-text {
+  color: var(--ink-3);
+  font-size: var(--font-body-size);
+  margin-bottom: var(--space-12);
+}
+
+.file-empty-button {
+  color: var(--brand);
+  font-size: var(--font-body-size);
+  font-weight: 500;
+}
+
+.file-selected,
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.file-item {
+  margin-bottom: var(--space-8);
+}
+
+.file-item:last-child {
+  margin-bottom: 0;
+}
+
+.file-icon {
+  font-size: 20px;
+}
+
+.file-name {
+  flex: 1;
+  color: var(--ink-1);
+  font-size: var(--font-body-size);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-remove {
+  background: transparent;
+  border: none;
+  color: var(--ink-3);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 180ms ease-in-out;
+}
+
+.file-remove:hover {
+  background: var(--line);
+  color: var(--ink-1);
+}
+
+.file-list {
+  margin-bottom: var(--space-16);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.file-add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--space-12);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--brand);
+  font-size: var(--font-body-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 180ms ease-in-out;
+}
+
+.file-add-button:hover {
+  background: var(--bg);
+  border-color: var(--brand);
+}
+

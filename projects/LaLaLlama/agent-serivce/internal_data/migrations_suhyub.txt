@@ -1,0 +1,129 @@
+---
+company: 수협은행
+project_name: 실시간 마케팅 시스템 구축
+migration_date: 2023-08
+from_tech: 레거시 배치 기반 캠페인 시스템
+to_tech: Kafka + Flink 기반 실시간 처리
+team: 디지털마케팅팀
+duration: 8개월
+considerations: |
+  1. 기존 배치 처리(일 1회) → 실시간 이벤트 처리로 전환
+  2. 레거시 Oracle DB → PostgreSQL + Redis 하이브리드
+  3. 데이터 손실 방지를 위한 At-Least-Once 전송 보장
+  4. 피크 타임(오전 9-11시) 트래픽 3배 증가 대응
+  5. 모니터링 체계 전면 재구축 (Prometheus + Grafana)
+challenges: |
+  - Kafka 클러스터 튜닝 (파티션 설계, 리플리케이션 설정)
+  - Flink 상태 관리 및 체크포인트 최적화
+  - 레거시 시스템과의 병행 운영 기간 4개월
+  - 실시간 처리 지연시간 목표(5초) 달성 어려움
+results: |
+  - 캠페인 발송 속도 10배 향상 (일 1회 → 실시간)
+  - 고객 반응률 35% 증가
+  - 마케팅 ROI 28% 개선
+  - 시스템 운영 비용 20% 절감
+contact_person: 김지훈
+contact_email: kim.jh@suhyup.co.kr
+---
+company: 수협은행
+project_name: 마이크로서비스 아키텍처 전환
+migration_date: 2024-01
+from_tech: 모놀리식 Spring 애플리케이션
+to_tech: Kubernetes 기반 마이크로서비스
+team: IT전략팀
+duration: 10개월
+considerations: |
+  1. 5개 도메인으로 서비스 분리 (회원, 캠페인, 발송, 분석, 관리)
+  2. API Gateway 도입 (Spring Cloud Gateway)
+  3. 서비스 간 통신 (REST + gRPC)
+  4. 분산 트랜잭션 관리 (Saga 패턴)
+  5. 로깅 및 추적 (ELK + Jaeger)
+challenges: |
+  - 서비스 간 의존성 관리 복잡도 증가
+  - 데이터 일관성 보장 (Eventually Consistent)
+  - 개발자 학습 곡선 (Docker, K8s, Istio)
+  - 기존 모놀리식 배포 프로세스 전면 변경
+results: |
+  - 배포 시간 80% 단축 (2시간 → 20분)
+  - 서비스별 독립 배포 가능
+  - 장애 격리로 전체 시스템 다운 방지
+  - 개발 생산성 40% 향상
+contact_person: 이수진
+contact_email: lee.sj@suhyup.co.kr
+---
+company: 농협은행
+project_name: 배치 파이프라인 현대화
+migration_date: 2023-04
+from_tech: Cron + Shell Script
+to_tech: Apache Airflow
+team: 마케팅기획팀
+duration: 5개월
+considerations: |
+  1. 30개 배치 작업 Airflow DAG로 전환
+  2. 작업 간 의존성 명시적 정의
+  3. 실패 시 재시도 및 알림 자동화
+  4. 작업 실행 이력 및 로그 중앙 관리
+  5. 스케줄링 유연성 확보 (Cron 표현식 → Dynamic)
+challenges: |
+  - Shell Script 로직을 Python Operator로 전환
+  - 기존 배치 작업의 암묵적 의존성 파악
+  - Airflow 클러스터 구성 및 스케일링
+results: |
+  - 배치 작업 실패율 30% → 1% 감소
+  - 작업 모니터링 가시성 대폭 향상
+  - 배치 작업 추가/수정 시간 50% 단축
+  - 장애 복구 시간 70% 감소
+contact_person: 윤서영
+contact_email: yoon.sy@nonghyup.com
+---
+company: 우리은행
+project_name: 서버리스 캠페인 트리거 도입
+migration_date: 2024-03
+from_tech: EC2 기반 상시 구동 서버
+to_tech: AWS Lambda + API Gateway
+team: 디지털전략팀
+duration: 4개월
+considerations: |
+  1. 이벤트 기반 아키텍처 설계 (EventBridge, SQS)
+  2. Cold Start 최소화 (Provisioned Concurrency)
+  3. Lambda 실행 시간 15분 제한 대응
+  4. 비용 최적화 (예약 용량 vs On-Demand)
+  5. 기존 모니터링 도구와 통합 (CloudWatch)
+challenges: |
+  - Lambda 실행 시간 제한으로 긴 작업 분리 필요
+  - VPC 내 RDS 접근 시 Cold Start 증가
+  - 상태 관리 어려움 (Stateless 제약)
+results: |
+  - 인프라 비용 40% 절감
+  - 트래픽 피크 시 자동 확장
+  - 운영 관리 부담 감소
+  - 배포 복잡도 증가 (여러 Lambda 함수 관리)
+contact_person: 강희정
+contact_email: kang.hj@woori.com
+---
+company: 신한은행
+project_name: AI 기반 상품 추천 시스템 도입
+migration_date: 2023-12
+from_tech: 룰 기반 추천 엔진
+to_tech: TensorFlow + Kubeflow
+team: AI연구소
+duration: 12개월
+considerations: |
+  1. 고객 행동 데이터 1억건 학습
+  2. 추천 정확도 목표 85% 이상
+  3. 추론 응답시간 100ms 이내
+  4. A/B 테스트 프레임워크 구축
+  5. 모델 재학습 파이프라인 자동화
+challenges: |
+  - 대용량 데이터 전처리 시간 (7일 소요)
+  - GPU 클러스터 구성 및 비용 관리
+  - 모델 서빙 인프라 (TensorFlow Serving)
+  - Cold Start 문제 (모델 로딩 시간 3초)
+results: |
+  - 추천 정확도 87% 달성
+  - 상품 전환율 42% 증가
+  - 고객 만족도 점수 향상 (4.1 → 4.6)
+  - 마케팅 비용 효율 30% 개선
+contact_person: 임채윤
+contact_email: lim.cy@shinhan.com
+---

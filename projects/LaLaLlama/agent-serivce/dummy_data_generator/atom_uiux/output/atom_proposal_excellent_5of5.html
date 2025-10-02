@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ATOM UI/UX 개편 제안서</title>
+<style>
+body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; line-height: 1.8; margin: 40px; background: #f8f9fa; }
+.container { max-width: 1200px; margin: 0 auto; background: white; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+h1 { color: #1a237e; border-bottom: 4px solid #3f51b5; padding-bottom: 12px; margin-top: 40px; }
+h2 { color: #283593; margin-top: 35px; border-bottom: 2px solid #5c6bc0; padding-bottom: 10px; }
+h3 { color: #3949ab; margin-top: 25px; }
+h4 { color: #5e35b1; margin-top: 20px; }
+table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+th, td { border: 1px solid #e0e0e0; padding: 12px; text-align: left; }
+th { background-color: #3f51b5; color: white; font-weight: 600; }
+ul, ol { margin: 15px 0; padding-left: 30px; }
+li { margin: 8px 0; }
+p { margin: 12px 0; }
+strong { color: #1a237e; }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; margin: -40px -40px 40px -40px; }
+.header h1 { color: white; border: none; margin: 0; }
+.header p { margin: 10px 0 0 0; opacity: 0.9; }
+</style>
+</head>
+<body>
+<div class="container">
+<p>제안서: ATOM UI/UX 개편 및 기능 개선 – 혁신주도형 프리미엄 제안(가상)</p>
+<p>제안사: 아토믹스 UX 파트너스, 작성일/담당자: 2025-10-01, 담당자: 이민석 PM</p>
+<p>1. Executive Summary (경영진 요약)</p>
+<ul>
+<li>핵심 가치 제안</li>
+<li>Legacy XPLATFORM의 한계를 극복하고, React 18 기반 SPA와 서버 컴포넌트를 활용한 초고속 로딩/인터랙션을 구현하여 업무 흐름을 대폭 개선</li>
+<li>적응형 UI 설계로 PC/태블릿/모바일에서의 생산성 향상 및 접근성 강화, 브랜드 아이덴티티를 반영한 일관된 UX 제공</li>
+<li>데이터 기반 UX 설계와 AI 기반 개인화로 사용자의 관심 영역과 업무 흐름에 맞춘 대시보드 구성, 업무 절차 및 조회 화면의 학습 부담 최소화</li>
+<li>차별화 포인트 3가지</li>
+</ul>
+<p>1) 6개월 내 초기 오픈에서도 Core Web Vitals 및 Lighthouse 성능 상위권 달성 목표</p>
+<p>2) 디자인 시스템 중심의 재사용성 확보로 개발 생산성 20~30% 향상 및 유지보수 비용 절감</p>
+<p>3) AI 기반 UI 추천, 다크모드 자동 전환, 마이크로 인터랙션으로 고객 맞춤형 UX 제공</p>
+<ul>
+<li>투자 대비 기대 효과(ROI)</li>
+<li>업무 시간 30~40% 단축, SUS 75~85점 목표, NPS 40~60 목표</li>
+<li>연간 유지보수 비용 감소 및 신뢰성 높은 시스템 운영으로 TCO 대폭 감소</li>
+<li>1차 오픈 후 3~6개월 내 운영효율 및 사용자 만족도 급상승으로 브랜딩 및 내부 생산성 강화</li>
+</ul>
+<p>2. 제안 개요</p>
+<ul>
+<li>사업 배경 및 현황 분석</li>
+<li>XPLATFORM 레거시의 사용자 피드백 다수: 느린 로딩, 복잡한 내비게이션, 화면 간학습 부담 증가</li>
+<li>최신 웹 트렌드(React 18, 서버 컴포넌트, 디자인 시스템, 자동화 테스트)와의 Gap 존재</li>
+<li>제안 목표 및 성공 기준</li>
+<li>목표 KPI: 성능, 사용성, 접근성, ROI를 6개월 간격으로 측정</li>
+<li>성공 기준: 초기 런칭 시점에서 FCP 0.8–1.2초, LCP 1.5–2.0초, TTI 2.0–2.5초; 페이지 전환 150–250ms; API 응답 300–500ms; SUS 75–85, NPS 40–60</li>
+<li>차별화 전략 및 혁신 요소</li>
+<li>AI 기반 개인화 대시보드 추천</li>
+<li>다크모드/라이트모드 자동 전환 및 테마 토큰화</li>
+<li>마이크로 인터랙션, 스켈레톤 UI로 체감 속도 향상</li>
+<li>Atom/Molecule/Organism 기반의 디자인 시스템 + Storybook 통합</li>
+</ul>
+<p>3. 제안사 역량</p>
+<ul>
+<li>회사 개요 및 금융권 UI/UX 실적</li>
+<li>20년 이상 글로벌 금융권 UI/UX 혁신 수행</li>
+<li>레거시 시스템 현대화, 엔터프라이즈 디자인 시스템 구축, 반응형 웹 개발에 특화</li>
+<li>유사 수행 경험 (가상 사례 4건, 익명화)</li>
+</ul>
+<p>1) 가상 은행 A - 대시보드 현대화</p>
+<ul>
+<li>규모: 약 120명 규모 팀, 기간 9개월</li>
+<li>성과: FCP/LCP 개선으로 사용자 만족도 SUS 82, NPS 45 달성</li>
+<li>기술 스택: React 18, Next.js, TypeScript, 디자인 시스템, Storybook</li>
+<li>교훈: 데이터 모델링의 중요성, 서버 컴포넌트 도입 시 UX 지연 최소화</li>
+</ul>
+<p>2) 가상 자산운용사 B - 업무 포워딩 시스템 재구축</p>
+<ul>
+<li>규모: 80명 개발/디자인 인력, 기간 8개월</li>
+<li>성과: 페이지 전환 180ms, API 응답 350ms 달성, 코드 재사용률 75%</li>
+<li>기술 스택: React 18, Zustand, Tailwind, Cypress, Playwright</li>
+</ul>
+<p>3) 가상 은행 C - 규제 준수 대시보드</p>
+<ul>
+<li>규모: 60명, 기간 6개월</li>
+<li>성과: WCAG AA 준수 100% 달성, 자동화된 접근성 점검 도입</li>
+<li>기술 스택: React, D3, Storybook, axe-core 기반 테스트</li>
+</ul>
+<p>4) 가상 보험사 D - 내부 운영 포털 재구축</p>
+<ul>
+<li>규모: 70명, 기간 7개월</li>
+<li>성과: SUS 78→85, 학습 시간 20% 감소</li>
+<li>교훈: 컴포넌트 라이브러리의 문서화 중요성 강조</li>
+<li>보유 기술 및 인증</li>
+<li>UX 리서치, 디자인 씽킹, 애자일 UI/UX</li>
+<li>프론트엔드: React 18, Next.js, TypeScript, Tailwind CSS</li>
+<li>디자인 시스템: Atomic Design, Storybook, Figma 연동</li>
+<li>접근성: WCAG 2.1 AA/AAA 일부 적용, axe-core 기반 자동 테스트</li>
+</ul>
+<p>4. UX/UI 설계 전략</p>
+<p>4.1 UX 리서치 및 분석</p>
+<ul>
+<li>현행 시스템 평가: 휴리스틱 평가 + 현장 인터뷰 + 태스크 분석</li>
+<li>페르소나: 자산운용 담당자, CIO/CEO, IT 관리자, 운영 담당자 등</li>
+<li>Customer Journey Map: 주요 작업 흐름의 페인 포인트 매핑</li>
+<li>경쟁사 벤치마킹: 국내외 금융권의 우수 사례 비교</li>
+</ul>
+<p>4.2 정보 아키텍처(IA)</p>
+<ul>
+<li>사이트맵, 내비게이션 구조, 라벨링 전략</li>
+<li>검색/필터 설계: 메타데이터 기반 다중 필터링, 저장된 검색</li>
+</ul>
+<p>4.3 인터랙션 디자인</p>
+<ul>
+<li>와이어프레임(저-충실도) → 프로토타입(고충실도)</li>
+<li>사용자 플로우 다이어그램, 마이크로 인터랙션(버튼, 로딩, 피드백)</li>
+</ul>
+<p>4.4 비주얼 디자인</p>
+<ul>
+<li>브랜드 아이덴티티 반영: 한국투자신탁운용 CI/BI</li>
+<li>컬러 시스템, 타이포그래피, 아이콘 세트, 일러스트레이션 가이드</li>
+</ul>
+<p>4.5 디자인 시스템</p>
+<ul>
+<li>Atomic Design: Atoms, Molecules, Organisms, Templates, Pages</li>
+<li>컴포넌트 라이브러리: 버튼/폼/테이블/그리드/캘린더/차트 등</li>
+<li>디자인 토큰: 색상, 간격, 타이포그래피의 변수화</li>
+<li>Figma → Storybook 연동: 실시간 동기화</li>
+</ul>
+<p>4.6 반응형 디자인</p>
+<ul>
+<li>브레이크포인트 전략: 320px, 768px, 1024px, 1440px</li>
+<li>12컬럼 그리드 기반의 유연한 레이아웃</li>
+<li>터치 인터페이스: 제스처, 타깃 크기 최소 44–48px</li>
+</ul>
+<p>4.7 접근성 설계</p>
+<ul>
+<li>WCAG 2.1 AA/AAA 일부 적용 로드맵</li>
+<li>키보드 내비게이션, ARIA 레이블, 시맨틱 마크업</li>
+<li>스크린 리더 호환성 검토 및 색상 대비 준수</li>
+</ul>
+<p>5. 기술 아키텍처 및 개발 전략</p>
+<p>5.1 프론트엔드 아키텍처</p>
+<ul>
+<li>기술 스택: React 18 + Next.js 14, TypeScript, Tailwind CSS</li>
+<li>서버 컴포넌트 기반의 초기 로딩 최적화</li>
+<li>상태 관리: Zustand 선호, Redux Toolkit 대안 비교</li>
+<li>라우팅: CSR/SSR/SSG의 하이브리드 활용</li>
+<li>모듈 번들링: Webpack/Vite 혼합 구도, Code Splitting</li>
+</ul>
+<p>5.2 컴포넌트 개발</p>
+<ul>
+<li>재사용 가능한 공통 컴포넌트, 그리드(가상 스크롤 포함), 캘린더, 차트, 폼</li>
+<li>다국어/다국어 지역화 지원, 휴일/공휴일 표기</li>
+</ul>
+<p>5.3 성능 최적화</p>
+<ul>
+<li>초기 로딩: Lazy Loading, Tree Shaking, Code Splitting</li>
+<li>렌더링: React.memo, useMemo, useCallback</li>
+<li>이미지 최적화: WebP, 지연 로딩, 차원별 이미지</li>
+<li>캐싱: Service Worker, HTTP 캐시, CDN</li>
+</ul>
+<p>5.4 개발 환경 및 도구</p>
+<ul>
+<li>Monorepo: Nx 또는 Turborepo</li>
+<li>코드 품질: ESLint, Prettier, Husky</li>
+<li>문서화: Storybook 기반 컴포넌트 문서화</li>
+<li>자동화 테스트: Jest + RTL, Cypress, Playwright</li>
+<li>CI/CD: GitHub Actions 또는 GitLab CI</li>
+<li>자동화된 성능/접근성 체크 파이프라인</li>
+</ul>
+<p>6. 개발 및 구현 계획</p>
+<p>6.1 개발 방법론</p>
+<ul>
+<li>Agile/Scrum: 2주 스프린트</li>
+<li>Figma → Storybook → 실제 구현으로 연계</li>
+<li>CI/CD 파이프라인 구현 및 운영</li>
+</ul>
+<p>6.2 일정 계획</p>
+<ul>
+<li>1~2주차: 리서치/페르소나/여정맵 산출물</li>
+<li>3~6주차: IA, 와이어프레임, 프로토타입 확정</li>
+<li>7~12주차: 컴포넌트 개발/토큰화/디자인 시스템 연결</li>
+<li>13~20주차: 기능 구현 완료, 베타 테스트, 성능/접근성 개선</li>
+<li>21~24주차: 최종 런칭 및 초기 운영</li>
+<li>CEO소통방, 운용지원 업무의 선제 적용 계획 수립</li>
+</ul>
+<p>6.3 조직 및 인력</p>
+<ul>
+<li>UX 리서처 2명, UI 디자이너 3명, 프론트엔드 개발자 5명, QA 엔지니어 2명</li>
+<li>각 역할의 RACI 매트릭스, 핵심 인력의 경력/자격 스펙 상세 제시</li>
+</ul>
+<p>6.4 커뮤니케이션 계획</p>
+<ul>
+<li>주간 스프린트 리뷰, 디자인 리뷰, 피드백 루프</li>
+<li>사용자 피드백 수집 및 반영 프로세스</li>
+</ul>
+<p>7. 테스트 및 품질 보증</p>
+<p>7.1 사용성 테스트</p>
+<ul>
+<li>프로토타입 테스트: 8명 사용자</li>
+<li>베타 테스트: 30명</li>
+<li>측정 항목: TASK 성공률, 완료 시간, 만족도(SUS)</li>
+</ul>
+<p>7.2 접근성 테스트</p>
+<ul>
+<li>자동화: axe-core</li>
+<li>수동: 스크린 리더(NVDA, JAWS, VoiceOver) 점검</li>
+<li>WCAG 체크리스트 기반 검증</li>
+</ul>
+<p>7.3 성능 테스트</p>
+<ul>
+<li>Lighthouse CI 자동 측정: 매 배포 시 보고서 생성</li>
+<li>Core Web Vitals 모니터링: LCP, FID, CLS 추적</li>
+<li>부하 테스트: 동시 사용자 500–1000명 시나리오</li>
+</ul>
+<p>7.4 크로스 브라우저 테스트</p>
+<ul>
+<li>Chrome, Edge, Firefox, Safari 최신 2버전 호환성 확인</li>
+<li>다양한 디바이스: BrowserStack/LambdaTest 활용</li>
+</ul>
+<p>7.5 자동화 테스트</p>
+<ul>
+<li>단위 테스트: Jest + RTL</li>
+<li>통합 테스트: Cypress</li>
+<li>E2E 테스트: Playwright</li>
+<li>비주얼 리그레션: Percy/Chromatic</li>
+</ul>
+<p>8. 운영 및 유지보수</p>
+<p>8.1 배포 전략</p>
+<ul>
+<li>카나리 배포: CEO소통방 → 운용지원 → 전체 확대 순으로 점진적 롤아웃</li>
+<li>장애 대응 및 롤백 플랜</li>
+</ul>
+<p>8.2 모니터링</p>
+<ul>
+<li>Real User Monitoring(RUM), 에러 트래킹(Sentry), 로그</li>
+<li>성능 대시보드 구성 및 알림 체계</li>
+</ul>
+<p>8.3 사용자 교육 및 지원</p>
+<ul>
+<li>가이드, 튜토리얼, 온보딩 UX 설계</li>
+<li>Help Desk 운영 및 피드백 루프</li>
+</ul>
+<p>8.4 지속적 개선</p>
+<ul>
+<li>피드백 수집 → 분석 → 디자인 시스템 업데이트</li>
+<li>주기적 사용성 평가 및 업데이트</li>
+</ul>
+<p>9. 투자 대비 효과 분석</p>
+<ul>
+<li>업무 효율 개선: 30~40% 단축 목표</li>
+<li>사용자 만족도: SUS 75–85점 목표</li>
+<li>유지보수 비용 절감: 디자인 시스템 재사용으로 장기적 비용 감소</li>
+<li>TCO/ROI: 초기 투자 대비 6~12개월 내 ROI 가시화 목표</li>
+<li>KPI 관리: Core Web Vitals, Lighthouse 점수, RUM 기반 실사용 메트릭 지속 개선</li>
+</ul>
+<p>10. 결론</p>
+<ul>
+<li>핵심 가치 제안 요약: 레거시의 한계를 극복하는 현대적 UI/UX 및 기술 인프라로 금융권 업무 생산성 극대화</li>
+<li>경쟁사 대비 차별화 포인트: 데이터 기반 UX, AI 개인화, 최적화된 성능/접근성의 결합</li>
+<li>성공적 프로젝트 수행 약속: 6개월 이내 MVP 및 6개월 동안 단계적 성과 달성</li>
+</ul>
+<p>제안서 세부 작성 방법에 따른 핵심 준수 포인트</p>
+<ul>
+<li>측정 가능성: 모든 KPI는 측정 도구(RUM, Lighthouse, axe-core, SUS/ NPS 설문)와 테스트 환경(Dev/QA/Prod)에서 재현 가능하도록 명시</li>
+<li>단계적 개선 목표: 1차 오픈(1개월) → 3개월 → 6개월의 구체적 수치 및 산출물 제시</li>
+<li>벤치마크 및 근거: 유사 프로젝트의 규모/성과/기술 스택을 익명화하여 제시</li>
+<li>전제 조건 명시: 5G 환경 가정, 단말 스펙, 캐시 정책, 네트워크 환경 등</li>
+<li>예외 상황 명시: 초기 접속 지연 증가 시 대책, 대용량 데이터 조회 시의 보완 전략</li>
+</ul>
+<p>참고 및 가이드라인 반영 수치</p>
+<ul>
+<li>초기 로딩(FCP): 0.8–1.2초</li>
+<li>LCP: 1.5–2.0초</li>
+<li>TTI: 2.0–2.5초</li>
+<li>페이지 전환: 150–250ms</li>
+<li>API 응답: 300–500ms</li>
+<li>번들 크기: 초기 JS 150–200KB(gzipped), 총 자산 500KB 이하</li>
+<li>Lighthouse: Performance 90–95, Accessibility 95–100, Best Practices 90–95, SEO 90–100</li>
+<li>Core Web Vitals: LCP 1.5–2.0초, FID 50–100ms, CLS 0.05–0.1</li>
+<li>사용성: 작업 완료율 90–95%, 오류율 3–5%, 학습 시간 신규 사용자 30분 이내</li>
+<li>SUS 75–85, NPS 40–60</li>
+<li>접근성: WCAG 2.1 AA 100%, AAA 일부 영역 75–100% 해당</li>
+<li>반응형: 데스크톱/태블릿/모바일의 각 환경 맞춤 최적화</li>
+<li>개발 생산성: 재사용 컴포넌트 70–80%, 코드 커버리지 단위 테스트 75–80%, E2E 90% 이상</li>
+<li>일정 준수 85–90%, 예산 준수 95–100%, 변경 요청 처리: 3일 내 영향도 분석, 1주 내 결정</li>
+<li>결함 대응: Critical 4시간, High 1일, Medium 3일, Low 1주</li>
+</ul>
+<p>마지막으로, 본 제안은 RFP 100% 충족 및 추가 가치 제안을 목표로 하며, AI 기반 개인화, 다크모드 자동전환, 마이크로 인터랙션, 스켈레톤 UI 등 혁신 요소를 적극 반영합니다. 또한 유사 사례의 검증 가능한 수치와 벤치마크를 제시하여 신뢰성을 보강합니다.</p>
+<p>제안사: 아토믹스 UX 파트너스, 작성일/담당자: 2025-10-01, 이민석 PM</p>
+</div>
+</body>
+</html>
