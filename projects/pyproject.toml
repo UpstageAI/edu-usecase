@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ctdmate"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+[tool.setuptools]
+packages = { find = { where = ["."], include = ["ctdmate*"] } }
+
+[tool.setuptools.package-data]
+ctdmate = ["rules/*.yaml", "rules/*.yml", "rules/*.json"]

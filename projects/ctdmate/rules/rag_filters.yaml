@@ -1,0 +1,90 @@
+meta:
+  name: "CTDMate RAG Filters (M1~M2)"
+  version: "0.7.0"
+  date: "2025-10-01"
+
+collection: "ctd_corpus_v1"
+
+embedding:
+  model: "intfloat/multilingual-e5-large-instruct"     # e5 사용
+  normalize: true                # L2 정규화. true면 코사인과 내적 동일화
+  pooling: "mean"                # e5 권장
+  query_prefix: "query: "        # e5 권장 프리픽스
+  passage_prefix: "passage: "
+
+language_priority: ["ko","en"]   # ko 우선 매칭. 순서 바꾸면 en 스니펫 우선됨
+jurisdiction_priority: ["MFDS","ICH"]
+
+source_allow: ["MFDS","ICH"]
+source_synonyms:
+  MFDS: ["식약처","식품의약품안전처","MFDS Notice","MFDS Guideline"]
+  ICH:  ["International Council for Harmonisation","ICH M4Q","ICH M4S","ICH Q1A(R2)"]
+filter_mode: "allow_strict"      # "allow_loose"로 내리면 타 소스 혼입 허용
+
+authority_weights:
+  ICH: 1.0    # ↑ 올리면 ICH 문서 가중치↑
+  MFDS: 0.95  # ↓ 내리면 MFDS 비중↓, ICH 편향↑
+default_authority_weight: 0.0
+
+version_policy:
+  min_year: 2000                 # ↑ 올리면 구버전 문서 배제↑
+  per_source:
+    MFDS: {min_year: 2015}
+    ICH:
+      docs:
+        "M4Q": {min_revision: "R1"}
+        "M4S": {min_revision: "R1"}
+
+section_filters:
+  allow: ["1.*","2.1","2.2","2.3","2.3.S.*","2.3.P.*","2.4","2.5","2.6","2.6.*","2.7"]
+  boost:
+    "2.3": 1.0       # ↑ QOS 관련 우선도↑
+    "2.3.S.*": 0.95
+    "2.3.P.*": 0.95
+    "2.6.*": 1.0     # ↑ 비임상 요약/표 스니펫 우선
+    "1.*": 0.8       # ↓ 낮추면 M1 스니펫 후순위
+
+vector_search:
+  top_k: 16          # ↑ 늘리면 소환 폭↑(정확도↑, 지연/비용↑)
+  ef: 128            # HNSW 탐색 강도. ↑면 재현율↑, 속도↓
+  score_threshold: 0.2  # ↑ 올리면 저품질 스니펫 컷↑(리콜↓, 정밀↑)
+
+keyword_search:
+  bm25:
+    top_k: 24        # ↑ 늘리면 키워드 다양성↑, 잡음↑
+    k1: 1.2          # ↑면 빈도 가중↑
+    b: 0.75          # ↑면 문서 길이 정규화↑
+  query_expansion:
+    enable: true     # false면 확장질의 비활성(속도↑, 리콜↓)
+    synonyms:
+      - ["품질요약","QOS"]
+      - ["비임상 요약","Nonclinical Summary"]
+      - ["용출","dissolution"]
+      - ["함량","assay"]
+
+re_rank:
+  method: "mmr"
+  lambda: 0.5        # 0→다양성↑ 유사성↓, 1→유사성↑ 다양성↓
+  final_top_k: 8     # ↑ 늘리면 LLM 컨텍스트 부담↑, 근거 다양성↑
+  dedup:
+    method: "hash_line"
+    threshold: 0.9   # ↑ 올리면 유사 스니펫도 통과(중복↑)
+
+snippet:
+  max_tokens: 160    # ↑ 늘리면 컨텍스트 풍부↑, 토큰/비용↑
+  pre_context: 30    # 앞뒤 문맥. ↑면 정확도↑, 비용↑
+  post_context: 30
+  join_adjacent_pages:
+    enabled: true
+    max_gap_pages: 1 # ↑ 늘리면 페이지↑ 스니펫 결합↑
+
+filters:
+  - field: "language"
+    allow: ["ko","en"]  # en 제거 시 한글만 소환(정확도↑, 리콜↓)
+  - field: "year"
+    gte: 2000
+
+citation_format:
+  fields: ["doc","section","page","para_id"]
+  unique_by: ["doc","section","page","para_id"]
+  required: true        # false면 인용 누락 허용(추적성↓)
