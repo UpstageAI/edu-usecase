@@ -1,0 +1,23 @@
+.env
+__pycache__/
+lib/
+.DS_Store
+output/*.txt
+data/*.txt
+chroma_db_crewai/
+
+# Local DB
+chroma_db_html_parsed/
+
+# Large model files downloaded locally
+*.gguf
+
+# Training outputs, checkpoints, and logs
+# These are temporary and can be regenerated.
+finetune_llama/results/
+finetune_llama/dpo_training_results/
+
+# IDE and OS specific files
+.vscode/
+.idea/
+.DS_Store

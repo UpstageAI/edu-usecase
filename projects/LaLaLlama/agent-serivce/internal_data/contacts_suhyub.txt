@@ -1,0 +1,121 @@
+---
+company: 수협은행
+name: 김지훈
+position: 팀장
+team: 디지털마케팅팀
+role: 실시간 데이터 수집 시스템 총괄
+email: kim.jh@suhyup.co.kr
+phone: 02-2240-1001
+expertise: Kafka, Flink, Event Streaming
+years_experience: 12
+---
+company: 수협은행
+name: 이수진
+position: 책임
+team: IT전략팀
+role: 컨테이너 오케스트레이션 및 인프라 관리
+email: lee.sj@suhyup.co.kr
+phone: 02-2240-1002
+expertise: Kubernetes, Docker, Terraform
+years_experience: 8
+---
+company: 수협은행
+name: 박민석
+position: 선임
+team: 데이터분석팀
+role: 머신러닝 모델 개발 및 운영
+email: park.ms@suhyup.co.kr
+phone: 02-2240-1003
+expertise: Python, Scikit-learn, XGBoost
+years_experience: 6
+---
+company: 수협은행
+name: 최동욱
+position: 책임
+team: 인프라팀
+role: 시스템 모니터링 및 SRE
+email: choi.dw@suhyup.co.kr
+phone: 02-2240-1004
+expertise: Prometheus, Grafana, ELK Stack
+years_experience: 10
+---
+company: 수협은행
+name: 정혜린
+position: 선임
+team: 마케팅운영팀
+role: 캠페인 데이터베이스 관리
+email: jung.hr@suhyup.co.kr
+phone: 02-2240-1005
+expertise: PostgreSQL, Redis, Query Optimization
+years_experience: 7
+---
+company: 수협은행
+name: 한준혁
+position: 책임
+team: 고객채널팀
+role: API 설계 및 백엔드 개발
+email: han.jh@suhyup.co.kr
+phone: 02-2240-1006
+expertise: Spring Boot, RESTful API, WebSocket
+years_experience: 9
+---
+company: 농협은행
+name: 윤서영
+position: 선임
+team: 마케팅기획팀
+role: 배치 작업 스케줄링 및 데이터 파이프라인
+email: yoon.sy@nonghyup.com
+phone: 02-2080-2001
+expertise: Apache Airflow, Python, SQL
+years_experience: 5
+---
+company: 농협은행
+name: 송민재
+position: 책임
+team: 디지털서비스팀
+role: 로그 분석 및 검색 엔진 운영
+email: song.mj@nonghyup.com
+phone: 02-2080-2002
+expertise: Elasticsearch, Kibana, Logstash
+years_experience: 8
+---
+company: 우리은행
+name: 강희정
+position: 선임
+team: 디지털전략팀
+role: 서버리스 아키텍처 설계
+email: kang.hj@woori.com
+phone: 02-2002-3001
+expertise: AWS Lambda, API Gateway, Serverless Framework
+years_experience: 6
+---
+company: 우리은행
+name: 배성호
+position: 팀장
+team: 고객데이터팀
+role: 빅데이터 플랫폼 총괄
+email: bae.sh@woori.com
+phone: 02-2002-3002
+expertise: Hadoop, Spark, Hive
+years_experience: 14
+---
+company: 신한은행
+name: 임채윤
+position: 선임연구원
+team: AI연구소
+role: 딥러닝 모델 연구 개발
+email: lim.cy@shinhan.com
+phone: 02-2151-4001
+expertise: TensorFlow, PyTorch, Kubeflow
+years_experience: 5
+---
+company: 신한은행
+name: 서준우
+position: 책임
+team: 마케팅플랫폼팀
+role: 메시지 큐 시스템 운영
+email: seo.jw@shinhan.com
+phone: 02-2151-4002
+expertise: RabbitMQ, Kafka, Message Broker
+years_experience: 9
+---

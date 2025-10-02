@@ -1,0 +1,56 @@
+---
+company: 신한카드
+team: 디지털플랫폼팀
+technology: React 18.2
+purpose: 고객 포털 웹 개발
+adoption_date: 2023-03
+notes: TypeScript + Next.js 조합 사용, SSR 적용
+contact_person: 김철수
+contact_email: kim.cs@shinhancard.com
+category: frontend
+status: 운영중
+---
+company: 신한은행
+team: 인터넷뱅킹개발팀
+technology: React 17.0
+purpose: 인터넷뱅킹 웹 리뉴얼
+adoption_date: 2023-06
+notes: jQuery에서 React로 전환 완료, Redux Toolkit 사용
+contact_person: 이영희
+contact_email: lee.yh@shinhanbank.com
+category: frontend
+status: 운영중
+---
+company: 신한생명
+team: 모바일개발팀
+technology: React Native 0.71
+purpose: 모바일 앱 개발
+adoption_date: 2024-01
+notes: iOS/Android 통합 개발, CodePush 적용
+contact_person: 박민수
+contact_email: park.ms@shinhanlife.com
+category: mobile
+status: 개발중
+---
+company: 신한캐피탈
+team: IT전략팀
+technology: Vue.js 3
+purpose: 관리자 대시보드
+adoption_date: 2022-11
+notes: Composition API 사용, Vite 빌드 도구
+contact_person: 정수진
+contact_email: jung.sj@shinhancapital.com
+category: frontend
+status: 운영중
+---
+company: 신한투자증권
+team: WTS개발팀
+technology: Angular 15
+purpose: 트레이딩 시스템 웹 클라이언트
+adoption_date: 2023-09
+notes: RxJS 활용 실시간 데이터 처리
+contact_person: 최동욱
+contact_email: choi.dw@shinhaninvest.com
+category: frontend
+status: 운영중
+---
