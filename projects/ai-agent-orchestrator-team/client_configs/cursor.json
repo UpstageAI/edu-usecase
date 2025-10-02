@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ai-agent-orchestrator": {
+      "command": "uv",
+      "args": ["run", "python", "mcp_server/server.py", "--transport", "stdio"]
+    }
+  }
+}
