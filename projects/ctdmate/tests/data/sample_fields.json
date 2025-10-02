@@ -1,0 +1,8 @@
+{
+  "ProductName": "Demo-API-001",
+  "DosageForm": "Tablet",
+  "ManufacturingProcess": "NEED_INPUT",
+  "References": [
+    { "doc": "ich_m4q", "section": "M2.3", "page": 1, "para_id": "A" }
+  ]
+}
