@@ -1,0 +1,1459 @@
+{
+  "nodes": [
+    {
+      "id": "route-출근1호-한국대서문",
+      "type": "group",
+      "data": {
+        "label": "출근1호-한국대서문"
+      },
+      "position": {
+        "x": -40,
+        "y": -40
+      }
+    },
+    {
+      "id": "route-출근2호-한국전자기술연구원",
+      "type": "group",
+      "data": {
+        "label": "출근2호-한국전자기술연구원"
+      },
+      "position": {
+        "x": 340,
+        "y": -40
+      }
+    },
+    {
+      "id": "route-출근3호-판교공영주차장",
+      "type": "group",
+      "data": {
+        "label": "출근3호-판교공영주차장"
+      },
+      "position": {
+        "x": 720,
+        "y": -40
+      }
+    },
+    {
+      "id": "route-퇴근1호(전자-한양정형외과)",
+      "type": "group",
+      "data": {
+        "label": "퇴근1호(전자-한양정형외과)"
+      },
+      "position": {
+        "x": 1100,
+        "y": -40
+      }
+    },
+    {
+      "id": "route-퇴근2호(세파-한국대서문)",
+      "type": "group",
+      "data": {
+        "label": "퇴근2호(세파-한국대서문)"
+      },
+      "position": {
+        "x": 1480,
+        "y": -40
+      }
+    },
+    {
+      "id": "route-퇴근3호(바이오-효성아파트)",
+      "type": "group",
+      "data": {
+        "label": "퇴근3호(바이오-효성아파트)"
+      },
+      "position": {
+        "x": 1860,
+        "y": -40
+      }
+    },
+    {
+      "id": "route-출근4호-Meta",
+      "type": "group",
+      "data": {
+        "label": "출근4호-Meta"
+      },
+      "position": {
+        "x": 2240,
+        "y": -40
+      }
+    },
+    {
+      "id": "route-퇴근4호(바이오-선경아파트1차)",
+      "type": "group",
+      "data": {
+        "label": "퇴근4호(바이오-선경아파트1차)"
+      },
+      "position": {
+        "x": 2620,
+        "y": -40
+      }
+    },
+    {
+      "id": "출근1호-한국대서문::1",
+      "data": {
+        "label": "1. 한국대 동문 버스정류장",
+        "route": "출근1호-한국대서문",
+        "stopName": "한국대 동문 버스정류장",
+        "action": "승차",
+        "count": 1,
+        "departTime": "7:00",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "parentNode": "route-출근1호-한국대서문"
+    },
+    {
+      "id": "출근1호-한국대서문::2",
+      "data": {
+        "label": "2. 평일공인중개사 앞",
+        "route": "출근1호-한국대서문",
+        "stopName": "평일공인중개사 앞",
+        "action": "승차",
+        "count": 3,
+        "departTime": "7:00",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 0,
+        "y": 120
+      },
+      "parentNode": "route-출근1호-한국대서문"
+    },
+    {
+      "id": "출근1호-한국대서문::3",
+      "data": {
+        "label": "3. 지웰푸르지오 1101동 앞 버스정류장",
+        "route": "출근1호-한국대서문",
+        "stopName": "지웰푸르지오 1101동 앞 버스정류장",
+        "action": "승차",
+        "count": 1,
+        "departTime": "7:00",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 0,
+        "y": 240
+      },
+      "parentNode": "route-출근1호-한국대서문"
+    },
+    {
+      "id": "출근1호-한국대서문::4",
+      "data": {
+        "label": "4. BYC 사거리",
+        "route": "출근1호-한국대서문",
+        "stopName": "BYC 사거리",
+        "action": "승차",
+        "count": 4,
+        "departTime": "7:00",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 0,
+        "y": 360
+      },
+      "parentNode": "route-출근1호-한국대서문"
+    },
+    {
+      "id": "출근1호-한국대서문::5",
+      "data": {
+        "label": "5. 21세기 병원 옆",
+        "route": "출근1호-한국대서문",
+        "stopName": "21세기 병원 옆",
+        "action": "승차",
+        "count": 1,
+        "departTime": "7:00",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 0,
+        "y": 480
+      },
+      "parentNode": "route-출근1호-한국대서문"
+    },
+    {
+      "id": "출근1호-한국대서문::6",
+      "data": {
+        "label": "6. 조개터 신광카센타 버스정류장",
+        "route": "출근1호-한국대서문",
+        "stopName": "조개터 신광카센타 버스정류장",
+        "action": "승차",
+        "count": 0,
+        "departTime": "7:00",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 0,
+        "y": 600
+      },
+      "parentNode": "route-출근1호-한국대서문"
+    },
+    {
+      "id": "출근1호-한국대서문::7",
+      "data": {
+        "label": "7. 원평공영주차장 맞은편",
+        "route": "출근1호-한국대서문",
+        "stopName": "원평공영주차장 맞은편",
+        "action": "승차",
+        "count": 10,
+        "departTime": "7:00",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 0,
+        "y": 720
+      },
+      "parentNode": "route-출근1호-한국대서문"
+    },
+    {
+      "id": "출근1호-한국대서문::8",
+      "data": {
+        "label": "8. 업스테이지 앞 정차",
+        "route": "출근1호-한국대서문",
+        "stopName": "업스테이지 앞 정차",
+        "action": "하차",
+        "count": 20,
+        "departTime": "7:00",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 0,
+        "y": 840
+      },
+      "parentNode": "route-출근1호-한국대서문"
+    },
+    {
+      "id": "출근2호-한국전자기술연구원::1",
+      "data": {
+        "label": "1. 목화방가구 앞(구화로구이 옆)",
+        "route": "출근2호-한국전자기술연구원",
+        "stopName": "목화방가구 앞(구화로구이 옆)",
+        "action": "승차",
+        "count": 4,
+        "departTime": "7:20",
+        "busNo": "서울89어4321",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 380,
+        "y": 0
+      },
+      "parentNode": "route-출근2호-한국전자기술연구원"
+    },
+    {
+      "id": "출근2호-한국전자기술연구원::2",
+      "data": {
+        "label": "2. 원평공영주차장 맞은편",
+        "route": "출근2호-한국전자기술연구원",
+        "stopName": "원평공영주차장 맞은편",
+        "action": "승차",
+        "count": 16,
+        "departTime": "7:20",
+        "busNo": "서울89어4321",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 380,
+        "y": 120
+      },
+      "parentNode": "route-출근2호-한국전자기술연구원"
+    },
+    {
+      "id": "출근2호-한국전자기술연구원::3",
+      "data": {
+        "label": "3. 업스테이지 앞 정차",
+        "route": "출근2호-한국전자기술연구원",
+        "stopName": "업스테이지 앞 정차",
+        "action": "하차",
+        "count": 20,
+        "departTime": "7:20",
+        "busNo": "서울89어4321",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 380,
+        "y": 240
+      },
+      "parentNode": "route-출근2호-한국전자기술연구원"
+    },
+    {
+      "id": "출근3호-판교공영주차장::1",
+      "data": {
+        "label": "1. 원평공영주차장 앞",
+        "route": "출근3호-판교공영주차장",
+        "stopName": "원평공영주차장 앞",
+        "action": "승차",
+        "count": 20,
+        "departTime": "7:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 760,
+        "y": 0
+      },
+      "parentNode": "route-출근3호-판교공영주차장"
+    },
+    {
+      "id": "출근3호-판교공영주차장::2",
+      "data": {
+        "label": "2. 팽성농협 뒤 버스정류장 맞은편",
+        "route": "출근3호-판교공영주차장",
+        "stopName": "팽성농협 뒤 버스정류장 맞은편",
+        "action": "승차",
+        "count": 16,
+        "departTime": "7:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 760,
+        "y": 120
+      },
+      "parentNode": "route-출근3호-판교공영주차장"
+    },
+    {
+      "id": "출근3호-판교공영주차장::3",
+      "data": {
+        "label": "3. 업스테이지 앞 정차",
+        "route": "출근3호-판교공영주차장",
+        "stopName": "업스테이지 앞 정차",
+        "action": "하차",
+        "count": 36,
+        "departTime": "7:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 760,
+        "y": 240
+      },
+      "parentNode": "route-출근3호-판교공영주차장"
+    },
+    {
+      "id": "출근4호-Meta::1",
+      "data": {
+        "label": "1. 고덕제일풍경채1차 아파트후문 버스정류장",
+        "route": "출근4호-Meta",
+        "stopName": "고덕제일풍경채1차 아파트후문 버스정류장",
+        "action": "승차",
+        "count": 1,
+        "departTime": "6:55",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 2280,
+        "y": 0
+      },
+      "parentNode": "route-출근4호-Meta"
+    },
+    {
+      "id": "출근4호-Meta::2",
+      "data": {
+        "label": "2. 고덕제일풍경채3차 아파트 후문 버스정류장",
+        "route": "출근4호-Meta",
+        "stopName": "고덕제일풍경채3차 아파트 후문 버스정류장",
+        "action": "승차",
+        "count": 3,
+        "departTime": "6:55",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 2280,
+        "y": 120
+      },
+      "parentNode": "route-출근4호-Meta"
+    },
+    {
+      "id": "출근4호-Meta::3",
+      "data": {
+        "label": "3. 지제역 1번 출구 대로변 버스정류장",
+        "route": "출근4호-Meta",
+        "stopName": "지제역 1번 출구 대로변 버스정류장",
+        "action": "승차",
+        "count": 7,
+        "departTime": "6:55",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 2280,
+        "y": 240
+      },
+      "parentNode": "route-출근4호-Meta"
+    },
+    {
+      "id": "출근4호-Meta::4",
+      "data": {
+        "label": "4. 원평공영주차장 맞은편",
+        "route": "출근4호-Meta",
+        "stopName": "원평공영주차장 맞은편",
+        "action": "승차",
+        "count": 7,
+        "departTime": "6:55",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 2280,
+        "y": 360
+      },
+      "parentNode": "route-출근4호-Meta"
+    },
+    {
+      "id": "출근4호-Meta::5",
+      "data": {
+        "label": "5. 업스테이지 앞 정차",
+        "route": "출근4호-Meta",
+        "stopName": "업스테이지 앞 정차",
+        "action": "하차",
+        "count": 0,
+        "departTime": "6:55",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 출근"
+      },
+      "position": {
+        "x": 2280,
+        "y": 480
+      },
+      "parentNode": "route-출근4호-Meta"
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::1",
+      "data": {
+        "label": "1. 업스테이지 앞 정차",
+        "route": "퇴근1호(전자-한양정형외과)",
+        "stopName": "업스테이지 앞 정차",
+        "action": "승차",
+        "count": 3,
+        "departTime": "17:15",
+        "busNo": "경기79사1792",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1140,
+        "y": 0
+      },
+      "parentNode": "route-퇴근1호(전자-한양정형외과)"
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::2",
+      "data": {
+        "label": "2. 원평공영주차장 앞",
+        "route": "퇴근1호(전자-한양정형외과)",
+        "stopName": "원평공영주차장 앞",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기79사1792",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1140,
+        "y": 120
+      },
+      "parentNode": "route-퇴근1호(전자-한양정형외과)"
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::3",
+      "data": {
+        "label": "3. 효성해링턴플레이스1단지아파트,동방학교(버스정류장)",
+        "route": "퇴근1호(전자-한양정형외과)",
+        "stopName": "효성해링턴플레이스1단지아파트,동방학교(버스정류장)",
+        "action": "하차",
+        "count": 1,
+        "departTime": "17:15",
+        "busNo": "경기79사1792",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1140,
+        "y": 240
+      },
+      "parentNode": "route-퇴근1호(전자-한양정형외과)"
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::4",
+      "data": {
+        "label": "4. 비전지웰푸르지오1102동앞(버스정류장)",
+        "route": "퇴근1호(전자-한양정형외과)",
+        "stopName": "비전지웰푸르지오1102동앞(버스정류장)",
+        "action": "하차",
+        "count": 2,
+        "departTime": "17:15",
+        "busNo": "경기79사1792",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1140,
+        "y": 360
+      },
+      "parentNode": "route-퇴근1호(전자-한양정형외과)"
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::5",
+      "data": {
+        "label": "5. 도솔한방병원앞",
+        "route": "퇴근1호(전자-한양정형외과)",
+        "stopName": "도솔한방병원앞",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기79사1792",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1140,
+        "y": 480
+      },
+      "parentNode": "route-퇴근1호(전자-한양정형외과)"
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::1",
+      "data": {
+        "label": "1. 업스테이지 앞 정차",
+        "route": "퇴근2호(세파-한국대서문)",
+        "stopName": "업스테이지 앞 정차",
+        "action": "승차",
+        "count": 20,
+        "departTime": "17:15",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1520,
+        "y": 0
+      },
+      "parentNode": "route-퇴근2호(세파-한국대서문)"
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::2",
+      "data": {
+        "label": "2. 엄니추어탕 맞은편",
+        "route": "퇴근2호(세파-한국대서문)",
+        "stopName": "엄니추어탕 맞은편",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1520,
+        "y": 120
+      },
+      "parentNode": "route-퇴근2호(세파-한국대서문)"
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::3",
+      "data": {
+        "label": "3. 팽성농협 뒤 버스정류장 맞은편",
+        "route": "퇴근2호(세파-한국대서문)",
+        "stopName": "팽성농협 뒤 버스정류장 맞은편",
+        "action": "하차",
+        "count": 15,
+        "departTime": "17:15",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1520,
+        "y": 240
+      },
+      "parentNode": "route-퇴근2호(세파-한국대서문)"
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::4",
+      "data": {
+        "label": "4. 합정초등학교 앞",
+        "route": "퇴근2호(세파-한국대서문)",
+        "stopName": "합정초등학교 앞",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1520,
+        "y": 360
+      },
+      "parentNode": "route-퇴근2호(세파-한국대서문)"
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::5",
+      "data": {
+        "label": "5. 우미린 센트럴파크 정문",
+        "route": "퇴근2호(세파-한국대서문)",
+        "stopName": "우미린 센트럴파크 정문",
+        "action": "하차",
+        "count": 3,
+        "departTime": "17:15",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1520,
+        "y": 480
+      },
+      "parentNode": "route-퇴근2호(세파-한국대서문)"
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::6",
+      "data": {
+        "label": "6. JNJ 컨벤션 웨딩홀 앞",
+        "route": "퇴근2호(세파-한국대서문)",
+        "stopName": "JNJ 컨벤션 웨딩홀 앞",
+        "action": "하차",
+        "count": 1,
+        "departTime": "17:15",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1520,
+        "y": 600
+      },
+      "parentNode": "route-퇴근2호(세파-한국대서문)"
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::7",
+      "data": {
+        "label": "7. 한국대 동문 앞 세븐일레븐 편의점",
+        "route": "퇴근2호(세파-한국대서문)",
+        "stopName": "한국대 동문 앞 세븐일레븐 편의점",
+        "action": "하차",
+        "count": 1,
+        "departTime": "17:15",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1520,
+        "y": 720
+      },
+      "parentNode": "route-퇴근2호(세파-한국대서문)"
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::8",
+      "data": {
+        "label": "8. E-편한세상 맞은편 버스정류장",
+        "route": "퇴근2호(세파-한국대서문)",
+        "stopName": "E-편한세상 맞은편 버스정류장",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기12어1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1520,
+        "y": 840
+      },
+      "parentNode": "route-퇴근2호(세파-한국대서문)"
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::1",
+      "data": {
+        "label": "1. 업스테이지 앞 정차",
+        "route": "퇴근3호(바이오-효성아파트)",
+        "stopName": "업스테이지 앞 정차",
+        "action": "승차",
+        "count": 16,
+        "departTime": "17:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1900,
+        "y": 0
+      },
+      "parentNode": "route-퇴근3호(바이오-효성아파트)"
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::2",
+      "data": {
+        "label": "2. 원평공영주차장앞",
+        "route": "퇴근3호(바이오-효성아파트)",
+        "stopName": "원평공영주차장앞",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1900,
+        "y": 120
+      },
+      "parentNode": "route-퇴근3호(바이오-효성아파트)"
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::3",
+      "data": {
+        "label": "3. 판교시외버스 터미널",
+        "route": "퇴근3호(바이오-효성아파트)",
+        "stopName": "판교시외버스 터미널",
+        "action": "하차",
+        "count": 11,
+        "departTime": "17:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1900,
+        "y": 240
+      },
+      "parentNode": "route-퇴근3호(바이오-효성아파트)"
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::4",
+      "data": {
+        "label": "4. KB증권 맞은편",
+        "route": "퇴근3호(바이오-효성아파트)",
+        "stopName": "KB증권 맞은편",
+        "action": "하차",
+        "count": 2,
+        "departTime": "17:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1900,
+        "y": 360
+      },
+      "parentNode": "route-퇴근3호(바이오-효성아파트)"
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::5",
+      "data": {
+        "label": "5. 21세기 병원 옆",
+        "route": "퇴근3호(바이오-효성아파트)",
+        "stopName": "21세기 병원 옆",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1900,
+        "y": 480
+      },
+      "parentNode": "route-퇴근3호(바이오-효성아파트)"
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::6",
+      "data": {
+        "label": "6. 뉴코아아울렛 판교점 맞은편",
+        "route": "퇴근3호(바이오-효성아파트)",
+        "stopName": "뉴코아아울렛 판교점 맞은편",
+        "action": "하차",
+        "count": 3,
+        "departTime": "17:15",
+        "busNo": "경기76아9875",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 1900,
+        "y": 600
+      },
+      "parentNode": "route-퇴근3호(바이오-효성아파트)"
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::1",
+      "data": {
+        "label": "1. 업스테이지 앞 정차",
+        "route": "퇴근4호(바이오-선경아파트1차)",
+        "stopName": "업스테이지 앞 정차",
+        "action": "승차",
+        "count": 21,
+        "departTime": "17:15",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 2660,
+        "y": 0
+      },
+      "parentNode": "route-퇴근4호(바이오-선경아파트1차)"
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::2",
+      "data": {
+        "label": "2. 세파플랜트 앞 정차",
+        "route": "퇴근4호(바이오-선경아파트1차)",
+        "stopName": "세파플랜트 앞 정차",
+        "action": "승차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 2660,
+        "y": 120
+      },
+      "parentNode": "route-퇴근4호(바이오-선경아파트1차)"
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::3",
+      "data": {
+        "label": "3. 업스테이지(패스)",
+        "route": "퇴근4호(바이오-선경아파트1차)",
+        "stopName": "업스테이지(패스)",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 2660,
+        "y": 240
+      },
+      "parentNode": "route-퇴근4호(바이오-선경아파트1차)"
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::4",
+      "data": {
+        "label": "4. 원평공영주차장 앞",
+        "route": "퇴근4호(바이오-선경아파트1차)",
+        "stopName": "원평공영주차장 앞",
+        "action": "하차",
+        "count": 16,
+        "departTime": "17:15",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 2660,
+        "y": 360
+      },
+      "parentNode": "route-퇴근4호(바이오-선경아파트1차)"
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::5",
+      "data": {
+        "label": "5. 지제역(1번출구 방면 GS칼텍스 맞은편 버스정류장)",
+        "route": "퇴근4호(바이오-선경아파트1차)",
+        "stopName": "지제역(1번출구 방면 GS칼텍스 맞은편 버스정류장)",
+        "action": "하차",
+        "count": 4,
+        "departTime": "17:15",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 2660,
+        "y": 480
+      },
+      "parentNode": "route-퇴근4호(바이오-선경아파트1차)"
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::6",
+      "data": {
+        "label": "6. 고덕제일풍경채3차아파트 후문 건너편 버스정류장",
+        "route": "퇴근4호(바이오-선경아파트1차)",
+        "stopName": "고덕제일풍경채3차아파트 후문 건너편 버스정류장",
+        "action": "하차",
+        "count": 1,
+        "departTime": "17:15",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 2660,
+        "y": 600
+      },
+      "parentNode": "route-퇴근4호(바이오-선경아파트1차)"
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::7",
+      "data": {
+        "label": "7. 고덕제일풍경채1차 후문 건너편 버스정류장",
+        "route": "퇴근4호(바이오-선경아파트1차)",
+        "stopName": "고덕제일풍경채1차 후문 건너편 버스정류장",
+        "action": "하차",
+        "count": 0,
+        "departTime": "17:15",
+        "busNo": "경기44업1234",
+        "category": "업스테이지 퇴근"
+      },
+      "position": {
+        "x": 2660,
+        "y": 720
+      },
+      "parentNode": "route-퇴근4호(바이오-선경아파트1차)"
+    }
+  ],
+  "edges": [
+    {
+      "id": "출근1호-한국대서문::1->출근1호-한국대서문::2",
+      "source": "출근1호-한국대서문::1",
+      "target": "출근1호-한국대서문::2",
+      "label": "승차 1",
+      "data": {
+        "action": "승차",
+        "count": 1
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근1호-한국대서문::2->출근1호-한국대서문::3",
+      "source": "출근1호-한국대서문::2",
+      "target": "출근1호-한국대서문::3",
+      "label": "승차 3",
+      "data": {
+        "action": "승차",
+        "count": 3
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근1호-한국대서문::3->출근1호-한국대서문::4",
+      "source": "출근1호-한국대서문::3",
+      "target": "출근1호-한국대서문::4",
+      "label": "승차 1",
+      "data": {
+        "action": "승차",
+        "count": 1
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근1호-한국대서문::4->출근1호-한국대서문::5",
+      "source": "출근1호-한국대서문::4",
+      "target": "출근1호-한국대서문::5",
+      "label": "승차 4",
+      "data": {
+        "action": "승차",
+        "count": 4
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근1호-한국대서문::5->출근1호-한국대서문::6",
+      "source": "출근1호-한국대서문::5",
+      "target": "출근1호-한국대서문::6",
+      "label": "승차 1",
+      "data": {
+        "action": "승차",
+        "count": 1
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근1호-한국대서문::6->출근1호-한국대서문::7",
+      "source": "출근1호-한국대서문::6",
+      "target": "출근1호-한국대서문::7",
+      "label": "승차 0",
+      "data": {
+        "action": "승차",
+        "count": 0
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근1호-한국대서문::7->출근1호-한국대서문::8",
+      "source": "출근1호-한국대서문::7",
+      "target": "출근1호-한국대서문::8",
+      "label": "승차 10",
+      "data": {
+        "action": "승차",
+        "count": 10
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근2호-한국전자기술연구원::1->출근2호-한국전자기술연구원::2",
+      "source": "출근2호-한국전자기술연구원::1",
+      "target": "출근2호-한국전자기술연구원::2",
+      "label": "승차 4",
+      "data": {
+        "action": "승차",
+        "count": 4
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근2호-한국전자기술연구원::2->출근2호-한국전자기술연구원::3",
+      "source": "출근2호-한국전자기술연구원::2",
+      "target": "출근2호-한국전자기술연구원::3",
+      "label": "승차 16",
+      "data": {
+        "action": "승차",
+        "count": 16
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근3호-판교공영주차장::1->출근3호-판교공영주차장::2",
+      "source": "출근3호-판교공영주차장::1",
+      "target": "출근3호-판교공영주차장::2",
+      "label": "승차 20",
+      "data": {
+        "action": "승차",
+        "count": 20
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근3호-판교공영주차장::2->출근3호-판교공영주차장::3",
+      "source": "출근3호-판교공영주차장::2",
+      "target": "출근3호-판교공영주차장::3",
+      "label": "승차 16",
+      "data": {
+        "action": "승차",
+        "count": 16
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근4호-Meta::1->출근4호-Meta::2",
+      "source": "출근4호-Meta::1",
+      "target": "출근4호-Meta::2",
+      "label": "승차 1",
+      "data": {
+        "action": "승차",
+        "count": 1
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근4호-Meta::2->출근4호-Meta::3",
+      "source": "출근4호-Meta::2",
+      "target": "출근4호-Meta::3",
+      "label": "승차 3",
+      "data": {
+        "action": "승차",
+        "count": 3
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근4호-Meta::3->출근4호-Meta::4",
+      "source": "출근4호-Meta::3",
+      "target": "출근4호-Meta::4",
+      "label": "승차 7",
+      "data": {
+        "action": "승차",
+        "count": 7
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "출근4호-Meta::4->출근4호-Meta::5",
+      "source": "출근4호-Meta::4",
+      "target": "출근4호-Meta::5",
+      "label": "승차 7",
+      "data": {
+        "action": "승차",
+        "count": 7
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::1->퇴근1호(전자-한양정형외과)::2",
+      "source": "퇴근1호(전자-한양정형외과)::1",
+      "target": "퇴근1호(전자-한양정형외과)::2",
+      "label": "승차 3",
+      "data": {
+        "action": "승차",
+        "count": 3
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::2->퇴근1호(전자-한양정형외과)::3",
+      "source": "퇴근1호(전자-한양정형외과)::2",
+      "target": "퇴근1호(전자-한양정형외과)::3",
+      "label": "하차 0",
+      "data": {
+        "action": "하차",
+        "count": 0
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::3->퇴근1호(전자-한양정형외과)::4",
+      "source": "퇴근1호(전자-한양정형외과)::3",
+      "target": "퇴근1호(전자-한양정형외과)::4",
+      "label": "하차 1",
+      "data": {
+        "action": "하차",
+        "count": 1
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근1호(전자-한양정형외과)::4->퇴근1호(전자-한양정형외과)::5",
+      "source": "퇴근1호(전자-한양정형외과)::4",
+      "target": "퇴근1호(전자-한양정형외과)::5",
+      "label": "하차 2",
+      "data": {
+        "action": "하차",
+        "count": 2
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::1->퇴근2호(세파-한국대서문)::2",
+      "source": "퇴근2호(세파-한국대서문)::1",
+      "target": "퇴근2호(세파-한국대서문)::2",
+      "label": "승차 20",
+      "data": {
+        "action": "승차",
+        "count": 20
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::2->퇴근2호(세파-한국대서문)::3",
+      "source": "퇴근2호(세파-한국대서문)::2",
+      "target": "퇴근2호(세파-한국대서문)::3",
+      "label": "하차 0",
+      "data": {
+        "action": "하차",
+        "count": 0
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::3->퇴근2호(세파-한국대서문)::4",
+      "source": "퇴근2호(세파-한국대서문)::3",
+      "target": "퇴근2호(세파-한국대서문)::4",
+      "label": "하차 15",
+      "data": {
+        "action": "하차",
+        "count": 15
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::4->퇴근2호(세파-한국대서문)::5",
+      "source": "퇴근2호(세파-한국대서문)::4",
+      "target": "퇴근2호(세파-한국대서문)::5",
+      "label": "하차 0",
+      "data": {
+        "action": "하차",
+        "count": 0
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::5->퇴근2호(세파-한국대서문)::6",
+      "source": "퇴근2호(세파-한국대서문)::5",
+      "target": "퇴근2호(세파-한국대서문)::6",
+      "label": "하차 3",
+      "data": {
+        "action": "하차",
+        "count": 3
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::6->퇴근2호(세파-한국대서문)::7",
+      "source": "퇴근2호(세파-한국대서문)::6",
+      "target": "퇴근2호(세파-한국대서문)::7",
+      "label": "하차 1",
+      "data": {
+        "action": "하차",
+        "count": 1
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근2호(세파-한국대서문)::7->퇴근2호(세파-한국대서문)::8",
+      "source": "퇴근2호(세파-한국대서문)::7",
+      "target": "퇴근2호(세파-한국대서문)::8",
+      "label": "하차 1",
+      "data": {
+        "action": "하차",
+        "count": 1
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::1->퇴근3호(바이오-효성아파트)::2",
+      "source": "퇴근3호(바이오-효성아파트)::1",
+      "target": "퇴근3호(바이오-효성아파트)::2",
+      "label": "승차 16",
+      "data": {
+        "action": "승차",
+        "count": 16
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::2->퇴근3호(바이오-효성아파트)::3",
+      "source": "퇴근3호(바이오-효성아파트)::2",
+      "target": "퇴근3호(바이오-효성아파트)::3",
+      "label": "하차 0",
+      "data": {
+        "action": "하차",
+        "count": 0
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::3->퇴근3호(바이오-효성아파트)::4",
+      "source": "퇴근3호(바이오-효성아파트)::3",
+      "target": "퇴근3호(바이오-효성아파트)::4",
+      "label": "하차 11",
+      "data": {
+        "action": "하차",
+        "count": 11
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::4->퇴근3호(바이오-효성아파트)::5",
+      "source": "퇴근3호(바이오-효성아파트)::4",
+      "target": "퇴근3호(바이오-효성아파트)::5",
+      "label": "하차 2",
+      "data": {
+        "action": "하차",
+        "count": 2
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근3호(바이오-효성아파트)::5->퇴근3호(바이오-효성아파트)::6",
+      "source": "퇴근3호(바이오-효성아파트)::5",
+      "target": "퇴근3호(바이오-효성아파트)::6",
+      "label": "하차 0",
+      "data": {
+        "action": "하차",
+        "count": 0
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::1->퇴근4호(바이오-선경아파트1차)::2",
+      "source": "퇴근4호(바이오-선경아파트1차)::1",
+      "target": "퇴근4호(바이오-선경아파트1차)::2",
+      "label": "승차 21",
+      "data": {
+        "action": "승차",
+        "count": 21
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::2->퇴근4호(바이오-선경아파트1차)::3",
+      "source": "퇴근4호(바이오-선경아파트1차)::2",
+      "target": "퇴근4호(바이오-선경아파트1차)::3",
+      "label": "승차 0",
+      "data": {
+        "action": "승차",
+        "count": 0
+      },
+      "type": "smoothstep",
+      "animated": true,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::3->퇴근4호(바이오-선경아파트1차)::4",
+      "source": "퇴근4호(바이오-선경아파트1차)::3",
+      "target": "퇴근4호(바이오-선경아파트1차)::4",
+      "label": "하차 0",
+      "data": {
+        "action": "하차",
+        "count": 0
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::4->퇴근4호(바이오-선경아파트1차)::5",
+      "source": "퇴근4호(바이오-선경아파트1차)::4",
+      "target": "퇴근4호(바이오-선경아파트1차)::5",
+      "label": "하차 16",
+      "data": {
+        "action": "하차",
+        "count": 16
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::5->퇴근4호(바이오-선경아파트1차)::6",
+      "source": "퇴근4호(바이오-선경아파트1차)::5",
+      "target": "퇴근4호(바이오-선경아파트1차)::6",
+      "label": "하차 4",
+      "data": {
+        "action": "하차",
+        "count": 4
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    },
+    {
+      "id": "퇴근4호(바이오-선경아파트1차)::6->퇴근4호(바이오-선경아파트1차)::7",
+      "source": "퇴근4호(바이오-선경아파트1차)::6",
+      "target": "퇴근4호(바이오-선경아파트1차)::7",
+      "label": "하차 1",
+      "data": {
+        "action": "하차",
+        "count": 1
+      },
+      "type": "smoothstep",
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed"
+      }
+    }
+  ]
+}
