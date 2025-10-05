@@ -140,31 +140,30 @@ async def conversation_log(
     description="Extract conversations from Context Registry via Agent Orchestrator"
 )
 async def extract(
-    channel: str,
-    query: str,  # JSON string with text and optional limit
+    query: Dict[str, Any],  # Dict with text (search query) and optional limit
+    channel: Optional[str] = "",  # Empty string means search all channels
     meta: Optional[str] = None
 ) -> List[TextContent]:
     """
     Extract conversations from Context Registry using query text.
     
     Args:
-        channel: Channel identifier to search in
-        query: JSON string with text (search query) and optional limit
+        query: Dict with 'text' (search query) and optional 'limit'
+        channel: Optional channel identifier to search in (empty or omitted = search all)
         meta: Optional JSON string with additional metadata (can be empty {})
     """
-    logger.info(f"[extract] Request received - channel: {channel}, query: {query[:100]}...")
+    logger.info(f"[extract] Request received - query: {query.get('text', 'empty')}, channel: {channel or 'all'}")
     
     try:
         # 1. Validate inputs
-        if not channel or not channel.strip():
-            raise ValueError("Channel cannot be empty.")
-
-        try:
-            query_data = json.loads(query)
-            if not isinstance(query_data, dict) or "text" not in query_data:
-                raise ValueError("Query must be a JSON object with a 'text' field.")
-        except (json.JSONDecodeError, TypeError):
-            raise ValueError(f"Invalid query JSON format.")
+        # Empty channel ("") means search all channels
+        channel_value = channel if channel and channel.strip() else None
+        
+        # Validate query structure
+        if not isinstance(query, dict) or "text" not in query:
+            raise ValueError("Query must be a dict with a 'text' field.")
+        
+        query_data = query
 
         parsed_metadata = {}
         if meta:
@@ -174,9 +173,9 @@ async def extract(
                 logger.warning(f"Invalid meta JSON, using empty object: {meta}")
 
         # 2. Prepare data for agent orchestrator
-        source = channel.split('_')[0] if '_' in channel else 'unknown'
+        source = channel_value.split('_')[0] if channel_value and '_' in channel_value else 'unknown'
         extract_data = {
-            "channel": channel,
+            "channel": channel_value,  # None for全체 검색, specific value for filtered search
             "query": query_data,
             "source": source,
             "metadata": parsed_metadata
@@ -192,7 +191,7 @@ async def extract(
             "ok": True,
             "tool": "extract",
             "result": {
-                "channel": channel,
+                "channel": channel_value or "all",  # Show "all" if searching all channels
                 "messages": result.get("messages", []),
                 "metadata": result.get("metadata", {
                     "total_messages": 0,

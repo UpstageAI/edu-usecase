@@ -125,8 +125,11 @@ class GmailMCPClient:
                         except json.JSONDecodeError:
                             # Gmail MCP server returns text format, not JSON
                             logger.info("Response is in text format, parsing as key-value pairs")
+                            logger.info(f"DEBUG: Raw Gmail MCP response (first 500 chars):\n{content[:500]}")
                             threads = self._parse_text_response(content)
                             logger.info(f"Parsed {len(threads)} email threads from text format")
+                            if threads:
+                                logger.info(f"DEBUG: First parsed thread: {threads[0]}")
                             return threads
 
                 logger.info("No emails found for the query.")
@@ -390,7 +393,9 @@ class GmailMCPClient:
         threads = await self.search_emails(query=query, max_results=50)
 
         emails = []
+        logger.info(f"DEBUG: Processing {len(threads)} threads to extract emails")
         for thread in threads:
+            logger.info(f"DEBUG: Thread structure keys: {thread.keys() if isinstance(thread, dict) else 'not a dict'}")
             # The gmail mcp server returns message data inside the 'messages' key of a thread
             for message in thread.get('messages', []):
                 headers = {h['name']: h['value'] for h in message.get('payload', {}).get('headers', [])}

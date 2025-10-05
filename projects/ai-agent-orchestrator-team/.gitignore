@@ -69,6 +69,12 @@ logs/
 .env.local
 .env.production
 
+# Personal credentials and tokens
+client_secret*.json
+*credentials.json
+*token.json
+gcp-oauth.keys.json
+
 # Node modules (if any)
 node_modules/
 

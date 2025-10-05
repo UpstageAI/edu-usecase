@@ -285,12 +285,24 @@
         <div class="conversation">
             <div class="platform">{{ conv.platform }}</div>
             <div class="timestamp">{{ conv.timestamp }} - Session: {{ conv.session_id }}</div>
-            <div class="message">
-                <strong>User:</strong> {{ conv.user_message }}
-            </div>
-            <div class="message">
-                <strong>Assistant:</strong> {{ conv.assistant_response }}
-            </div>
+            
+            {% if conv.messages and conv.messages|length > 0 %}
+                <!-- Display full conversation -->
+                {% for msg in conv.messages %}
+                <div class="message">
+                    <strong>{% if msg.role == 'user' %}User{% else %}Assistant{% endif %}:</strong> 
+                    {{ msg.text }}
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Fallback to old format if messages not available -->
+                <div class="message">
+                    <strong>User:</strong> {{ conv.user_message }}
+                </div>
+                <div class="message">
+                    <strong>Assistant:</strong> {{ conv.assistant_response }}
+                </div>
+            {% endif %}
         </div>
         {% endfor %}
         {% endif %}

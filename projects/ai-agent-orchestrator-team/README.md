@@ -1,4 +1,4 @@
-# AI Agent Orchestrator with Context Registry
+﻿# AI Agent Orchestrator with Context Registry
 
 ---
 
@@ -69,12 +69,20 @@
 ### 5. **Backoffice 웹 인터페이스**
 - Context Registry 데이터 조회 및 관리
 - Background Job 스케줄링 및 모니터링
-- Daily Digest (매일 07:00 KST 자동 실행)
+- 작업 실행 히스토리 추적
+- 대시보드 및 통계 제공
 
-### 6. **Notion 통합**
-- Notion 페이지 스냅샷 관리
-- Webhook을 통한 실시간 변경사항 수신
-- PM 문서 자동 동기화
+### 6. **Daily Briefing (일일 브리핑)**
+- 매일 자동 실행 (기본: 07:00 KST)
+- Gmail, Slack, Notion 등 다중 소스 통합
+- AI 기반 내용 분석 및 요약
+- Notion 페이지에 자동 게시
+- 웹 UI에서 수동 실행 및 결과 확인 가능
+
+### 7. **MCP 통합**
+- **Gmail**: 이메일 검색 및 읽기
+- **Notion**: 페이지 조회 및 업데이트
+- **Slack**: 메시지 조회 (계획 중)
 
 ---
 
@@ -90,8 +98,9 @@
 - **MCP (Model Context Protocol)**: AI 클라이언트 통신 표준
 
 #### **AI & ML**
-- **Ollama + LLaMA 3.2**: 로컬 LLM 실행
-- **OpenAI API**: 대체 LLM 옵션
+- **LLaMA 3.2**: 로컬 LLM 실행 (Meta Llama Academy 과제용)
+- **Upstage Solar**: 한국어 최적화 LLM API (OpenAI 호환)
+- **OpenAI API**: 범용 LLM 옵션
 - **Hugging Face Transformers**: 모델 로딩 및 추론
 
 #### **Frontend**
@@ -191,6 +200,29 @@ flowchart LR
 
 ---
 
+## Quick Start
+
+```bash
+# 1. 프로젝트 디렉토리로 이동
+cd projects/ai-agent-orchestrator-team
+
+# 2. 의존성 설치
+uv sync
+
+# 3. 환경 설정 (대화형)
+uv run python scripts/setup_env.py
+
+# 4. 데모 실행
+uv run python start_demo.py
+
+# 5. 브라우저에서 확인
+# http://localhost:8003
+```
+
+✅ 5분이면 시작할 수 있습니다!
+
+---
+
 ## 실행 방법
 
 ### 사전 준비
@@ -204,23 +236,46 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-#### 2. 의존성 설치
+#### 2. 의존성 설치 및 환경 설정
 ```bash
 cd projects/ai-agent-orchestrator-team
 uv sync
+
+# 자동 환경 설정 (권장)
+uv run python scripts/setup_env.py
 ```
 
-#### 3. Ollama + LLaMA 설정 (선택사항)
+`setup_env.py` 스크립트는 다음을 자동으로 설정합니다:
+- `.env` 파일 생성
+- LLM Provider 선택 및 설정
+- Gmail OAuth 인증 (선택 사항)
+- Notion/Slack 연동 설정 (선택 사항)
+
+#### 3. 수동 설정 (선택 사항)
+
+자동 설정을 건너뛰고 수동으로 설정하려면:
+
 ```bash
-# Ollama 설치 (Linux/WSL)
-curl -fsSL https://ollama.ai/install.sh | sh
+# env.example을 .env로 복사
+cp env.example .env
 
-# LLaMA 모델 다운로드
-ollama pull llama3.2:1b
-
-# 서버 시작
-ollama serve
+# .env 파일을 편집하여 필요한 값 입력
 ```
+
+**LLM Provider 옵션:**
+
+- **LLaMA (via Ollama) (로컬, 무료, 권장)**: 
+  - Ollama 설치 필요 (https://ollama.com/download)
+  - `ollama pull llama3.2:3b` 명령으로 모델 다운로드
+  - `start_demo.py` 실행 시 자동으로 Ollama 및 모델 확인
+- **Upstage Solar (클라우드, 한국어 최적화)**: API 키 필요
+- **OpenAI (클라우드, 범용)**: API 키 필요
+
+**MCP 통합 (선택 사항):**
+
+- **Gmail**: Google Cloud에서 OAuth 2.0 credentials 다운로드 필요
+- **Notion**: Notion Integration Token 필요
+- **Slack**: Slack Bot Token 필요
 
 ### 데모 실행
 
@@ -251,27 +306,51 @@ uv run python backoffice/app.py
 - **Backoffice UI**: http://localhost:8003
 - **Agent Orchestrator**: http://localhost:8001
 - **Context Registry**: http://localhost:8002
-- **MCP Server**: stdio (클라이언트 연결용)
+- **MCP Server**: http://localhost:8000/mcp (HTTP transport)
 
 ### AI 클라이언트 설정
 
-Cursor 또는 Claude Desktop 설정 파일에 다음 내용을 추가하세요:
+Claude Desktop 또는 Cursor에서 MCP 서버를 사용하려면 설정 파일에 다음 내용을 추가하세요:
 
+#### Claude Desktop
 ```json
 {
   "mcpServers": {
     "ai-agent-orchestrator": {
-      "command": "uv",
-      "args": ["run", "python", "mcp_server/server.py"],
-      "env": {}
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://localhost:8000/mcp"
+      ]
     }
   }
 }
 ```
 
-설정 파일 위치:
-- **Cursor**: `client_configs/cursor.json` 참고
-- **Claude Desktop**: `client_configs/claude_desktop.json` 참고
+**설정 파일 위치**:
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Linux: `~/.config/Claude/claude_desktop_config.json`
+
+#### Cursor
+```json
+{
+  "mcpServers": {
+    "ai-agent-orchestrator": {
+      "url": "http://localhost:8000/mcp",
+      "transport": "http"
+    }
+  }
+}
+```
+
+**설정 파일**: `.cursor/mcp.json` (워크스페이스 루트)
+
+**주의사항**:
+- MCP 서버는 HTTP transport (`http://localhost:8000/mcp`)로 실행됩니다
+- `start_demo.py` 실행 시 자동으로 HTTP transport로 시작됩니다
+
+**자세한 설정 방법은 `docs/CLIENT_SETUP_GUIDE.md`를 참조하세요.**
 
 ---
 
@@ -283,26 +362,42 @@ projects/ai-agent-orchestrator-team/
 │   ├── orchestrator.py     # 메인 오케스트레이터
 │   ├── llm_provider.py     # LLM 통합
 │   ├── summarizer.py       # 요약 기능
-│   └── daily_briefing.py   # 일일 브리핑
+│   ├── daily_briefing.py   # 일일 브리핑
+│   └── model.py            # 데이터 모델
 ├── mcp_server/             # MCP 구현 (🟢)
 │   ├── server.py           # MCP 서버
 │   ├── gmail_mcp_client.py # Gmail 연동
 │   ├── slack_mcp_client.py # Slack 연동
-│   └── notion_mcp_client.py# Notion 연동
+│   ├── notion_mcp_client.py# Notion 연동
+│   ├── daily_briefing_collector.py  # 일일 브리핑 데이터 수집
+│   ├── daily_briefing_runner.py     # 일일 브리핑 실행기
+│   ├── briefing_analyzer.py         # 브리핑 분석
+│   └── notion_formatter.py          # Notion 포맷터
 ├── context_registry/       # Context Registry (🟢)
-│   ├── registry.py         # 메인 레지스트리
-│   └── registry_fix.py     # 데이터 정합성 도구
+│   └── registry.py         # 메인 레지스트리
 ├── backoffice/             # 웹 UI (🔵)
 │   ├── app.py              # FastAPI 앱
 │   ├── job_manager.py      # 작업 관리자
-│   ├── templates/          # HTML 템플릿
-│   └── static/             # 정적 파일
-├── client_configs/         # AI 클라이언트 설정
+│   ├── job_executor.py     # 작업 실행기
+│   └── templates/          # HTML 템플릿
+├── client_configs/         # AI 클라이언트 설정 예시 (참고용)
+│   ├── cursor.json         # Cursor 설정 예시
+│   ├── claude_desktop.json # Claude Desktop 설정 예시
+│   └── chatgpt_desktop.json# ChatGPT Desktop 설정 예시
+├── scripts/                # 개발 및 설정 유틸리티
+│   ├── setup_env.py        # 환경 설정 자동화 스크립트
+│   ├── create_gmail_token.py # Gmail OAuth 토큰 생성
+│   ├── dev.py              # 개발 명령어
+│   └── kill_ports.py       # 포트 정리
 ├── docs/                   # 문서
-├── scripts/                # 개발 유틸리티
+│   ├── CLIENT_SETUP_GUIDE.md     # AI 클라이언트 설정 가이드
+│   └── ENVIRONMENT_SETUP.md      # 환경 변수 설정 가이드
+├── logs/                   # 애플리케이션 로그 (자동 생성)
 ├── pyproject.toml          # 프로젝트 설정
+├── uv.lock                 # 의존성 잠금 파일
+├── .env.example            # 환경 변수 템플릿
 ├── start_demo.py           # 데모 시작 스크립트
-└── README.md               # 본 문서
+└── README.md               # 본 문서 (프로젝트 메인 가이드)
 ```
 
 ---
@@ -312,17 +407,34 @@ projects/ai-agent-orchestrator-team/
 ### 개발 명령어
 
 ```bash
-# 데모 시작
-python scripts/dev.py demo
+# 데모 시작 (권장)
+uv run python start_demo.py
 
-# 코드 린팅
-python scripts/dev.py lint
+# 환경 설정
+uv run python scripts/setup_env.py
 
-# 테스트 실행
-python scripts/dev.py test
+# 포트 정리 (Windows)
+python scripts/kill_ports.py
 
-# 빌드 아티팩트 정리
-python scripts/dev.py clean
+# 개별 컴포넌트 실행
+uv run python mcp_server/server.py           # MCP Server
+uv run python agent_orchestrator/orchestrator.py  # Agent Orchestrator
+uv run python context_registry/registry.py        # Context Registry
+uv run python backoffice/app.py                   # Backoffice UI
+```
+
+### 유용한 명령어
+
+```bash
+# 로그 확인 (Windows PowerShell)
+Get-Content logs\backoffice_*.log -Tail 50 -Wait
+
+# 프로세스 확인
+netstat -ano | findstr :8003
+
+# 데이터베이스 초기화 (주의!)
+Remove-Item context_registry\context_registry.db
+Remove-Item backoffice\jobs.db
 ```
 
 ### Git 워크플로우
@@ -358,11 +470,27 @@ python scripts/dev.py clean
 
 ## 참고 자료
 
+### 공식 문서
 - [MCP Specification](https://modelcontextprotocol.io/) - Model Context Protocol 공식 문서
 - [LangGraph Documentation](https://python.langchain.com/docs/langgraph) - LangGraph 공식 문서
-- [Meta Llama Academy](https://llamaacademy.kr/) - Workshop 정보
-- [Ollama](https://ollama.ai/) - 로컬 LLM 실행 환경
 - [FastAPI](https://fastapi.tiangolo.com/) - 웹 프레임워크 문서
+- [uv Documentation](https://docs.astral.sh/uv/) - Python 패키지 관리자
+
+### AI & LLM
+- [Meta Llama Academy](https://llamaacademy.kr/) - Workshop 정보
+- [Ollama](https://ollama.com/) - 로컬 LLM 실행 플랫폼
+- [Upstage AI](https://www.upstage.ai/) - Upstage Solar LLM 공식 사이트
+- [OpenAI Platform](https://platform.openai.com/) - OpenAI API 문서
+
+### MCP 통합
+- [Gmail MCP Server](https://github.com/gongrzhe/server-gmail-autoauth-mcp) - Gmail 통합용 MCP 서버
+- [Notion API](https://developers.notion.com/) - Notion API 문서
+- [Google Cloud Console](https://console.cloud.google.com/) - Gmail OAuth 설정
+
+### 프로젝트 문서
+- `docs/CLIENT_SETUP_GUIDE.md` - Claude Desktop, Cursor 설정 가이드
+- `docs/ENVIRONMENT_SETUP.md` - 환경 변수 상세 설정 가이드
+- `.env.example` - 환경 변수 템플릿
 
 ---
 

@@ -161,7 +161,8 @@ def get_conversations(limit=50, source_filter=None, date_filter=None, sort_order
                 else:
                     conv['payload'] = []
                 
-                # Extract user_message and assistant_response from payload
+                # Extract all messages from payload (preserve full conversation)
+                conv['messages'] = []
                 conv['user_message'] = ""
                 conv['assistant_response'] = ""
                 conv['platform'] = conv.get('source', 'unknown')
@@ -172,6 +173,16 @@ def get_conversations(limit=50, source_filter=None, date_filter=None, sort_order
                         if isinstance(msg, dict):
                             role = msg.get('role', '')
                             text = msg.get('text', '')
+                            timestamp = msg.get('timestamp', '')
+                            
+                            # Add to messages list (full conversation)
+                            conv['messages'].append({
+                                'role': role,
+                                'text': text,
+                                'timestamp': timestamp
+                            })
+                            
+                            # Also keep first message for backward compatibility
                             if role == 'user' and not conv['user_message']:
                                 conv['user_message'] = text
                             elif role == 'assistant' and not conv['assistant_response']:

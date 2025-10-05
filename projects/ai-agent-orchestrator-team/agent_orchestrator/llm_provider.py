@@ -104,27 +104,41 @@ class BaseLLMProvider(ABC):
 
 
 class OpenAIProvider(BaseLLMProvider):
-    """OpenAI GPT-based LLM provider"""
+    """OpenAI GPT-based LLM provider (also supports OpenAI-compatible APIs like Upstage)"""
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "gpt-4-turbo-preview"):
+    def __init__(
+        self, 
+        api_key: Optional[str] = None, 
+        model: str = "gpt-4-turbo-preview",
+        base_url: Optional[str] = None
+    ):
         """
-        Initialize OpenAI provider
+        Initialize OpenAI-compatible provider
 
         Args:
-            api_key: OpenAI API key (defaults to OPENAI_API_KEY env var)
-            model: Model to use (gpt-4-turbo-preview, gpt-3.5-turbo, etc.)
+            api_key: API key (defaults to OPENAI_API_KEY env var)
+            model: Model to use (gpt-4-turbo-preview, gpt-3.5-turbo, solar-pro2, etc.)
+            base_url: Optional custom API endpoint for OpenAI-compatible services (e.g., Upstage)
         """
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         if not self.api_key:
-            raise ValueError("OpenAI API key not provided. Set OPENAI_API_KEY environment variable.")
+            raise ValueError("API key not provided. Set OPENAI_API_KEY or UPSTAGE_API_KEY environment variable.")
 
         self.model = model
-        logger.info(f"Initialized OpenAI provider with model: {model}")
+        self.base_url = base_url
+        
+        if base_url:
+            logger.info(f"Initialized OpenAI-compatible provider with model: {model}, base_url: {base_url}")
+        else:
+            logger.info(f"Initialized OpenAI provider with model: {model}")
 
         # Import OpenAI client
         try:
             from openai import AsyncOpenAI
-            self.client = AsyncOpenAI(api_key=self.api_key)
+            if base_url:
+                self.client = AsyncOpenAI(api_key=self.api_key, base_url=base_url)
+            else:
+                self.client = AsyncOpenAI(api_key=self.api_key)
         except ImportError:
             raise ImportError("openai package not installed. Run: uv add openai")
 
@@ -613,31 +627,92 @@ JSON:"""
             ]
 
 
+# Global cache for LLM provider (singleton pattern)
+# This ensures we only load the model once per process
+_llm_provider_cache: Optional[BaseLLMProvider] = None
+_provider_lock = None
+
 def get_llm_provider() -> BaseLLMProvider:
     """
-    Factory function to get the configured LLM provider
+    Factory function to get the configured LLM provider (with singleton caching)
 
     Returns:
         LLM provider instance based on LLM_PROVIDER env var
+        Same instance is reused within a process to avoid loading model multiple times
 
     Environment Variables:
-        LLM_PROVIDER: "openai" or "llama" (default: openai)
-        OPENAI_API_KEY: Required for OpenAI provider
-        OPENAI_MODEL: Optional, defaults to gpt-4-turbo-preview
-        LLAMA_MODEL_PATH: Required for LLaMA provider
+        LLM_PROVIDER: "openai", "upstage", or "llama" (default: llama)
+        
+        For OpenAI:
+            OPENAI_API_KEY: Required
+            OPENAI_MODEL: Optional, defaults to gpt-4-turbo-preview
+        
+        For Upstage (OpenAI-compatible):
+            UPSTAGE_API_KEY: Required
+            UPSTAGE_MODEL: Optional, defaults to solar-pro2
+            UPSTAGE_BASE_URL: Optional, defaults to https://api.upstage.ai/v1/solar
+        
+        For LLaMA (via Ollama, OpenAI-compatible):
+            OLLAMA_MODEL: Optional, defaults to llama3.2:3b
+            OLLAMA_BASE_URL: Optional, defaults to http://localhost:11434/v1
+            Note: Requires Ollama installed and running (https://ollama.com)
     """
-    provider_type = os.getenv("LLM_PROVIDER", "openai").lower()
+    global _llm_provider_cache, _provider_lock
+    
+    # Return cached instance if available
+    if _llm_provider_cache is not None:
+        logger.debug("Reusing cached LLM provider instance")
+        return _llm_provider_cache
+    
+    # Initialize lock if needed (for thread safety)
+    if _provider_lock is None:
+        import threading
+        _provider_lock = threading.Lock()
+    
+    # Acquire lock to prevent multiple threads from loading simultaneously
+    with _provider_lock:
+        # Double-check after acquiring lock
+        if _llm_provider_cache is not None:
+            return _llm_provider_cache
+        
+        provider_type = os.getenv("LLM_PROVIDER", "llama").lower()
+        logger.info(f"Initializing LLM provider: {provider_type} (will be cached for reuse)")
 
-    if provider_type == "openai":
-        model = os.getenv("OPENAI_MODEL", "gpt-4-turbo-preview")
-        return OpenAIProvider(model=model)
-    elif provider_type == "llama":
-        return LlamaProvider()
-    else:
-        raise ValueError(
-            f"Unknown LLM_PROVIDER: {provider_type}. "
-            f"Valid options: 'openai', 'llama'"
-        )
+        if provider_type == "openai":
+            model = os.getenv("OPENAI_MODEL", "gpt-4-turbo-preview")
+            _llm_provider_cache = OpenAIProvider(model=model)
+        
+        elif provider_type == "upstage":
+            # Upstage uses OpenAI-compatible API, so we reuse OpenAIProvider
+            api_key = os.getenv("UPSTAGE_API_KEY")
+            if not api_key:
+                raise ValueError("UPSTAGE_API_KEY environment variable not set")
+            
+            model = os.getenv("UPSTAGE_MODEL", "solar-pro2")
+            base_url = os.getenv("UPSTAGE_BASE_URL", "https://api.upstage.ai/v1/solar")
+            
+            logger.info(f"Using Upstage provider with model: {model}")
+            _llm_provider_cache = OpenAIProvider(api_key=api_key, model=model, base_url=base_url)
+        
+        elif provider_type == "llama":
+            # LLaMA via Ollama (OpenAI-compatible API)
+            # Ollama provides OpenAI-compatible API at http://localhost:11434/v1
+            model = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+            base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+            
+            # Ollama doesn't require API key, but OpenAI client needs one
+            # Use dummy key "ollama" which Ollama ignores
+            logger.info(f"Using Ollama provider with model: {model}, base_url: {base_url}")
+            _llm_provider_cache = OpenAIProvider(api_key="ollama", model=model, base_url=base_url)
+        
+        else:
+            raise ValueError(
+                f"Unknown LLM_PROVIDER: {provider_type}. "
+                f"Valid options: 'openai', 'upstage', 'llama'"
+            )
+        
+        logger.info(f"LLM provider cached successfully (type: {type(_llm_provider_cache).__name__})")
+        return _llm_provider_cache
 
 
 # Example usage

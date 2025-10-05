@@ -11,8 +11,20 @@ import logging
 import signal
 import sys
 import atexit
+import os
+import requests
 from pathlib import Path
 from datetime import datetime
+
+# Load environment variables from .env file
+env_file = Path(__file__).parent / ".env"
+if env_file.exists():
+    with open(env_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, value = line.split('=', 1)
+                os.environ.setdefault(key.strip(), value.strip())
 
 # Setup logs directory
 logs_dir = Path(__file__).parent / "logs"
@@ -78,6 +90,75 @@ atexit.register(cleanup_processes)
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
+def check_ollama_setup():
+    """Check if Ollama is installed and model is available (for LLM_PROVIDER=llama)"""
+    # Only check if using llama provider
+    llm_provider = os.getenv("LLM_PROVIDER", "llama").lower()
+    if llm_provider != "llama":
+        return True  # Skip check for other providers
+    
+    logger.info("Checking Ollama setup...")
+    
+    # 1. Check if Ollama is running
+    try:
+        response = requests.get("http://localhost:11434/api/version", timeout=2)
+        if response.status_code == 200:
+            version_info = response.json()
+            logger.info(f"✓ Ollama is running (version: {version_info.get('version', 'unknown')})")
+        else:
+            raise Exception("Ollama API returned non-200 status")
+    except Exception as e:
+        logger.error("✗ Ollama is not running!")
+        logger.error("")
+        logger.error("Please install and start Ollama:")
+        logger.error("  1. Download: https://ollama.com/download/windows")
+        logger.error("  2. Install the downloaded file")
+        logger.error("  3. Ollama will start automatically in the background")
+        logger.error("")
+        return False
+    
+    # 2. Check if required model is available
+    model_name = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+    try:
+        result = subprocess.run(
+            ["ollama", "list"],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        
+        if model_name in result.stdout:
+            logger.info(f"✓ Model '{model_name}' is available")
+            return True
+        else:
+            logger.warning(f"✗ Model '{model_name}' not found")
+            logger.info(f"Downloading model '{model_name}'... (this may take a few minutes)")
+            
+            # Auto-download the model
+            pull_result = subprocess.run(
+                ["ollama", "pull", model_name],
+                capture_output=False,  # Show progress to user
+                timeout=600  # 10 minutes timeout
+            )
+            
+            if pull_result.returncode == 0:
+                logger.info(f"✓ Model '{model_name}' downloaded successfully")
+                return True
+            else:
+                logger.error(f"✗ Failed to download model '{model_name}'")
+                return False
+                
+    except FileNotFoundError:
+        logger.error("✗ 'ollama' command not found in PATH")
+        logger.error("Please ensure Ollama is properly installed")
+        return False
+    except subprocess.TimeoutExpired:
+        logger.error("✗ Model download timed out")
+        return False
+    except Exception as e:
+        logger.error(f"✗ Error checking model: {e}")
+        return False
+
 async def log_stream(stream, prefix: str, log_file: Path):
     """Read and log subprocess output to both console and file"""
     try:
@@ -126,6 +207,13 @@ async def start_component(name: str, command: list, cwd: Path = None):
 async def main():
     """Start all demo components"""
     logger.info("Starting AI Agent Orchestrator Demo")
+    
+    # Check Ollama setup if using llama provider
+    if not check_ollama_setup():
+        logger.error("Ollama setup check failed. Please fix the issues above and try again.")
+        sys.exit(1)
+    
+    logger.info("All prerequisites satisfied, starting components...")
     
     base_path = Path(__file__).parent
     

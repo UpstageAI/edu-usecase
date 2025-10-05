@@ -99,21 +99,26 @@ class ContextRegistryClient:
         """Read relevant context from Context Registry"""
         logger.info(f"Reading context from CR: {query}")
         
-        channel = query.get("channel")
-        if channel:
-            try:
-                conversations = self.registry.get_conversations(channel=channel, limit=10)
-                return {
-                    "conversations": conversations,
-                    "extract_results": []
-                }
-            except Exception as e:
-                logger.error(f"Failed to read from CR: {e}")
-        
-        return {
-            "conversations": [],
-            "extract_results": []
-        }
+        try:
+            # None or empty string means search all channels
+            channel = query.get("channel")
+            limit = query.get("limit", 10)
+            
+            conversations = self.registry.get_conversations(
+                channel=channel if channel else None,
+                limit=limit
+            )
+            
+            return {
+                "conversations": conversations,
+                "extract_results": []
+            }
+        except Exception as e:
+            logger.error(f"Failed to read from CR: {e}")
+            return {
+                "conversations": [],
+                "extract_results": []
+            }
     
     async def write_context(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Write processed data to Context Registry"""
@@ -240,7 +245,9 @@ class AgentOrchestrator:
                         "store_extract_result"
                     ],
                     "context_query": {
-                        "content_type": content.get("extract_type"),
+                        "channel": content.get("channel"),  # None for all channels
+                        "query": content.get("query", {}),  # Include query with text and limit
+                        "limit": content.get("query", {}).get("limit", 10),
                         "type": "extract"
                     }
                 }
@@ -311,9 +318,23 @@ class AgentOrchestrator:
 
             # Use appropriate summarizer based on request type
             if request_type == "conversation_log":
-                summary_result = await self.conversation_summarizer.summarize(
-                    content, context_data
-                )
+                # Skip LLM summarization for conversation_log - store original messages as-is
+                # This improves performance and preserves full conversation context
+                logger.info("Skipping LLM summarization for conversation_log (storing original messages)")
+                summary_result = {
+                    "type": "conversation_storage",
+                    "summary": "Original conversation stored without summarization",
+                    "key_points": [],
+                    "entities": [],
+                    "action_items": [],
+                    "metadata": {
+                        "session_id": content.get("channel"),
+                        "platform": content.get("source"),
+                        "timestamp": datetime.now().isoformat(),
+                        "message_count": len(content.get("messages", [])),
+                        "summarization_skipped": True
+                    }
+                }
             elif request_type == "extract":
                 summary_result = await self.extraction_summarizer.extract(
                     content, context_data
@@ -322,11 +343,11 @@ class AgentOrchestrator:
                 raise ValueError(f"Unknown request type: {request_type}")
 
             state["summary_result"] = summary_result
-            logger.info(f"LLM summary completed: {summary_result['type']}")
+            logger.info(f"Processing completed: {summary_result['type']}")
 
         except Exception as e:
-            logger.error(f"Summarization failed: {str(e)}")
-            state["error"] = f"Summarization failed: {str(e)}"
+            logger.error(f"Processing failed: {str(e)}")
+            state["error"] = f"Processing failed: {str(e)}"
 
         return state
     
@@ -519,8 +540,32 @@ class AgentOrchestrator:
 
                 logger.info(f"Daily briefing log stored: {log_id}")
 
+            elif request_type == "extract":
+                # Extract: Return messages from retrieved conversations (no DB write)
+                context_data = state.get("context_data", {})
+                conversations = context_data.get("conversations", [])
+                
+                # Extract messages from conversations
+                all_messages = []
+                for conv in conversations:
+                    messages = conv.payload if hasattr(conv, 'payload') else []
+                    all_messages.extend(messages)
+                
+                state["final_result"] = {
+                    "status": "success",
+                    "messages": all_messages,
+                    "metadata": {
+                        "total_messages": len(all_messages),
+                        "filtered_messages": len(all_messages),
+                        "conversations_found": len(conversations),
+                        "last_activity": datetime.now().isoformat()
+                    }
+                }
+                
+                logger.info(f"Extract completed: {len(all_messages)} messages from {len(conversations)} conversations")
+                
             else:
-                # Original conversation/extract handling
+                # Conversation log handling
                 summary_result = state["summary_result"]
 
                 # Prepare data for storage

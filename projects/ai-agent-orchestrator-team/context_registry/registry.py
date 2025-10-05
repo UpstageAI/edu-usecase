@@ -2,12 +2,14 @@
 """
 Context Registry (CR) - SQLite-based storage for conversations and extract results
 Implements the three main tables: conversation, extract_result, action_log
+
+[추가] ingest_event: 수집된 원시(요약) 이벤트 저장
 """
 
 import sqlite3
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, asdict
 from pathlib import Path
@@ -68,6 +70,29 @@ class DailyBriefingLogRecord:
     execution_duration: Optional[int] = None
     created_at: Optional[str] = None
 
+# [추가] IngestEventRecord: 외부 MCP 원시(요약) 이벤트 1건
+@dataclass
+class IngestEventRecord:
+    """
+    Raw/summary ingest item from external MCP services (gmail/slack/drive/...).
+    - id: Optional[str]  (None이면 저장 시 자동 생성: ing_YYYYMMDD_...)
+           멱등성이 필요하면 외부 고유키 해시를 미리 넣어 PK 충돌로 중복 방지 가능
+    - run_id: str        (daily_briefing_log.id 와 논리적으로 연결)
+    - service: str       ('gmail'|'slack'|'notion'|'calendar'|'drive' 등)
+    - kind: str          ('email'|'mention'|'task'|'event'|'doc' 등)
+    - event_time: str    (원본 아이템 시각, ISO8601)
+    - raw: Dict[str,Any] (title/link/sender/flags/due 등 최소 요약 JSON; 과도한 본문 금지)
+    - created_at: Optional[str] (DB 기본값 CURRENT_TIMESTAMP)
+    """
+    id: Optional[str]
+    run_id: str
+    service: str
+    kind: str
+    event_time: str
+    raw: Dict[str, Any]
+    created_at: Optional[str] = None
+
+
 class ContextRegistry:
     """Main Context Registry class with SQLite storage"""
     
@@ -94,8 +119,6 @@ class ContextRegistry:
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
-            
-            # Create indexes for conversation table
             conn.execute("CREATE INDEX IF NOT EXISTS idx_conversation_channel ON conversation(channel)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_conversation_source ON conversation(source)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_conversation_timestamp ON conversation(timestamp)")
@@ -113,8 +136,6 @@ class ContextRegistry:
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
-            
-            # Create indexes for extract_result table
             conn.execute("CREATE INDEX IF NOT EXISTS idx_extract_type ON extract_result(extract_type)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_extract_timestamp ON extract_result(timestamp)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_extract_confidence ON extract_result(confidence)")
@@ -132,8 +153,6 @@ class ContextRegistry:
                     timestamp TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
-            
-            # Create indexes for action_log table
             conn.execute("CREATE INDEX IF NOT EXISTS idx_action_type ON action_log(action_type)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_action_actor ON action_log(actor)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_action_target_type ON action_log(target_type)")
@@ -155,10 +174,25 @@ class ContextRegistry:
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
-
-            # Create indexes for daily_briefing_log table
             conn.execute("CREATE INDEX IF NOT EXISTS idx_briefing_execution_date ON daily_briefing_log(execution_date)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_briefing_status ON daily_briefing_log(status)")
+
+            # [추가] ingest_event table
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS ingest_event (
+                    id TEXT PRIMARY KEY,
+                    run_id TEXT NOT NULL,
+                    service TEXT NOT NULL,
+                    kind TEXT NOT NULL,
+                    event_time TEXT NOT NULL,
+                    raw TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            # [추가] indexes for ingest_event
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_ingest_run ON ingest_event(run_id)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_ingest_svc_time ON ingest_event(service, event_time)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_ingest_kind ON ingest_event(kind)")
             
             conn.commit()
             logger.info("Database initialized successfully")
@@ -291,6 +325,176 @@ class ContextRegistry:
         except Exception as e:
             logger.error(f"Failed to store daily briefing log: {str(e)}")
             raise
+
+    # ---------------------------
+    # [추가] ingest_event 기능 3개
+    # ---------------------------
+
+    def store_ingest_event(self, record: IngestEventRecord) -> str:
+        """
+        ingest_event 단건 저장 + 같은 연결로 action_log 기록
+        - 멱등성이 필요하면 record.id를 외부 고유키 해시로 선지정
+        """
+        if not record.id:
+            record.id = self._generate_id("ing")
+
+        try:
+            with sqlite3.connect(self.db_path, timeout=10.0) as conn:
+                conn.execute("""
+                    INSERT INTO ingest_event
+                    (id, run_id, service, kind, event_time, raw)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (
+                    record.id,
+                    record.run_id,
+                    record.service,
+                    record.kind,
+                    record.event_time,
+                    json.dumps(record.raw) if record.raw is not None else None
+                ))
+
+                self._log_action_with_conn(
+                    conn=conn,
+                    action_type="ingest_saved",
+                    description=f"Saved ingest_event {record.service}:{record.kind}",
+                    actor="agent",
+                    target_id=record.id,
+                    target_type="ingest_event",
+                    metadata={"run_id": record.run_id}
+                )
+                conn.commit()
+                logger.info(f"Ingest event stored: {record.id}")
+                return record.id
+
+        except sqlite3.IntegrityError as e:
+            # PK 충돌 등 멱등 시나리오 지원
+            logger.warning(f"Ingest insert integrity error (maybe duplicate id): {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Failed to store ingest event: {str(e)}")
+            raise
+
+    def get_ingest_events(
+        self,
+        run_id: Optional[str] = None,
+        service: Optional[str] = None,
+        kind: Optional[str] = None,
+        since: Optional[str] = None,
+        limit: int = 200,
+        order_desc: bool = True
+    ) -> List[IngestEventRecord]:
+        """
+        ingest_event 조회. 필터(run_id/service/kind/since)와 정렬 제어 지원
+        반환 시 raw는 dict로 파싱
+        """
+        query = "SELECT * FROM ingest_event WHERE 1=1"
+        params: List[Any] = []
+
+        if run_id:
+            query += " AND run_id = ?"
+            params.append(run_id)
+        if service:
+            query += " AND service = ?"
+            params.append(service)
+        if kind:
+            query += " AND kind = ?"
+            params.append(kind)
+        if since:
+            query += " AND event_time >= ?"
+            params.append(since)
+
+        query += " ORDER BY event_time " + ("DESC" if order_desc else "ASC")
+        query += " LIMIT ?"
+        params.append(limit)
+
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                cur = conn.execute(query, params)
+                rows = cur.fetchall()
+
+                items: List[IngestEventRecord] = []
+                for r in rows:
+                    items.append(IngestEventRecord(
+                        id=r["id"],
+                        run_id=r["run_id"],
+                        service=r["service"],
+                        kind=r["kind"],
+                        event_time=r["event_time"],
+                        raw=json.loads(r["raw"]) if r["raw"] else {},
+                        created_at=r["created_at"]
+                    ))
+                return items
+        except Exception as e:
+            logger.error(f"Failed to get ingest events: {str(e)}")
+            return []
+
+    def purge_old_ingest(
+        self,
+        days: int = 30,
+        per_service_days: Optional[Dict[str, int]] = None
+    ) -> int:
+        """
+        리텐션: 오래된 ingest_event 삭제
+        - days: 기본 보관일수
+        - per_service_days: {'gmail':30, 'slack':14, ...} 식으로 서비스별 보관일
+          주어지면 서비스별 우선 적용 후, 지정되지 않은 서비스는 days 사용
+        반환: 삭제된 행 수(대략)
+        """
+        total_deleted = 0
+        try:
+            with sqlite3.connect(self.db_path, timeout=10.0) as conn:
+                if per_service_days:
+                    # 서비스별 기준 삭제
+                    for svc, svc_days in per_service_days.items():
+                        cur = conn.execute(
+                            """
+                            DELETE FROM ingest_event
+                             WHERE service = ?
+                               AND created_at < datetime('now', ?)
+                            """,
+                            (svc, f'-{int(svc_days)} days',)
+                        )
+                        total_deleted += cur.rowcount
+
+                    # 명시되지 않은 서비스는 기본 days 적용
+                    cur = conn.execute(
+                        """
+                        DELETE FROM ingest_event
+                         WHERE service NOT IN ({placeholders})
+                           AND created_at < datetime('now', ?)
+                        """.format(placeholders=",".join("?"*len(per_service_days))),
+                        [*per_service_days.keys(), f'-{int(days)} days']
+                    )
+                    total_deleted += cur.rowcount
+                else:
+                    # 일괄 기본 삭제
+                    cur = conn.execute(
+                        """
+                        DELETE FROM ingest_event
+                         WHERE created_at < datetime('now', ?)
+                        """,
+                        (f'-{int(days)} days',)
+                    )
+                    total_deleted = cur.rowcount
+
+                self._log_action_with_conn(
+                    conn=conn,
+                    action_type="retention_purge",
+                    description=f"purged ingest_event older than policy",
+                    actor="system",
+                    metadata={"default_days": days, "per_service_days": per_service_days or {}}
+                )
+                conn.commit()
+                logger.info(f"purged ingest rows: {total_deleted}")
+                return total_deleted
+        except Exception as e:
+            logger.error(f"Failed to purge ingest events: {str(e)}")
+            raise
+
+    # ---------------------------
+    # (기존) 공용 로깅 내부 함수들
+    # ---------------------------
 
     def _log_action_with_conn(self, conn, action_type: str, description: str, actor: str, 
                              target_id: str = None, target_type: str = None, 
@@ -532,10 +736,15 @@ class ContextRegistry:
                     GROUP BY extract_type
                 """)
                 extract_type_stats = {row[0]: row[1] for row in cursor.fetchall()}
+
+                # [추가] ingest_event count
+                cursor.execute("SELECT COUNT(*) FROM ingest_event")
+                ingest_count = cursor.fetchone()[0]
                 
                 return {
                     "conversations": conv_count,
                     "extract_results": extract_count,
+                    "ingest_events": ingest_count,
                     "action_logs": action_count,
                     "source_distribution": source_stats,
                     "extract_type_distribution": extract_type_stats,
@@ -547,16 +756,14 @@ class ContextRegistry:
             logger.error(f"Failed to get stats: {str(e)}")
             return {"error": str(e)}
 
-# Global registry instance with absolute path
-_registry_dir = Path(__file__).parent
-_db_path = _registry_dir / "context_registry.db"
-registry = ContextRegistry(str(_db_path))
+# Global registry instance
+registry = ContextRegistry()
 
 async def main():
     """Main entry point for testing the registry"""
     logger.info("Starting Context Registry")
     
-    # Test conversation storage
+    # Test conversation storage (기존)
     test_conv = ConversationRecord(
         id=None,
         record_type="conversation",
@@ -572,11 +779,10 @@ async def main():
         actor="ao",
         deleted=False
     )
-    
     conv_id = registry.store_conversation(test_conv)
     print(f"Stored conversation: {conv_id}")
     
-    # Test extract result storage
+    # Test extract result storage (기존)
     test_extract = ExtractResultRecord(
         id=None,
         content="The meeting covered budget planning and team restructuring.",
@@ -589,13 +795,55 @@ async def main():
         confidence=0.95,
         context_refs=[conv_id]
     )
-    
     extract_id = registry.store_extract_result(test_extract)
     print(f"Stored extract result: {extract_id}")
+
+    # [추가] ingest_event 저장/조회/리텐션 간단 테스트
+    run_id = registry._generate_id("brief")  # 보통 daily_briefing_log.id와 연결되지만 여기선 샘플
+    sample_ing = IngestEventRecord(
+        id=None,
+        run_id=run_id,
+        service="gmail",
+        kind="email",
+        event_time=datetime.now().isoformat(),
+        raw={
+            "title": "긴급: 승인 요청",
+            "sender": "boss@example.com",
+            "link": "https://mail.example.com/...",
+            "flags": ["important"]
+        }
+    )
+    ing_id = registry.store_ingest_event(sample_ing)
+    print(f"Stored ingest event: {ing_id}")
+
+    # 조회 예시: 이번 run의 gmail 이메일 50건
+    items = registry.get_ingest_events(run_id=run_id, service="gmail", kind="email", limit=50)
+    print("Fetched ingest events:", len(items))
+    if items:
+        print("First item preview:", items[0].event_time, items[0].raw.get("title"))
+
+    # 간단 LLM 입력 샘플(전용 함수 없이 리스트 구성)
+    llm_input = [
+        {
+            "source": it.service,
+            "type": it.kind,
+            "title": it.raw.get("title"),
+            "link": it.raw.get("link"),
+            "who": it.raw.get("sender") or it.raw.get("owner"),
+            "flags": it.raw.get("flags"),
+            "event_time": it.event_time,
+        }
+        for it in items
+    ]
+    print("LLM input sample:", json.dumps(llm_input[:1], ensure_ascii=False, indent=2))
+
+    # 리텐션 테스트(실운영에선 스케줄러에서 호출)
+    purged = registry.purge_old_ingest(days=90, per_service_days={"slack": 14, "gmail": 30})
+    print("purged ingest rows:", purged)
     
-    # Get statistics
+    # Stats (기존 + ingest_events 포함)
     stats = registry.get_stats()
-    print("Registry stats:", json.dumps(stats, indent=2))
+    print("Registry stats:", json.dumps(stats, indent=2, ensure_ascii=False))
 
 if __name__ == "__main__":
     import asyncio
