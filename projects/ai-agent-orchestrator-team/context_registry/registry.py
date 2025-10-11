@@ -757,7 +757,9 @@ class ContextRegistry:
             return {"error": str(e)}
 
 # Global registry instance
-registry = ContextRegistry()
+# Use path relative to this file's location to ensure all modules use the same DB
+_db_path = Path(__file__).parent / "context_registry.db"
+registry = ContextRegistry(str(_db_path))
 
 async def main():
     """Main entry point for testing the registry"""
