@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "ai-agent-orchestrator": {
+      "command": "wsl",
+      "args": [
+        "uv",
+        "run",
+        "python",
+        "/home/super/workspace/study/meta/ai-prompt-history-llama/mcp_server/server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "/home/super/workspace/study/meta/ai-prompt-history-llama"
+      }
+    }
+  }
+}

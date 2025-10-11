@@ -1,0 +1,110 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+.virtualenv
+
+# UV (Modern Python package manager)
+.uv/
+
+# Database files
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+database.db
+conversations.db
+context_registry.db*
+prompt_history.db*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.spyderproject
+.spyproject
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.tmp
+*.temp
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Personal credentials and tokens
+client_secret*.json
+*credentials.json
+*token.json
+gcp-oauth.keys.json
+
+# Node modules (if any)
+node_modules/
+
+# Cache
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Slack MCP Server Cache
+.channels_cache.json
+.users_cache.json
+
+# Model files (large)
+*.gguf
+*.bin
+*.safetensors
+models/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Backup files
+*.bak
+*.backup
+
+# Test files
+test_*.db
+
+.playwright-mcp/

@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registry - Context Registry</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #333; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .nav { margin: 20px 0; }
+        .nav a { margin-right: 20px; padding: 10px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+        
+        /* Filters */
+        .filters { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .filter-row { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .filter-row label { display: flex; flex-direction: column; gap: 5px; font-size: 0.9em; font-weight: 600; color: #333; }
+        .filter-row select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em; min-width: 150px; }
+        .filter-actions { margin-top: 15px; display: flex; gap: 10px; }
+        .filter-actions button { padding: 8px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; }
+        .filter-actions button[type="submit"] { background: #007bff; color: white; }
+        .filter-actions button[type="button"] { background: #6c757d; color: white; }
+        .filter-actions button:hover { opacity: 0.9; }
+        
+        /* Cards */
+        .conversation { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .platform { color: #007bff; font-weight: bold; }
+        .timestamp { color: #666; font-size: 0.9em; }
+        .message { margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+        
+        /* Daily Briefing Cards */
+        .briefing { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .briefing-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .briefing-date { font-size: 1.1em; font-weight: bold; color: #333; }
+        .briefing-status { display: flex; gap: 10px; align-items: center; font-size: 0.9em; }
+        .status-badge { padding: 4px 10px; border-radius: 4px; font-weight: 600; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-failed { background: #f8d7da; color: #721c24; }
+        .status-running { background: #fff3cd; color: #856404; }
+        .briefing-summary { color: #666; margin: 10px 0; }
+        .briefing-time { color: #999; font-size: 0.85em; margin: 10px 0; }
+        .briefing-actions { margin-top: 15px; }
+        .briefing-actions a { display: inline-block; padding: 8px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-right: 10px; font-size: 0.9em; }
+        .briefing-actions a:hover { background: #0056b3; }
+        
+        /* Service sections - collapsible */
+        .service-section { margin-top: 15px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .service-header { padding: 12px 15px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; font-weight: 600; }
+        .service-header:hover { opacity: 0.9; }
+        .service-header.gmail { background: #e8f4fd; color: #0066cc; }
+        .service-header.slack { background: #f0e8fd; color: #6f42c1; }
+        .service-header.notion { background: #fef3e8; color: #d97706; }
+        .service-toggle { font-size: 0.9em; }
+        .service-content { display: none; padding: 15px; background: white; }
+        .service-content.show { display: block; }
+        
+        /* Individual item cards - collapsible */
+        .item-card { margin: 8px 0; border: 1px solid #e0e0e0; border-radius: 5px; background: #fafafa; overflow: hidden; }
+        .item-card-header { padding: 10px 12px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: flex-start; transition: background 0.15s; }
+        .item-card-header:hover { background: #f0f0f0; }
+        .item-title-line { flex: 1; }
+        .item-title { font-weight: 600; color: #333; margin-bottom: 3px; }
+        .item-meta { font-size: 0.85em; color: #666; }
+        .item-toggle { color: #007bff; font-size: 0.85em; white-space: nowrap; margin-left: 10px; }
+        .item-body { display: none; padding: 12px; background: white; border-top: 1px solid #e0e0e0; color: #555; line-height: 1.6; }
+        .item-body.show { display: block; }
+        .item-link { display: inline-block; margin-top: 8px; font-size: 0.85em; color: #007bff; text-decoration: none; }
+        .item-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Context Registry</h1>
+            <p>View and manage conversation records</p>
+        </div>
+        
+        <div class="nav">
+            <a href="/">Dashboard</a>
+            <a href="/registry">Registry</a>
+            <a href="/jobs">Jobs</a>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters">
+            <form method="get" action="/registry" id="filter-form">
+                <div class="filter-row">
+                    <label>
+                        View Type
+                        <select name="view" id="view-select">
+                            <option value="conversations" {% if view == 'conversations' %}selected{% endif %}>Conversations</option>
+                            <option value="briefings" {% if view == 'briefings' %}selected{% endif %}>Daily Briefings</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Source
+                        <select name="source" id="source-select">
+                            <!-- Dynamically populated by JavaScript -->
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Date
+                        <select name="date">
+                            <option value="today" {% if date == 'today' %}selected{% endif %}>Today</option>
+                            <option value="7" {% if date == '7' %}selected{% endif %}>Last 7 days</option>
+                            <option value="30" {% if date == '30' %}selected{% endif %}>Last 30 days</option>
+                            <option value="90" {% if date == '90' %}selected{% endif %}>Last 90 days</option>
+                            <option value="all" {% if date == 'all' %}selected{% endif %}>All time</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Sort
+                        <select name="sort">
+                            <option value="desc" {% if sort == 'desc' or not sort %}selected{% endif %}>Newest First</option>
+                            <option value="asc" {% if sort == 'asc' %}selected{% endif %}>Oldest First</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Limit
+                        <select name="limit">
+                            <option value="10" {% if limit == 10 %}selected{% endif %}>10</option>
+                            <option value="25" {% if limit == 25 %}selected{% endif %}>25</option>
+                            <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
+                            <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="filter-actions">
+                    <button type="submit">Apply Filters</button>
+                    <button type="button" onclick="resetFilters()">Reset</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Results -->
+        {% if view == 'briefings' %}
+        <!-- Daily Briefings -->
+        {% if briefings %}
+        {% for briefing in briefings %}
+        <div class="briefing">
+            <div class="briefing-header">
+                <div class="briefing-date">📅 {{ briefing.execution_date }}</div>
+            </div>
+            
+            <div class="briefing-summary">
+                <strong>Collected Data:</strong>
+                📧 Gmail: {{ briefing.gmail_count }} items |
+                💬 Slack: {{ briefing.slack_count }} items |
+                📝 Notion: {{ briefing.notion_count }} items
+            </div>
+            
+            <div class="briefing-time">
+                ⏱️ {{ briefing.start_time }}
+                {% if briefing.end_time %}
+                → {{ briefing.end_time }}
+                {% endif %}
+                {% if briefing.execution_duration %}
+                ({{ briefing.execution_duration }}s)
+                {% endif %}
+            </div>
+            
+            {% set services = briefing.services_data.get('data', {}) %}
+            
+            <!-- Gmail Section -->
+            {% if services.gmail and services.gmail.emails %}
+            <div class="service-section">
+                <div class="service-header gmail" onclick="toggleService(this)">
+                    <span>📧 Gmail ({{ services.gmail.emails|length }} emails)</span>
+                    <span class="service-toggle">▶</span>
+                </div>
+                <div class="service-content">
+                    {% for email in services.gmail.emails %}
+                    <div class="item-card">
+                        <div class="item-card-header" onclick="toggleItem(this)">
+                            <div class="item-title-line">
+                                <div class="item-title">{{ email.subject }}</div>
+                                <div class="item-meta">From: {{ email.from }} • {{ email.date }}</div>
+                            </div>
+                            <span class="item-toggle">펼치기</span>
+                        </div>
+                        <div class="item-body">
+                            <strong>Preview:</strong><br>
+                            {{ email.snippet }}<br><br>
+                            {% if email.body %}
+                            <strong>Full Content:</strong><br>
+                            {{ email.body }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Slack Section -->
+            {% if services.slack and services.slack.mentions %}
+            <div class="service-section">
+                <div class="service-header slack" onclick="toggleService(this)">
+                    <span>💬 Slack ({{ services.slack.mentions|length }} mentions)</span>
+                    <span class="service-toggle">▶</span>
+                </div>
+                <div class="service-content">
+                    {% for mention in services.slack.mentions %}
+                    <div class="item-card">
+                        <div class="item-card-header" onclick="toggleItem(this)">
+                            <div class="item-title-line">
+                                <div class="item-title">#{{ mention.channel_name }}</div>
+                                <div class="item-meta">@{{ mention.user }} • {{ mention.timestamp }}</div>
+                            </div>
+                            <span class="item-toggle">펼치기</span>
+                        </div>
+                        <div class="item-body">
+                            {{ mention.text }}
+                            {% if mention.permalink %}
+                            <a href="{{ mention.permalink }}" target="_blank" class="item-link">View in Slack →</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Notion Section -->
+            {% if services.notion and services.notion.tasks %}
+            <div class="service-section">
+                <div class="service-header notion" onclick="toggleService(this)">
+                    <span>📝 Notion ({{ services.notion.tasks|length }} tasks)</span>
+                    <span class="service-toggle">▶</span>
+                </div>
+                <div class="service-content">
+                    {% for task in services.notion.tasks %}
+                    <div class="item-card">
+                        <div class="item-card-header" onclick="toggleItem(this)">
+                            <div class="item-title-line">
+                                <div class="item-title">
+                                    {{ task.title }}
+                                    <span style="padding: 2px 8px; background: #f0f0f0; border-radius: 3px; font-size: 0.85em; margin-left: 8px;">{{ task.status }}</span>
+                                    {% if task.priority %}
+                                    <span style="padding: 2px 8px; background: {% if task.priority == 'High' %}#ffe5e5{% elif task.priority == 'Medium' %}#fff3cd{% else %}#e8f4fd{% endif %}; border-radius: 3px; font-size: 0.85em; margin-left: 5px;">{{ task.priority }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="item-meta">
+                                    {% if task.due_date %}Due: {{ task.due_date }}{% endif %}
+                                    {% if task.last_edited_time %} • Updated: {{ task.last_edited_time }}{% endif %}
+                                </div>
+                            </div>
+                            <span class="item-toggle">펼치기</span>
+                        </div>
+                        <div class="item-body">
+                            Created: {{ task.created_time }}<br>
+                            {% if task.url %}
+                            <a href="{{ task.url }}" target="_blank" class="item-link">View in Notion →</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if briefing.notion_page_url %}
+            <div class="briefing-actions">
+                <a href="{{ briefing.notion_page_url }}" target="_blank">📄 View Notion Page</a>
+            </div>
+            {% endif %}
+            
+            {% if briefing.error_message %}
+            <div class="message" style="background: #f8d7da; color: #721c24; margin-top: 10px;">
+                <strong>Error:</strong> {{ briefing.error_message }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="message">No daily briefings found for the selected filters.</div>
+        {% endif %}
+        {% else %}
+        <!-- Conversations (existing) -->
+        {% for conv in conversations %}
+        <div class="conversation">
+            <div class="platform">{{ conv.platform }}</div>
+            <div class="timestamp">{{ conv.timestamp }} - Session: {{ conv.session_id }}</div>
+            
+            {% if conv.messages and conv.messages|length > 0 %}
+                <!-- Display full conversation -->
+                {% for msg in conv.messages %}
+                <div class="message">
+                    <strong>{% if msg.role == 'user' %}User{% else %}Assistant{% endif %}:</strong> 
+                    {{ msg.text }}
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Fallback to old format if messages not available -->
+                <div class="message">
+                    <strong>User:</strong> {{ conv.user_message }}
+                </div>
+                <div class="message">
+                    <strong>Assistant:</strong> {{ conv.assistant_response }}
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    
+    <script>
+        // Get current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentView = urlParams.get('view') || 'conversations';
+        const currentSource = urlParams.get('source') || 'all';
+        
+        // Source options based on view
+        const sourceOptions = {
+            conversations: [
+                { value: 'all', label: 'All' },
+                { value: 'cursor', label: 'Cursor' },
+                { value: 'claude', label: 'Claude' },
+                { value: 'chatgpt', label: 'ChatGPT' }
+            ],
+            briefings: [
+                { value: 'all', label: 'All' },
+                { value: 'gmail', label: '📧 Gmail' },
+                { value: 'slack', label: '💬 Slack' },
+                { value: 'notion', label: '📝 Notion' }
+            ]
+        };
+        
+        // Update source dropdown based on view
+        function updateSourceOptions(view) {
+            const sourceSelect = document.getElementById('source-select');
+            const options = sourceOptions[view] || sourceOptions.conversations;
+            
+            sourceSelect.innerHTML = '';
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.label;
+                if (opt.value === currentSource) {
+                    option.selected = true;
+                }
+                sourceSelect.appendChild(option);
+            });
+        }
+        
+        // Initialize on page load
+        updateSourceOptions(currentView);
+        
+        // Update when view changes
+        document.getElementById('view-select').addEventListener('change', function() {
+            updateSourceOptions(this.value);
+        });
+        
+        // Reset filters
+        function resetFilters() {
+            window.location.href = '/registry?view=conversations&source=all&date=30&sort=desc&limit=50';
+        }
+        
+        // Toggle service section (Gmail/Slack/Notion)
+        function toggleService(header) {
+            const content = header.nextElementSibling;
+            const toggle = header.querySelector('.service-toggle');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                toggle.textContent = '▶';
+            } else {
+                content.classList.add('show');
+                toggle.textContent = '▼';
+            }
+        }
+        
+        // Toggle individual item (email/mention/task)
+        function toggleItem(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.item-toggle');
+            
+            if (body.classList.contains('show')) {
+                body.classList.remove('show');
+                toggle.textContent = '펼치기';
+            } else {
+                body.classList.add('show');
+                toggle.textContent = '접기';
+            }
+        }
+    </script>
+</body>
+</html>
+    

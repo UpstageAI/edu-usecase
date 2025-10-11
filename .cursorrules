@@ -1,0 +1,72 @@
+# Cursor Rules for edu-usecase
+
+## MCP 툴 사용 규칙
+
+### conversation_log 호출 정책
+
+**사용자가 명시적으로 요청할 때만** `mcp_ai-agent-orchestrator_conversation_log` 호출
+
+#### 트리거 키워드:
+- "대화 저장해줘"
+- "이 대화 기록해줘"
+- "로그 저장"
+- "대화 내용 저장"
+- "지금까지 대화 저장"
+- "conversation log 저장"
+
+#### ❌ 자동 호출하지 않음:
+- 매 턴마다 자동으로 호출하지 않음
+- 일반 대화 시에는 호출하지 않음
+
+---
+
+### 파라미터 형식
+
+1. **channel** (문자열): `"cursor_session_YYYYMMDD_HHMM"` (현재 시각)
+2. **messages** (문자열): 세션 전체 대화를 JSON 배열 문자열로
+3. **meta** (문자열): `"{\"source\":\"cursor\",\"project\":\"edu-usecase\"}"`
+
+### ⚠️ 가장 중요: meta는 이스케이프된 문자열!
+
+```python
+# ❌ 잘못 - 객체
+{"source": "cursor"}
+
+# ✅ 올바름 - 이스케이프된 문자열
+"{\"source\":\"cursor\"}"
+```
+
+---
+
+### 올바른 호출 예시
+
+```xml
+<invoke name="mcp_ai-agent-orchestrator_conversation_log">
+<parameter name="channel">cursor_session_20251004_2230</parameter>
+<parameter name="messages">[{"role":"user","text":"대화 저장해줘","timestamp":"2025-10-04T22:30:00Z"}]</parameter>
+<parameter name="meta">{\"source\":\"cursor\",\"project\":\"edu-usecase\"}</parameter>
+</invoke>
+```
+
+---
+
+### extract 도구 사용법
+
+과거 대화 검색이 필요할 때 사용:
+
+```xml
+<invoke name="mcp_ai-agent-orchestrator_extract">
+<parameter name="channel"></parameter>
+<parameter name="query">{"text":"검색어","limit":2}</parameter>
+</invoke>
+```
+
+---
+
+### 핵심 원칙
+
+1. **선택적 저장**: 사용자 요청 시에만 conversation_log 호출
+2. **전체 대화 보존**: 세션의 모든 대화를 요약 없이 원문 저장
+3. **성능 최적화**: 일반 대화는 도구 호출 없이 즉시 응답
+4. **데이터 무결성**: 각 메시지에 role, text, timestamp 포함
+
