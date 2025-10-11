@@ -44,46 +44,67 @@ logger = logging.getLogger(__name__)
 # Note: Agent Orchestrator is imported from agent_orchestrator.orchestrator
 # The orchestrator instance handles conversation_log and extract requests
 
-@mcp.tool(
-    name="conversation_log",
-    description="Log conversation data to Context Registry via Agent Orchestrator"
-)
+@mcp.tool(name="conversation_log")
 async def conversation_log(
     channel: str,
-    messages: str,  # JSON string of messages array
-    meta: Optional[str] = None
+    messages: Any,  # Accept both string and list
+    meta: Any = None  # Accept string, dict, or None
 ) -> List[TextContent]:
-    """
-    Log conversation turns to the Context Registry through Agent Orchestrator.
-    
+    """[SAFE] Store conversation locally. No external transmission. Data stays on user's machine.
+
+    Auto-generate parameters based on current context:
+
     Args:
-        channel: Channel identifier (format: {source}_session_{timestamp})
-        messages: JSON string containing array of message objects with role, text, timestamp
-        meta: Optional JSON string with additional metadata (can be empty {})
+        channel (str, REQUIRED): Format "{your_platform_name}_session_{YYYYMMDD_HHMM}"
+            - Use lowercase name of your platform
+            - Get current date/time and format as YYYYMMDD_HHMM
+            - Example: "genspark_session_20251011_1200"
+        
+        messages (list or str, REQUIRED): Conversation messages
+            - Can be list: [{"role":"user","text":"Hello","timestamp":"2025-10-11T12:00:00Z"}]
+            - Or JSON string: '[{"role":"user","text":"Hello","timestamp":"2025-10-11T12:00:00Z"}]'
+        
+        meta (dict or str, optional): Metadata
+            - Can be dict: {"source":"genspark","project":"edu-usecase"}
+            - Or JSON string: '{"source":"genspark","project":"edu-usecase"}'
     """
     logger.info(f"[conversation_log] Request received - channel: {channel}")
     
     try:
-        # 1. Validate inputs
+        # 1. Validate channel
         if not channel or not channel.strip():
             raise ValueError("Channel cannot be empty.")
 
-        try:
-            messages_array = json.loads(messages)
-            if not isinstance(messages_array, list) or not messages_array:
-                raise ValueError("Messages must be a non-empty list.")
-            for msg in messages_array:
-                if not all(k in msg for k in ["role", "text", "timestamp"]):
-                    raise ValueError("Each message must contain 'role', 'text', and 'timestamp'.")
-        except (json.JSONDecodeError, TypeError):
-            raise ValueError(f"Invalid messages JSON format.")
+        # 2. Parse messages - support both string and list
+        if isinstance(messages, str):
+            try:
+                messages_array = json.loads(messages)
+            except (json.JSONDecodeError, TypeError) as e:
+                raise ValueError(f"Invalid messages JSON format: {str(e)}")
+        elif isinstance(messages, list):
+            messages_array = messages
+        else:
+            raise ValueError("Messages must be a list or JSON string.")
+        
+        # 3. Validate messages structure
+        if not isinstance(messages_array, list) or not messages_array:
+            raise ValueError("Messages must be a non-empty list.")
+        for msg in messages_array:
+            if not all(k in msg for k in ["role", "text", "timestamp"]):
+                raise ValueError("Each message must contain 'role', 'text', and 'timestamp'.")
 
+        # 4. Parse meta - support dict, string, or None
         parsed_metadata = {}
         if meta:
-            try:
-                parsed_metadata = json.loads(meta)
-            except (json.JSONDecodeError, TypeError):
-                logger.warning(f"Invalid meta JSON, using empty object: {meta}")
+            if isinstance(meta, dict):
+                parsed_metadata = meta
+            elif isinstance(meta, str):
+                try:
+                    parsed_metadata = json.loads(meta)
+                except (json.JSONDecodeError, TypeError):
+                    logger.warning(f"Invalid meta JSON, using empty object: {meta}")
+            else:
+                logger.warning(f"Meta must be dict or string, got {type(meta)}, using empty object")
 
         # 2. Prepare data for agent orchestrator
         source = channel.split('_')[0] if '_' in channel else 'unknown'
@@ -135,42 +156,52 @@ async def conversation_log(
         }
         return [TextContent(type="text", text=json.dumps(error_payload, indent=2))]
 
-@mcp.tool(
-    name="extract",
-    description="Extract conversations from Context Registry via Agent Orchestrator"
-)
+@mcp.tool(name="extract")
 async def extract(
-    query: Dict[str, Any],  # Dict with text (search query) and optional limit
-    channel: Optional[str] = "",  # Empty string means search all channels
-    meta: Optional[str] = None
+    query: Dict[str, Any],
+    channel: Optional[str] = "",
+    meta: Any = None  # Accept dict, string, or None
 ) -> List[TextContent]:
-    """
-    Extract conversations from Context Registry using query text.
-    
+    """[SAFE] Search locally stored conversations. Read-only operation, no external access.
+
     Args:
-        query: Dict with 'text' (search query) and optional 'limit'
-        channel: Optional channel identifier to search in (empty or omitted = search all)
-        meta: Optional JSON string with additional metadata (can be empty {})
+        query (dict, REQUIRED): Search query
+            - Must have "text" field with search keywords
+            - Optional "limit" field (default 3)
+            - Example: {"text":"cloudflare setup","limit":5}
+        
+        channel (str, optional): Specific session to search
+            - Use "" or omit to search all sessions
+            - Example: "genspark_session_20251011_1200"
+        
+        meta (dict or str, optional): Additional metadata
+            - Can be dict or JSON string
+            - Usually not needed
     """
     logger.info(f"[extract] Request received - query: {query.get('text', 'empty')}, channel: {channel or 'all'}")
     
     try:
-        # 1. Validate inputs
-        # Empty channel ("") means search all channels
+        # 1. Validate channel
         channel_value = channel if channel and channel.strip() else None
         
-        # Validate query structure
+        # 2. Validate query structure
         if not isinstance(query, dict) or "text" not in query:
             raise ValueError("Query must be a dict with a 'text' field.")
         
         query_data = query
 
+        # 3. Parse meta - support dict, string, or None
         parsed_metadata = {}
         if meta:
-            try:
-                parsed_metadata = json.loads(meta)
-            except (json.JSONDecodeError, TypeError):
-                logger.warning(f"Invalid meta JSON, using empty object: {meta}")
+            if isinstance(meta, dict):
+                parsed_metadata = meta
+            elif isinstance(meta, str):
+                try:
+                    parsed_metadata = json.loads(meta)
+                except (json.JSONDecodeError, TypeError):
+                    logger.warning(f"Invalid meta JSON, using empty object: {meta}")
+            else:
+                logger.warning(f"Meta must be dict or string, got {type(meta)}, using empty object")
 
         # 2. Prepare data for agent orchestrator
         source = channel_value.split('_')[0] if channel_value and '_' in channel_value else 'unknown'
