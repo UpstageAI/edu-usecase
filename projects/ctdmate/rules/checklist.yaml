@@ -1,0 +1,210 @@
+meta:
+  name: "CTDMate Checklist (M1~M2 + M2.6 CSV-aware)"
+  version: "0.7.2"
+  date: "2025-10-01"
+  scope:
+    sections_allow: ["1.*","2.*"]   # M1~M2만 처리
+
+global_red_flags:
+  phrases: ["TBD","N/A","추후 제출","as appropriate","etc."]
+  severity: "major"  # ↑ 높일수록 경미한 모호어도 실패 처리됨
+
+# ---------- M2.3(QOS) ----------
+m2_3_qos:
+  required: ["ProductName","DosageForm","ManufacturingProcess","References"]
+  severities:
+    ProductName: major
+    DosageForm: minor
+    ManufacturingProcess: major
+    References: minor
+  fields:
+    ProductName:
+      type: string
+      min_len: 2
+      pattern: "^[A-Za-z0-9][A-Za-z0-9 \\-®™]{1,99}$"
+      citation_required: true
+    DosageForm:
+      type: string
+      normalize_ref: "dosage_form"
+      allowed_values_ref: "value_sets.dosage_forms"
+    ManufacturingProcess:
+      any_of:
+        - type: string
+          min_len: 20
+        - type: array
+          item:
+            type: object
+            required_keys: ["step","description"]
+            keys:
+              step: {type: integer, min: 1, max: 99}
+              description: {type: string, min_len: 10}
+              cqa_linked: {type: boolean, default: false}
+      citation_required: true
+    Controls:
+      type: object
+      keys:
+        Specifications:
+          type: array
+          item:
+            type: object
+            required_keys: ["test","method","acceptance_criteria"]
+            keys:
+              test: {type: string, normalize_ref: "spec_test"}
+              method: {type: string, min_len: 3}
+              acceptance_criteria: {type: string, min_len: 3}
+        Justification: {type: string, min_len: 10}
+      conditional_required:
+        - when: {field: "DosageForm", in: ["tablet","film-coated tablet","capsule"]}
+          require_any: ["dissolution","uniformity of dosage units"]
+          target_path: "Controls.Specifications[].test"
+          severity: major
+    Stability:
+      type: object
+      keys:
+        StudyDesign:
+          type: object
+          keys:
+            conditions: {type: array, item: {type: string}, min_items: 1}
+            bracketing: {type: boolean}
+            matrixing: {type: boolean}
+        ResultsSummary: {type: string, min_len: 20}
+        ProposedShelfLife:
+          type: object
+          required_keys: ["period","storage_condition"]
+          keys:
+            period: {type: string, pattern: "^[0-9]{1,2} ?(months|yrs|years|개월)$"}
+            storage_condition: {type: string, min_len: 3}
+      citation_required: true
+    References:
+      type: array
+      item:
+        type: object
+        required_keys: ["doc","section","page","para_id"]
+        keys:
+          doc: {type: string}
+          section: {type: string}
+          page: {type: integer, min: 1}
+          para_id: {type: string}
+  coverage_weights:
+    ProductName: 0.15
+    DosageForm: 0.10
+    ManufacturingProcess: 0.35
+    Controls: 0.20
+    Stability: 0.10
+    References: 0.10
+  yaml_key_order: ["ProductName","DosageForm","ManufacturingProcess","Controls","Stability","References"]
+
+# ---------- M2.6(Nonclinical Written + Tabulated Summaries) ----------
+m2_6:
+  policy:
+    # 1) 정규식(대소문자 무시). m26_{숫자}_*.csv 전부 허용
+    csv_detection_regex:
+      - "(?i)^m26_\\d+_.*\\.csv$"
+    # 2) 하위호환: 기존 글롭 패턴
+    csv_detection_patterns:
+      - "M26_1_*.csv"
+      - "M26_2_*.csv"
+
+    require_tabulated_if_csv: true     # CSV 있으면 표 필수
+    require_written_if_no_csv: true    # CSV 없으면 서술 필수
+    allow_both_when_csv: true          # CSV 있어도 서술+표 모두 허용
+
+  required_keys_base: ["WrittenSummary","References"]
+  severities:
+    WrittenSummary: minor
+    TabulatedSummaries: major
+    References: minor
+
+  written_summary:
+    blocks:
+      - id: "Pharmacology"
+        min_len: 100
+        citation_required: true
+      - id: "Pharmacokinetics"
+        min_len: 100
+        citation_required: true
+      - id: "Toxicology"
+        min_len: 150
+        citation_required: true
+    key_findings:
+      type: array
+      item: {type: string, min_len: 10}
+
+  tabulated_summaries:
+    # ---- M26_1 (예: 약리/PK 요약 테이블) ----
+    M26_1:
+      source_csv:
+        regex: "(?i)^m26_1_.*\\.csv$"   # 또는 glob: "M26_1_*.csv"
+        encoding: "utf-8"
+        delimiter: ","
+      table_schema:
+        columns:
+          StudyID:        {required: true,  type: string}
+          StudyType:      {required: true,  type: string, normalize_ref: "study_type"}
+          Species:        {required: true,  type: string, normalize_ref: "species"}
+          Sex:            {required: false, type: string, normalize_ref: "sex"}
+          Route:          {required: true,  type: string, normalize_ref: "route"}
+          DoseRegimen:    {required: true,  type: string}
+          Duration:       {required: true,  type: string, normalize_ref: "duration"}
+          TK_PKC:         {required: false, type: string}
+          KeyFindings:    {required: true,  type: string}
+          GLP:            {required: false, type: string, normalize_ref: "glp"}
+          Reference:      {required: true,  type: string}
+          Notes:          {required: false, type: string}
+        min_rows: 3
+        forbid_phrases: ["TBD","N/A","미정"]
+      render:
+        format: "markdown"
+        group_by: ["Species","StudyType"]
+        column_order: ["StudyID","StudyType","Species","Sex","Route","DoseRegimen","Duration","TK_PKC","KeyFindings","GLP","Reference"]
+        wrap_width: 60
+        show_units: true
+
+    # ---- M26_2 (예: 독성 요약 테이블) ----
+    M26_2:
+      source_csv:
+        regex: "(?i)^m26_2_.*\\.csv$"   # 또는 glob: "M26_2_*.csv"
+        encoding: "utf-8"
+        delimiter: ","
+      table_schema:
+        columns:
+          StudyID:        {required: true,  type: string}
+          Species:        {required: true,  type: string, normalize_ref: "species"}
+          Sex:            {required: false, type: string, normalize_ref: "sex"}
+          Route:          {required: true,  type: string, normalize_ref: "route"}
+          StudyType:      {required: true,  type: string, normalize_ref: "study_type"}
+          Duration:       {required: true,  type: string, normalize_ref: "duration"}
+          NOAEL:          {required: false, type: string, normalize_ref: "dose_unit"}
+          MTD:            {required: false, type: string, normalize_ref: "dose_unit"}
+          Endpoints:      {required: false, type: string}
+          KeyFindings:    {required: true,  type: string}
+          GLP:            {required: false, type: string, normalize_ref: "glp"}
+          Reference:      {required: true,  type: string}
+          Notes:          {required: false, type: string}
+        min_rows: 5
+        forbid_phrases: ["TBD","N/A","미정"]
+      render:
+        format: "markdown"
+        group_by: ["Species","StudyType"]
+        column_order: ["StudyID","Species","Sex","StudyType","Route","Duration","DoseRegimen","NOAEL","MTD","Endpoints","KeyFindings","GLP","Reference"]
+        wrap_width: 60
+        show_units: true
+
+  references:
+    type: array
+    item:
+      type: object
+      required_keys: ["doc","section","page","para_id"]
+
+# ---------- 값 집합 ----------
+value_sets:
+  dosage_forms:
+    - "tablet"
+    - "film-coated tablet"
+    - "capsule"
+    - "solution"
+    - "suspension"
+    - "syrup"
+    - "powder for injection"
+    - "ophthalmic solution"
+    - "ophthalmic suspension"
