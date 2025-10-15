@@ -1,78 +1,94 @@
-# 최종 프로젝트 제출 리포지토리
+# Meta Llama AI Academy Project
 
-## 개요
+## Workshop Overview
 
-이 리포지토리는 Meta x Llama Academy 최종 프로젝트를 제출하기 위한 공식 공간입니다.
-모든 프로젝트가 원활하게 취합될 수 있도록, 아래의 가이드라인을 반드시 준수해야 합니다.
+**Meta Llama AI Academy** was a 3-day intensive workshop held from September 30th to October 2nd, 2024.
 
----
+The core objective of this workshop was to implement better workflows using **Llama Local Model** and **Agent Architecture** with the theme of **"Future of Work"**.
 
-## 프로젝트 시작 절차
-
-모든 팀은 프로젝트 시작 전, 다음 절차에 따라 팀의 작업 디렉토리를 설정해야 합니다.
-
-1.  **팀 디렉토리 생성**: `projects/` 디렉토리 하위에 팀명으로 된 신규 디렉토리를 생성합니다. 디렉토리명에는 공백 대신 하이픈(-) 사용을 원칙으로 합니다.
-    * `예시: projects/llama-agent-team/`
-
-2.  **프로젝트 파일 관리**: 모든 소스 코드, README.md 등 프로젝트와 관련된 모든 산출물은 상기 단계에서 생성한 팀 디렉토리 내부에 위치해야 합니다(Merge Conflict 예방 차원). 각 팀은 자신만의 기술 스택과 배포 방식을 자유롭게 선택할 수 있습니다.
-
-3.  **README 작성**: 각 팀의 디렉토리에는 프로젝트를 상세히 설명하는 `README.md` 파일이 반드시 포함되어야 합니다. README 작성에 필요한 필수 포함 항목은 별도 가이드를 참고해주세요.
+Participants developed innovative solutions to solve real-world business problems through AI agents and local LLMs.
 
 ---
 
-## 디렉토리 구조 예시
+## Team Projects
 
-각 팀은 `projects/` 하위에 자신만의 디렉토리를 가지며, 팀 내부에서는 자유롭게 프로젝트 구조를 설계할 수 있습니다.
+### 01. Doc-To-RAG-Benchmark
+**Multi-Agent Based Document Structure Optimization and Text Extraction Automation**
 
-### 기본 구조
-```
-.
-│
-├── README.md 
-│
-└── projects/  
-    │
-    └── [팀명]/  # 각 팀은 자신의 팀명으로 디렉토리를 생성
-        │
-        ├── README.md
-        ├── ...
-```
+A project that addresses the limitations of manual RAG benchmark construction. It automates document structure-specific parsing performance limitations and manual QA data construction inefficiencies through a Multi-Agent system, automatically analyzing document structures to determine optimal parsing methods and building high-performance LLM-based benchmarks automatically.
 
-### 예시
+### 02. LaLaLlama
+**AI-Based Proposal Analysis and Evaluation System**
 
+A proposal analysis and evaluation system developed using Multi-agent to solve difficulties in the bidding review process. By combining RAG, Multi-agent, and LLM technologies, it implements AI-based review automation, significantly improving the efficiency and accuracy of proposal evaluation.
 
-```
-projects/team-a/
-├── README.md
-├── requirements.txt
-├── Dockerfile          
-├── .env.example
-└── src/
-    ├── main.py
-    ├── agents/
-    └── services/
-```
+### 03. RagLLama
+**AI-Based Next-Generation HR Sourcing Agent**
 
-### 팀 디렉토리 내부 `README.md` 템플릿 예시
-```markdown
-# 프로젝트 이름
+An AI-based HR sourcing system that solves the problems of changing recruitment paradigms and increased search/selection burden on recruiters. It understands natural language queries and integrates multiple data sources (structured DB, unstructured documents, web search) through a LangGraph-based ReAct Agent structure to solve complex queries through reasoning-action iteration.
+
+### 04. LlamaGuard
+**AI-Based Code Security Review System**
+
+A system that saves time by using AI to address the time-consuming process of manually classifying severity levels and creating patches for multiple issues in code security reviews. It utilizes Python, Llama-based on-device LLM with fine-tuning, Solar-pro2 LLM, LangGraph, and RAG technologies to automatically analyze and classify security vulnerabilities.
+
+### 05. CTDMate
+**CTD Document Auto-Generation System**
+
+An AI-based system that solves the time and cost difficulties pharmaceutical companies face in CTD (Common Technical Document) creation. It provides a fully automated workflow where users upload documents, and the system performs automatic parsing, document generation, and outputs in the desired file format. It utilizes Solar-pro2 API, Llama-3.2-3B-Instruct fine-tuned model, PyTorch, and LangGraph technologies.
+
+### 06. SmartWay
+**Analytics Agent for Structured Data Analysis**
+
+A system that performs vehicle dispatch-related data analysis by designing an Analytics Agent for structured data analysis. It combines RAG and Analytics Agent technologies to automate complex data analysis tasks and provide insights.
+
+### 07. YouCanDoIt
+**Personal Work Information Centralization App**
+
+An app that centralizes scattered work records and conversations into one hub for storage, search, and summarization, providing daily morning briefings. It automatically stores conversations/notes/information from all tools around a Context Registry (DB) and processes context retrieval, summarization, and briefing through an Agent Orchestrator that receives requests/schedules.
+
+### 08. StartMate
+**Startup-Focused IP/Patent Information Provision System**
+
+An AI chatbot that solves difficulties in legal information verification, existing patent information understanding, and information security concerns. It provides patent and intellectual property information and technology trends to startup founders, utilizing Llama-3.2-3B-Instruct, Upstage Solar-pro2 API, LangGraph, intfloat/multilingual-e5-base, and other technologies.
+
 ---
-## 팀원 소개
----
-## 프로젝트 개요
----
-## 주요 기능
----
-## 기술 스택 및 아키텍처
-### 기술 스택
-### 아키텍처
----
-## 실행 방법
 
-## 제출 방법
+## Technology Focus
 
-프로젝트 제출은 Fork & Pull Request 방식을 따릅니다.
-제출에 관한 상세 절차는 운영진이 별도로 안내한 "최종 프로젝트 제출 가이드" 문서를 참고해주세요.
+All projects in this workshop were developed around the following core technologies:
 
+- **Llama Local Model**: Privacy protection and cost efficiency through on-device AI inference
+- **Agent Architecture**: Intelligent agent systems that automate complex tasks
+- **RAG (Retrieval-Augmented Generation)**: Providing accurate and reliable information
+- **Multi-Agent Systems**: Solving complex problems through collaborative AI agents
+- **Future of Work**: New workflows that maximize human work efficiency through AI
+
+---
+
+## Project Structure
 
 ```
+projects/
+├── 01-Doc-To-RAG-Benchmark/     # Document parsing automation
+├── 02-LaLaLlama/                # Proposal analysis system
+├── 03-ragllama/                 # HR sourcing agent
+├── 04-llamaguard/               # Code security review
+├── 05-ctdmate/                  # CTD document auto-generation
+├── 06-smartway/                 # Data analysis agent
+├── 07-youcandoit/               # Work information centralization
+└── 08-startmate/                # Patent information chatbot
+```
+
+Each project is contained in an independent directory with complete implementations and detailed READMEs.
+
+---
+
+## Getting Started
+
+For detailed execution methods and technology stacks of each project, please refer to the README.md file in the respective project directory.
+
+**Workshop Period**: September 30 - October 2, 2024  
+**Theme**: Future of Work with Llama Local Model and Agent Architecture  
+**Total Teams**: 8 teams  
+**Total Participants**: 40+ developers
