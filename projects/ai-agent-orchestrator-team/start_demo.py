@@ -218,17 +218,8 @@ async def main():
     base_path = Path(__file__).parent
     
     # Start components
+    # Note: Context Registry and Agent Orchestrator are libraries, not standalone services
     components = [
-        {
-            "name": "Context Registry",
-            "command": ["uv", "run", "python", "registry.py"],
-            "cwd": base_path / "context_registry"
-        },
-        {
-            "name": "Agent Orchestrator", 
-            "command": ["uv", "run", "python", "orchestrator.py"],
-            "cwd": base_path / "agent_orchestrator"
-        },
         {
             "name": "MCP Server",
             "command": ["uv", "run", "python", "server.py"],
@@ -256,8 +247,10 @@ async def main():
     logger.info("Demo URLs:")
     logger.info("- Backoffice UI: http://localhost:8003")
     logger.info("- MCP Server: stdio (for client connections)")
-    logger.info("- Agent Orchestrator: http://localhost:8001")
-    logger.info("- Context Registry: http://localhost:8002")
+    logger.info("")
+    logger.info("Note:")
+    logger.info("- Context Registry: SQLite DB (accessed as library)")
+    logger.info("- Agent Orchestrator: Integrated with MCP Server")
     logger.info("")
     logger.info("Press Ctrl+C to stop all services")
     

@@ -200,6 +200,15 @@ flowchart LR
 
 ---
 
+## 지원 환경
+
+> **주의**: 본 프로젝트는 **Windows 11** 환경에서 개발 및 테스트되었습니다.
+> 
+> - 일부 스크립트(`scripts/kill_ports.py` 등)가 Windows 전용 명령어(`netstat`, `taskkill`)를 사용합니다.
+> - macOS/Linux 환경에서 실행하려면 패키지 설치 및 스크립트 수정 등 약간의 커스텀이 필요합니다.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -227,12 +236,14 @@ uv run python start_demo.py
 
 ### 사전 준비
 
+> **권장 환경**: Windows 11
+
 #### 1. uv 설치
 ```bash
-# Windows (PowerShell)
+# Windows (PowerShell) - 권장
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# Linux/macOS
+# Linux/macOS (실험적 지원)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
@@ -369,6 +380,7 @@ projects/ai-agent-orchestrator-team/
 │   ├── gmail_mcp_client.py # Gmail 연동
 │   ├── slack_mcp_client.py # Slack 연동
 │   ├── notion_mcp_client.py# Notion 연동
+│   ├── notion_briefing_integration.py  # Notion 브리핑 통합
 │   ├── daily_briefing_collector.py  # 일일 브리핑 데이터 수집
 │   ├── daily_briefing_runner.py     # 일일 브리핑 실행기
 │   ├── briefing_analyzer.py         # 브리핑 분석
@@ -380,10 +392,13 @@ projects/ai-agent-orchestrator-team/
 │   ├── job_manager.py      # 작업 관리자
 │   ├── job_executor.py     # 작업 실행기
 │   └── templates/          # HTML 템플릿
+│       ├── dashboard.html  # 대시보드 페이지
+│       ├── job_history.html# 작업 히스토리 페이지
+│       ├── jobs.html       # 작업 관리 페이지
+│       └── registry.html   # 레지스트리 뷰어 페이지
 ├── client_configs/         # AI 클라이언트 설정 예시 (참고용)
 │   ├── cursor.json         # Cursor 설정 예시
-│   ├── claude_desktop.json # Claude Desktop 설정 예시
-│   └── chatgpt_desktop.json# ChatGPT Desktop 설정 예시
+│   └── claude_desktop.json # Claude Desktop 설정 예시
 ├── scripts/                # 개발 및 설정 유틸리티
 │   ├── setup_env.py        # 환경 설정 자동화 스크립트
 │   ├── create_gmail_token.py # Gmail OAuth 토큰 생성
@@ -413,7 +428,7 @@ uv run python start_demo.py
 # 환경 설정
 uv run python scripts/setup_env.py
 
-# 포트 정리 (Windows)
+# 포트 정리 (Windows 전용)
 python scripts/kill_ports.py
 
 # 개별 컴포넌트 실행
@@ -423,16 +438,16 @@ uv run python context_registry/registry.py        # Context Registry
 uv run python backoffice/app.py                   # Backoffice UI
 ```
 
-### 유용한 명령어
+### 유용한 명령어 (Windows)
 
-```bash
-# 로그 확인 (Windows PowerShell)
+```powershell
+# 로그 확인 (PowerShell)
 Get-Content logs\backoffice_*.log -Tail 50 -Wait
 
-# 프로세스 확인
+# 프로세스 확인 (PowerShell/CMD)
 netstat -ano | findstr :8003
 
-# 데이터베이스 초기화 (주의!)
+# 데이터베이스 초기화 (PowerShell, 주의!)
 Remove-Item context_registry\context_registry.db
 Remove-Item backoffice\jobs.db
 ```
@@ -496,7 +511,7 @@ Remove-Item backoffice\jobs.db
 
 ## 라이선스
 
-MIT License - 자세한 내용은 LICENSE 파일을 참조하세요.
+본 프로젝트는 Meta Llama Academy 해커톤 운영진의 라이선스 방침을 따릅니다.
 
 ---
 

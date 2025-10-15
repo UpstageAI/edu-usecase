@@ -44,13 +44,9 @@ logger = logging.getLogger(__name__)
 # Note: Agent Orchestrator is imported from agent_orchestrator.orchestrator
 # The orchestrator instance handles conversation_log and extract requests
 
-@mcp.tool(name="conversation_log")
-async def conversation_log(
-    channel: str,
-    messages: Any,  # Accept both string and list
-    meta: Any = None  # Accept string, dict, or None
-) -> List[TextContent]:
-    """[SAFE] Store conversation locally. No external transmission. Data stays on user's machine.
+@mcp.tool(
+    name="conversation_log",
+    description="""[SAFE] Store conversation locally. No external transmission. Data stays on user's machine.
 
     Auto-generate parameters based on current context:
 
@@ -68,6 +64,12 @@ async def conversation_log(
             - Can be dict: {"source":"genspark","project":"edu-usecase"}
             - Or JSON string: '{"source":"genspark","project":"edu-usecase"}'
     """
+)
+async def conversation_log(
+    channel: str,
+    messages: Any,  # Accept both string and list
+    meta: Any = None  # Accept string, dict, or None
+) -> List[TextContent]:
     logger.info(f"[conversation_log] Request received - channel: {channel}")
     
     try:
@@ -156,68 +158,60 @@ async def conversation_log(
         }
         return [TextContent(type="text", text=json.dumps(error_payload, indent=2))]
 
-@mcp.tool(name="extract")
-async def extract(
-    query: Dict[str, Any],
-    channel: Optional[str] = "",
-    meta: Any = None  # Accept dict, string, or None
-) -> List[TextContent]:
-    """[SAFE] Search locally stored conversations. Read-only operation, no external access.
+@mcp.tool(
+    name="extract",
+    description="""[SAFE] Search locally stored conversations. Read-only operation, no external access.
 
     Args:
-        query (dict, REQUIRED): Search query
-            - Must have "text" field with search keywords
-            - Optional "limit" field (default 3)
-            - Example: {"text":"cloudflare setup","limit":5}
+        query (str, REQUIRED): Search keywords
+            - Text to search for in conversations
+            - Example: "cloudflare setup"
+        
+        limit (int, optional): Maximum number of results to return
+            - Default: 2
+            - Example: 5
         
         channel (str, optional): Specific session to search
             - Use "" or omit to search all sessions
             - Example: "genspark_session_20251011_1200"
-        
-        meta (dict or str, optional): Additional metadata
-            - Can be dict or JSON string
-            - Usually not needed
     """
-    logger.info(f"[extract] Request received - query: {query.get('text', 'empty')}, channel: {channel or 'all'}")
+)
+async def extract(
+    query: str,
+    limit: int = 2,
+    channel: Optional[str] = ""
+) -> List[TextContent]:
+    logger.info(f"[extract] Request received - query: '{query}', limit: {limit}, channel: {channel or 'all'}")
     
     try:
-        # 1. Validate channel
-        channel_value = channel if channel and channel.strip() else None
+        # 1. Validate and normalize channel
+        channel_value = channel.strip() if channel and channel.strip() else None
         
-        # 2. Validate query structure
-        if not isinstance(query, dict) or "text" not in query:
-            raise ValueError("Query must be a dict with a 'text' field.")
+        # 2. Validate query
+        if not query or not query.strip():
+            raise ValueError("Query text cannot be empty.")
         
-        query_data = query
+        # 3. Build query data
+        query_data = {
+            "text": query.strip(),
+            "limit": limit
+        }
 
-        # 3. Parse meta - support dict, string, or None
-        parsed_metadata = {}
-        if meta:
-            if isinstance(meta, dict):
-                parsed_metadata = meta
-            elif isinstance(meta, str):
-                try:
-                    parsed_metadata = json.loads(meta)
-                except (json.JSONDecodeError, TypeError):
-                    logger.warning(f"Invalid meta JSON, using empty object: {meta}")
-            else:
-                logger.warning(f"Meta must be dict or string, got {type(meta)}, using empty object")
-
-        # 2. Prepare data for agent orchestrator
+        # 4. Prepare data for agent orchestrator
         source = channel_value.split('_')[0] if channel_value and '_' in channel_value else 'unknown'
         extract_data = {
-            "channel": channel_value,  # None for全체 검색, specific value for filtered search
-            "query": query_data,
+            "channel": channel_value,  # None for all channels, specific value for filtered search
+            "query": query_data,  # Contains text and limit
             "source": source,
-            "metadata": parsed_metadata
+            "metadata": {}
         }
         
-        # 3. Process through agent orchestrator (currently mock)
+        # 5. Process through agent orchestrator
         result = await orchestrator.process_request("extract", extract_data)
         
-        logger.info(f"Extract completed for channel: {channel}")
+        logger.info(f"Extract completed for channel: {channel_value or 'all'}")
         
-        # 4. Format success response according to spec
+        # 6. Format success response according to spec
         response_payload = {
             "ok": True,
             "tool": "extract",
@@ -287,9 +281,18 @@ async def main():
         logger.info("Available tools: conversation_log, extract")
         logger.info("=" * 60)
         
+        # Ensure MCP server is fully initialized before starting HTTP server
+        await asyncio.sleep(0.1)
+        logger.info("MCP server initialization complete")
+        
         # Get FastMCP's streamable HTTP FastAPI app
         # This provides /mcp endpoint automatically with SSE support
         app = mcp.streamable_http_app()
+        
+        # Add startup event to log server readiness
+        @app.on_event("startup")
+        async def startup_event():
+            logger.info("HTTP server fully ready to accept connections")
         
         # Run with uvicorn
         config = uvicorn.Config(
@@ -297,7 +300,8 @@ async def main():
             host=args.host,
             port=args.port,
             log_level="info",
-            access_log=True
+            access_log=True,
+            timeout_keep_alive=75  # Increase keep-alive timeout
         )
         server = uvicorn.Server(config)
         await server.serve()

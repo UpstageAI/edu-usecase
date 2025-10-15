@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
 특정 포트를 사용하는 프로세스를 종료하는 Python 스크립트
+기본 포트: 8000, 8001, 8002, 8003 (AI Agent Orchestrator 관련 서비스)
+
 사용법: python kill_ports.py
 """
 
@@ -30,19 +32,24 @@ def find_process_by_port_windows(port: int) -> List[Tuple[int, str]]:
         )
         
         processes = []
+        seen_pids = set()  # 중복 방지
+        
         for line in result.stdout.split('\n'):
-            # LISTENING 상태이고 해당 포트를 사용하는 라인만 확인
-            if f':{port}' in line and 'LISTENING' in line:
+            # 해당 포트를 사용하는 라인 확인 (LISTENING, ESTABLISHED 등 모든 상태)
+            if f':{port}' in line and 'TCP' in line:
                 # PID는 마지막 컬럼
                 parts = line.strip().split()
                 if parts:
                     pid_str = parts[-1]
                     if pid_str.isdigit():
                         pid = int(pid_str)
-                        # 프로세스 이름 가져오기
-                        process_name = get_process_name(pid)
-                        if process_name:
-                            processes.append((pid, process_name))
+                        # 중복 제거
+                        if pid not in seen_pids:
+                            seen_pids.add(pid)
+                            # 프로세스 이름 가져오기
+                            process_name = get_process_name(pid)
+                            if process_name:
+                                processes.append((pid, process_name))
         
         return processes
     
@@ -114,7 +121,7 @@ def kill_process(pid: int, process_name: str) -> bool:
 def main():
     """메인 함수"""
     # 종료할 포트 목록
-    ports = [8001, 8002, 8003]
+    ports = [8000, 8001, 8002, 8003]
     
     print("=" * 50)
     print("포트 프로세스 종료 스크립트 (Python)")

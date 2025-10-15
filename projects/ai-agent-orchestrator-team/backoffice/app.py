@@ -168,25 +168,33 @@ def get_conversations(limit=50, source_filter=None, date_filter=None, sort_order
                 conv['platform'] = conv.get('source', 'unknown')
                 conv['session_id'] = conv.get('channel', 'unknown')
                 
+                # Handle two payload formats:
+                # 1. Direct array: [{"role": "user", "text": "...", ...}, ...]
+                # 2. Nested object: {"messages": [{"role": "user", "text": "...", ...}, ...]}
+                messages_to_process = []
                 if isinstance(conv['payload'], list):
-                    for msg in conv['payload']:
-                        if isinstance(msg, dict):
-                            role = msg.get('role', '')
-                            text = msg.get('text', '')
-                            timestamp = msg.get('timestamp', '')
-                            
-                            # Add to messages list (full conversation)
-                            conv['messages'].append({
-                                'role': role,
-                                'text': text,
-                                'timestamp': timestamp
-                            })
-                            
-                            # Also keep first message for backward compatibility
-                            if role == 'user' and not conv['user_message']:
-                                conv['user_message'] = text
-                            elif role == 'assistant' and not conv['assistant_response']:
-                                conv['assistant_response'] = text
+                    messages_to_process = conv['payload']
+                elif isinstance(conv['payload'], dict) and 'messages' in conv['payload']:
+                    messages_to_process = conv['payload']['messages']
+                
+                for msg in messages_to_process:
+                    if isinstance(msg, dict):
+                        role = msg.get('role', '')
+                        text = msg.get('text', '')
+                        timestamp = msg.get('timestamp', '')
+                        
+                        # Add to messages list (full conversation)
+                        conv['messages'].append({
+                            'role': role,
+                            'text': text,
+                            'timestamp': timestamp
+                        })
+                        
+                        # Also keep first message for backward compatibility
+                        if role == 'user' and not conv['user_message']:
+                            conv['user_message'] = text
+                        elif role == 'assistant' and not conv['assistant_response']:
+                            conv['assistant_response'] = text
                 
                 conversations.append(conv)
             

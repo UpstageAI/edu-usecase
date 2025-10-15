@@ -194,6 +194,43 @@ class ContextRegistry:
             conn.execute("CREATE INDEX IF NOT EXISTS idx_ingest_svc_time ON ingest_event(service, event_time)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_ingest_kind ON ingest_event(kind)")
             
+            # [추가] FTS5 full-text search table for conversation
+            conn.execute("""
+                CREATE VIRTUAL TABLE IF NOT EXISTS conversation_fts 
+                USING fts5(id UNINDEXED, channel, payload, timestamp UNINDEXED)
+            """)
+            
+            # [추가] Triggers to keep conversation_fts in sync with conversation table
+            # INSERT trigger
+            conn.execute("""
+                CREATE TRIGGER IF NOT EXISTS conversation_fts_insert 
+                AFTER INSERT ON conversation
+                BEGIN
+                    INSERT INTO conversation_fts(id, channel, payload, timestamp)
+                    VALUES (new.id, new.channel, new.payload, new.timestamp);
+                END
+            """)
+            
+            # UPDATE trigger
+            conn.execute("""
+                CREATE TRIGGER IF NOT EXISTS conversation_fts_update
+                AFTER UPDATE ON conversation
+                BEGIN
+                    DELETE FROM conversation_fts WHERE id = old.id;
+                    INSERT INTO conversation_fts(id, channel, payload, timestamp)
+                    VALUES (new.id, new.channel, new.payload, new.timestamp);
+                END
+            """)
+            
+            # DELETE trigger (soft delete 고려)
+            conn.execute("""
+                CREATE TRIGGER IF NOT EXISTS conversation_fts_delete
+                AFTER UPDATE OF deleted ON conversation WHEN new.deleted = TRUE
+                BEGIN
+                    DELETE FROM conversation_fts WHERE id = old.id;
+                END
+            """)
+            
             conn.commit()
             logger.info("Database initialized successfully")
     
@@ -217,7 +254,7 @@ class ContextRegistry:
                     record.record_type,
                     record.source,
                     record.channel,
-                    json.dumps(record.payload) if record.payload else '[]',
+                    json.dumps(record.payload, ensure_ascii=False) if record.payload else '[]',
                     record.timestamp,
                     record.actor,
                     record.deleted
@@ -547,8 +584,136 @@ class ContextRegistry:
             logger.error(f"Failed to log action: {str(e)}")
     
     def get_conversations(self, channel: str = None, source: str = None, 
-                         limit: int = 100) -> List[ConversationRecord]:
-        """Retrieve conversations with optional filtering"""
+                         search_text: str = None, limit: int = 100) -> List[ConversationRecord]:
+        """Retrieve conversations with optional filtering and hybrid text search (FTS5 + LIKE fallback)"""
+        
+        if search_text:
+            # 1단계: FTS5 검색 (영어 최적화)
+            results = self._fts5_search(channel, source, search_text, limit)
+            
+            # 2단계: 결과 없으면 단어 분리 LIKE fallback (한글 지원)
+            if not results:
+                logger.info(f"FTS5 returned no results for '{search_text}', trying LIKE fallback")
+                results = self._like_fallback_search(channel, source, search_text, limit)
+            
+            return results
+        else:
+            # Regular query without search
+            return self._regular_search(channel, source, limit)
+    
+    def _fts5_search(self, channel: str = None, source: str = None, 
+                     search_text: str = None, limit: int = 100) -> List[ConversationRecord]:
+        """FTS5 full-text search (optimized for English)"""
+        query = """
+            SELECT c.* FROM conversation c
+            INNER JOIN conversation_fts fts ON c.id = fts.id
+            WHERE c.deleted = FALSE AND fts.payload MATCH ?
+        """
+        params = [search_text]
+        
+        if channel:
+            query += " AND c.channel = ?"
+            params.append(channel)
+        
+        if source:
+            query += " AND c.source = ?"
+            params.append(source)
+        
+        query += " ORDER BY c.timestamp DESC LIMIT ?"
+        params.append(limit)
+        
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.execute(query, params)
+                rows = cursor.fetchall()
+                
+                conversations = []
+                for row in rows:
+                    conv = ConversationRecord(
+                        id=row["id"],
+                        record_type=row["record_type"],
+                        source=row["source"],
+                        channel=row["channel"],
+                        payload=json.loads(row["payload"]) if row["payload"] else [],
+                        timestamp=row["timestamp"],
+                        actor=row["actor"],
+                        deleted=bool(row["deleted"]),
+                        created_at=row["created_at"]
+                    )
+                    conversations.append(conv)
+                
+                logger.info(f"FTS5 search found {len(conversations)} results for '{search_text}'")
+                return conversations
+                
+        except Exception as e:
+            logger.warning(f"FTS5 search failed for '{search_text}': {str(e)}")
+            return []
+    
+    def _like_fallback_search(self, channel: str = None, source: str = None,
+                              search_text: str = None, limit: int = 100) -> List[ConversationRecord]:
+        """
+        LIKE-based fallback search with word splitting (OR logic)
+        Example: "포트 종료" → WHERE payload LIKE '%포트%' OR payload LIKE '%종료%'
+        """
+        words = search_text.strip().split()
+        if not words:
+            return []
+        
+        # Build dynamic query with OR logic
+        query = "SELECT * FROM conversation WHERE deleted = FALSE"
+        params = []
+        
+        # Add LIKE condition for each word (OR logic)
+        if words:
+            like_conditions = " OR ".join(["payload LIKE ?"] * len(words))
+            query += f" AND ({like_conditions})"
+            for word in words:
+                params.append(f'%{word}%')
+        
+        # Additional filters
+        if channel:
+            query += " AND channel = ?"
+            params.append(channel)
+        
+        if source:
+            query += " AND source = ?"
+            params.append(source)
+        
+        query += " ORDER BY timestamp DESC LIMIT ?"
+        params.append(limit)
+        
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.execute(query, params)
+                rows = cursor.fetchall()
+                
+                conversations = []
+                for row in rows:
+                    conv = ConversationRecord(
+                        id=row["id"],
+                        record_type=row["record_type"],
+                        source=row["source"],
+                        channel=row["channel"],
+                        payload=json.loads(row["payload"]) if row["payload"] else [],
+                        timestamp=row["timestamp"],
+                        actor=row["actor"],
+                        deleted=bool(row["deleted"]),
+                        created_at=row["created_at"]
+                    )
+                    conversations.append(conv)
+                
+                logger.info(f"LIKE fallback search (OR) found {len(conversations)} results for '{search_text}'")
+                return conversations
+                
+        except Exception as e:
+            logger.error(f"LIKE fallback search failed for '{search_text}': {str(e)}")
+            return []
+    
+    def _regular_search(self, channel: str = None, source: str = None,
+                        limit: int = 100) -> List[ConversationRecord]:
+        """Regular query without text search"""
         query = "SELECT * FROM conversation WHERE deleted = FALSE"
         params = []
         
@@ -771,12 +936,10 @@ async def main():
         record_type="conversation",
         source="claude",
         channel="claude_session_20250929_1430",
-        payload={
-            "messages": [
-                {"role": "user", "text": "What is machine learning?", "timestamp": datetime.now().isoformat()},
-                {"role": "assistant", "text": "Machine learning is a subset of artificial intelligence...", "timestamp": datetime.now().isoformat()}
-            ]
-        },
+        payload=[
+            {"role": "user", "text": "What is machine learning?", "timestamp": datetime.now().isoformat()},
+            {"role": "assistant", "text": "Machine learning is a subset of artificial intelligence...", "timestamp": datetime.now().isoformat()}
+        ],
         timestamp=datetime.now().isoformat(),
         actor="ao",
         deleted=False

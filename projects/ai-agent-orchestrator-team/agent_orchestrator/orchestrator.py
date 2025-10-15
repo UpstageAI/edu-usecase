@@ -104,8 +104,13 @@ class ContextRegistryClient:
             channel = query.get("channel")
             limit = query.get("limit", 10)
             
+            # Extract search text from query dict if exists
+            query_dict = query.get("query", {})
+            search_text = query_dict.get("text") if isinstance(query_dict, dict) else None
+            
             conversations = self.registry.get_conversations(
                 channel=channel if channel else None,
+                search_text=search_text,
                 limit=limit
             )
             
@@ -126,6 +131,16 @@ class ContextRegistryClient:
         
         try:
             content = data.get("content", {})
+            messages = content.get("messages", [])
+            
+            # Validate: Don't store empty conversations
+            if not messages or len(messages) == 0:
+                logger.warning(f"Skipping storage of empty conversation from {content.get('source', 'unknown')}")
+                return {
+                    "status": "skipped",
+                    "reason": "empty_messages",
+                    "message": "Conversation with no messages was not stored"
+                }
             
             # Create ConversationRecord
             record = self.ConversationRecord(
@@ -133,7 +148,7 @@ class ContextRegistryClient:
                 record_type="conversation",
                 source=content.get("source", "cursor"),
                 channel=content.get("channel", "unknown"),
-                payload=content.get("messages", []),
+                payload=messages,
                 timestamp=datetime.now().isoformat(),
                 actor="ao",
                 deleted=False
