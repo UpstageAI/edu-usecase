@@ -1,0 +1,14 @@
+[project]
+name = "llama-guard"
+version = "0.1.0"
+description = "CVE database downloader and vectorized database for RAG"
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31.0",
+    "numpy>=1.24.0",
+    "faiss-cpu>=1.7.4",
+    "sentence-transformers>=2.2.0",
+    "torch>=2.7.0",
+    "transformers>=4.39.0",
+    "accelerate>=0.20.0",
+]

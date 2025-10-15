@@ -1,0 +1,43 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Environment
+*.env
+.env
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Claude Code
+.claude/
+
+# LLaMA Models
+llama-model/llama-3.2-1B-Instruct/
+llama-model/llama-3.2-1B-Instruct-vuln-lora/
+llama-model/merged-vuln-detector/
+llama-model/Backup/
+
+# Data
+data/
+*_og*
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+nul
+tmp/

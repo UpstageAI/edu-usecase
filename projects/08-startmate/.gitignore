@@ -1,0 +1,57 @@
+# ─────────────────────────────
+# 프로젝트 데이터/모델
+# ─────────────────────────────
+data/
+models/
+llama.cpp/
+
+
+# 파인튜닝 및 양자화
+
+llama.cpp/
+merged-router-ckpt1000/
+
+# ─────────────────────────────
+# 환경설정 / 민감정보
+# ─────────────────────────────
+.env
+*.log
+*.jsonl.tmp
+*.ckpt
+*.merged-router-ckpt*
+
+# ─────────────────────────────
+# Python 관련
+# ─────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+.envrc
+
+# Jupyter / Colab
+.ipynb_checkpoints/
+*.ipynb~
+*.ipynb_checkpoints/
+
+# ─────────────────────────────
+# OS / IDE
+# ─────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─────────────────────────────
+# Docker
+# ─────────────────────────────
+*.pid
+*.seed
+*.bak
+*.tar
+*.out

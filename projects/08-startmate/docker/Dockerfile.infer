@@ -1,0 +1,26 @@
+FROM pytorch/pytorch:2.3.1-cuda12.1-cudnn8-devel
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip git cmake build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install --upgrade pip wheel setuptools && \
+    pip install --no-cache-dir fastapi uvicorn[standard] \
+    transformers==4.43.3 peft==0.12.0 accelerate==0.33.0 \
+    safetensors==0.4.3 requests
+
+WORKDIR /workspace
+COPY . /workspace
+
+# llama.cpp 빌드 & llama-server PATH 등록
+RUN git clone --depth=1 https://github.com/ggerganov/llama.cpp /workspace/llama.cpp && \
+    cmake -S /workspace/llama.cpp -B /workspace/llama.cpp/build && \
+    cmake --build /workspace/llama.cpp/build -j && \
+    ln -s /workspace/llama.cpp/build/bin/llama-server /usr/local/bin/llama-server
+
+EXPOSE 8000
+ENV GGUF_MODEL=/workspace/llama.cpp/router-q8.gguf
+ENV INFER_PORT=8000
+ENV CTX=4096
+
+CMD ["bash","-lc","llama-server -m ${GGUF_MODEL} -c ${CTX} --port ${INFER_PORT} --host 0.0.0.0"]

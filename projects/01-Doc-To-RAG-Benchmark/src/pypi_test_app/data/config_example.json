@@ -1,0 +1,33 @@
+{
+    "UPSTAGE_API":"",
+    "TAVILY_API_KEY": "",
+    "HUGGING_FACE_TOKEN":"",
+
+    "FINANCE_QA_PATH": "../data/finance_qa.csv",
+    "FINANCE_BENCHMARK_PATH": "../data/finance_benchmark.json",
+    "FINANCE_BENCHMARK_VALID_PATH": "../data/finance_benchmark_valid.json",
+    "FINANCE_BENCHMARK_VALID_FILTERING_PATH": "../data/finance_benchmark_valid_filtering.json",
+
+    "PIT_QA_PATH": "../data/pit_qa.csv",
+    "PIT_BENCHMARK_PATH": "../data/pit_benchmark.json",
+    "PIT_BENCHMARK_RAG_PATH": "../data/pit_benchmark_rag.json",
+    "PIT_BENCHMARK_VALID_PATH": "../data/pit_benchmark_valid.json",
+    "PIT_BENCHMARK_VALID_FILTERING_PATH": "../data/pit_benchmark_valid_filtering.json",
+
+    "REPORT_QA_PATH": "../data/fnreport.csv",
+    "REPORT_BENCHMARK_PATH": "../data/fnreport_benchmark.json",
+    "REPORT_BENCHMARK_RAG_PATH": "../data/fnreport_benchmark_rag.json",
+    "REPORT_BENCHMARK_VALID_PATH": "../data/fnreport_benchmark_valid.json",
+    "REPORT_BENCHMARK_VALID_FILTERING_PATH": "../data/fnreport_benchmark_valid_filtering.json", 
+
+    "KRX_QA_PATH": "../data/krx.csv",
+    "KRX_BENCHMARK_PATH": "../data/krx_benchmark.json",
+    "KRX_BENCHMARK_RAG_PATH": "../data/krx_benchmark_rag.json",
+    "KRX_BENCHMARK_VALID_PATH": "../data/krx_benchmark_valid.json",
+    "KRX_BENCHMARK_VALID_FILTERING_PATH": "../data/krx_benchmark_valid_filtering.json",
+
+    "GENERATE_QA_PROMPT_PATH": "../prompt/generate_qa_data.md",
+    "EVAL_DOMAIN_PROMPT_PATH": "../prompt/evaluate_domain.md",
+    "EVAL_QUALITY_PROMPT_PATH": "../prompt/evaluate_quality.md",
+    "EVAL_DIFFICULTY_PROMPT_PATH": "../prompt/evaluate_difficulty.md"
+}

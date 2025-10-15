@@ -1,0 +1,37 @@
+services:
+  app:
+    # inference 의존 제거 (외부 LLM 사용)
+    depends_on: []
+
+    working_dir: /workspace
+    command: streamlit run /workspace/src/app/ui_demo.py --server.port=8501 --server.address=0.0.0.0
+
+    environment:
+      # 외부 LLM 사용 → INFER_URL 무시, MODEL_PROVIDER로 라우팅
+      - MODEL_PROVIDER=${MODEL_PROVIDER}
+      - UPSTAGE_API_KEY=${UPSTAGE_API_KEY}
+      - UPSTAGE_BASE_URL=${UPSTAGE_BASE_URL}
+      - UPSTAGE_MODEL=${UPSTAGE_MODEL}
+
+      # --- 클라우드 임베딩 사용 안 함 ---
+      # EMBED_* 참조 줄은 모두 제거 (경고 방지)
+      - EMBED_URL=${EMBED_URL}
+      - EMBED_MAX_BATCH=${EMBED_MAX_BATCH}
+
+      # Qdrant
+      - QDRANT_URL=${QDRANT_URL}
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+      - QDRANT_COLLECTION=${QDRANT_COLLECTION}
+
+      # 파이썬 모듈 경로 (src 기반 import 안정화)
+      - PYTHONPATH=/workspace/src
+
+    volumes:
+      - .:/workspace
+
+    # 필요 시 포트 노출
+    ports:
+      - "8501:8501"
+
+    # compose v2에서 version 키는 삭제
+    # version:  <-- 제거하세요

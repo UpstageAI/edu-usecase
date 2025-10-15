@@ -1,0 +1,1 @@
+ruby\ndef validate_input(input)\n  if input =~ /^\\d{10}$/\n    puts \"Valid Input\"\n  else\n    puts \"Invalid Input\"\n  end\nend\n\n# Testing with valid input\nvalidate_input(\"1234567890\") # Valid Input\n\n# Testing with invalid input\nvalidate_input(\"12345678901234567890\") # Invalid Input\n

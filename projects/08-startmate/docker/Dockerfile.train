@@ -1,0 +1,44 @@
+FROM pytorch/pytorch:2.3.1-cuda12.1-cudnn8-devel
+
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    git git-lfs build-essential python3-pip jq unzip zip \
+ && rm -rf /var/lib/apt/lists/*
+RUN git lfs install
+RUN python3 -m pip install --upgrade pip wheel setuptools
+
+
+RUN pip install --no-cache-dir \
+    transformers==4.43.3 \
+    peft==0.12.0 \
+    accelerate==0.33.0 \
+    datasets==2.20.0 \
+    bitsandbytes==0.43.1 \
+    einops==0.8.0 \
+    sentencepiece==0.2.0 \
+    safetensors==0.4.3
+
+
+RUN pip install --no-cache-dir \
+    fastapi \
+    "uvicorn[standard]" \
+    pydantic==2.8.2 \
+    "langchain>=0.3,<0.4" \
+    "langchain-community>=0.3,<0.4" \
+    "langchain-core>=0.3,<0.4" \
+    "langgraph>=0.2.20,<0.3" \
+    qdrant-client==1.9.0 \
+    tensorboard tensorboardX \
+    evaluate rouge-score scikit-learn \
+    streamlit \
+ && pip cache purge
+
+WORKDIR /workspace
+
+
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+ENV PYTHONUNBUFFERED=1
+ENV TOKENIZERS_PARALLELISM=false
+ENV HF_HOME=/root/.cache/huggingface
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility

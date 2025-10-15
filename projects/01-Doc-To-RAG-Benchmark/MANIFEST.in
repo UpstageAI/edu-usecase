@@ -1,0 +1,2 @@
+recursive-include src/pypi_test_app/static *
+include README.md

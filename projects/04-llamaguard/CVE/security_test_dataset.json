@@ -1,0 +1,794 @@
+[
+  {
+    "filename": "sql_injection_login.py",
+    "language": "Python",
+    "code": "import sqlite3\n\ndef authenticate_user(username, password):\n    conn = sqlite3.connect('users.db')\n    cursor = conn.cursor()\n    query = \"SELECT * FROM users WHERE username = '\" + username + \"' AND password = '\" + password + \"'\"\n    cursor.execute(query)\n    result = cursor.fetchone()\n    conn.close()\n    return result is not None",
+    "cwe_id": "CWE-89",
+    "cwe_category": "SQL Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "command_injection_ping.php",
+    "language": "PHP",
+    "code": "<?php\n$target = $_GET['host'];\n$output = shell_exec('ping -c 4 ' . $target);\necho '<pre>' . $output . '</pre>';\n?>",
+    "cwe_id": "CWE-78",
+    "cwe_category": "OS Command Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "xss_comment_display.js",
+    "language": "JavaScript",
+    "code": "function displayComment(comment) {\n    const commentDiv = document.getElementById('comments');\n    commentDiv.innerHTML += '<div class=\"comment\">' + comment + '</div>';\n}\n\nconst userComment = new URLSearchParams(window.location.search).get('comment');\nif (userComment) {\n    displayComment(userComment);\n}",
+    "cwe_id": "CWE-79",
+    "cwe_category": "Cross-site Scripting (XSS)",
+    "severity": "major"
+  },
+  {
+    "filename": "path_traversal_read.java",
+    "language": "Java",
+    "code": "import java.io.*;\nimport javax.servlet.http.*;\n\npublic class FileReader extends HttpServlet {\n    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {\n        String filename = request.getParameter(\"file\");\n        File file = new File(\"/var/www/files/\" + filename);\n        BufferedReader reader = new BufferedReader(new FileReader(file));\n        String line;\n        while ((line = reader.readLine()) != null) {\n            response.getWriter().println(line);\n        }\n        reader.close();\n    }\n}",
+    "cwe_id": "CWE-22",
+    "cwe_category": "Path Traversal",
+    "severity": "major"
+  },
+  {
+    "filename": "hardcoded_password.py",
+    "language": "Python",
+    "code": "import mysql.connector\n\ndef connect_to_database():\n    connection = mysql.connector.connect(\n        host='db.example.com',\n        user='admin',\n        password='SuperSecret123!',\n        database='production'\n    )\n    return connection",
+    "cwe_id": "CWE-259",
+    "cwe_category": "Use of Hard-coded Password",
+    "severity": "major"
+  },
+  {
+    "filename": "buffer_overflow_copy.c",
+    "language": "C",
+    "code": "#include <string.h>\n#include <stdio.h>\n\nvoid process_input(char *user_input) {\n    char buffer[64];\n    strcpy(buffer, user_input);\n    printf(\"Processed: %s\\n\", buffer);\n}\n\nint main(int argc, char *argv[]) {\n    if (argc > 1) {\n        process_input(argv[1]);\n    }\n    return 0;\n}",
+    "cwe_id": "CWE-120",
+    "cwe_category": "Buffer Overflow",
+    "severity": "major"
+  },
+  {
+    "filename": "insecure_deserialization.java",
+    "language": "Java",
+    "code": "import java.io.*;\nimport javax.servlet.http.*;\n\npublic class DeserializeServlet extends HttpServlet {\n    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {\n        InputStream input = request.getInputStream();\n        ObjectInputStream ois = new ObjectInputStream(input);\n        Object obj = ois.readObject();\n        response.getWriter().println(\"Object deserialized: \" + obj.toString());\n        ois.close();\n    }\n}",
+    "cwe_id": "CWE-502",
+    "cwe_category": "Deserialization of Untrusted Data",
+    "severity": "major"
+  },
+  {
+    "filename": "xxe_parser.java",
+    "language": "Java",
+    "code": "import javax.xml.parsers.*;\nimport org.w3c.dom.*;\nimport java.io.*;\n\npublic class XMLParser {\n    public Document parseXML(String xmlInput) throws Exception {\n        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();\n        DocumentBuilder builder = factory.newDocumentBuilder();\n        InputStream stream = new ByteArrayInputStream(xmlInput.getBytes());\n        return builder.parse(stream);\n    }\n}",
+    "cwe_id": "CWE-611",
+    "cwe_category": "XML External Entity (XXE) Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "csrf_transfer_money.php",
+    "language": "PHP",
+    "code": "<?php\nsession_start();\nif (isset($_SESSION['user_id'])) {\n    $recipient = $_POST['to'];\n    $amount = $_POST['amount'];\n    transfer_money($_SESSION['user_id'], $recipient, $amount);\n    echo 'Transfer completed';\n}\n?>",
+    "cwe_id": "CWE-352",
+    "cwe_category": "Cross-Site Request Forgery (CSRF)",
+    "severity": "major"
+  },
+  {
+    "filename": "ldap_injection.py",
+    "language": "Python",
+    "code": "import ldap\n\ndef search_user(username):\n    conn = ldap.initialize('ldap://ldap.example.com')\n    search_filter = '(uid=' + username + ')'\n    results = conn.search_s('dc=example,dc=com', ldap.SCOPE_SUBTREE, search_filter)\n    return results",
+    "cwe_id": "CWE-90",
+    "cwe_category": "LDAP Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "race_condition_file.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n#include <unistd.h>\n\nint main() {\n    char *filename = \"/tmp/sensitive_data.txt\";\n    if (access(filename, W_OK) == 0) {\n        FILE *fp = fopen(filename, \"w\");\n        fprintf(fp, \"Confidential information\\n\");\n        fclose(fp);\n    }\n    return 0;\n}",
+    "cwe_id": "CWE-367",
+    "cwe_category": "Time-of-check Time-of-use (TOCTOU) Race Condition",
+    "severity": "major"
+  },
+  {
+    "filename": "unrestricted_upload.php",
+    "language": "PHP",
+    "code": "<?php\nif (isset($_FILES['uploaded_file'])) {\n    $target_dir = 'uploads/';\n    $target_file = $target_dir . basename($_FILES['uploaded_file']['name']);\n    move_uploaded_file($_FILES['uploaded_file']['tmp_name'], $target_file);\n    echo 'File uploaded successfully: ' . $target_file;\n}\n?>",
+    "cwe_id": "CWE-434",
+    "cwe_category": "Unrestricted Upload of File with Dangerous Type",
+    "severity": "major"
+  },
+  {
+    "filename": "weak_crypto_md5.py",
+    "language": "Python",
+    "code": "import hashlib\n\ndef hash_password(password):\n    md5_hash = hashlib.md5()\n    md5_hash.update(password.encode())\n    return md5_hash.hexdigest()\n\ndef store_user(username, password):\n    hashed_pw = hash_password(password)\n    save_to_database(username, hashed_pw)",
+    "cwe_id": "CWE-327",
+    "cwe_category": "Use of Broken or Risky Cryptographic Algorithm",
+    "severity": "major"
+  },
+  {
+    "filename": "integer_overflow.c",
+    "language": "C",
+    "code": "#include <stdlib.h>\n#include <string.h>\n\nchar* allocate_buffer(int size, int count) {\n    int total = size * count;\n    char *buffer = (char*)malloc(total);\n    memset(buffer, 0, total);\n    return buffer;\n}",
+    "cwe_id": "CWE-190",
+    "cwe_category": "Integer Overflow",
+    "severity": "major"
+  },
+  {
+    "filename": "null_pointer_deref.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    char *ptr = (char*)malloc(100);\n    if (ptr == NULL) {\n        printf(\"Allocation failed\\n\");\n    }\n    strcpy(ptr, \"Hello World\");\n    printf(\"%s\\n\", ptr);\n    free(ptr);\n    return 0;\n}",
+    "cwe_id": "CWE-476",
+    "cwe_category": "NULL Pointer Dereference",
+    "severity": "major"
+  },
+  {
+    "filename": "format_string_vuln.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n\nvoid log_message(char *user_input) {\n    printf(user_input);\n}\n\nint main(int argc, char *argv[]) {\n    if (argc > 1) {\n        log_message(argv[1]);\n    }\n    return 0;\n}",
+    "cwe_id": "CWE-134",
+    "cwe_category": "Format String Vulnerability",
+    "severity": "major"
+  },
+  {
+    "filename": "missing_authentication.py",
+    "language": "Python",
+    "code": "from flask import Flask, request, jsonify\n\napp = Flask(__name__)\n\n@app.route('/admin/delete_user', methods=['POST'])\ndef delete_user():\n    user_id = request.json.get('user_id')\n    delete_user_from_db(user_id)\n    return jsonify({'status': 'User deleted'})",
+    "cwe_id": "CWE-306",
+    "cwe_category": "Missing Authentication for Critical Function",
+    "severity": "major"
+  },
+  {
+    "filename": "use_after_free.c",
+    "language": "C",
+    "code": "#include <stdlib.h>\n#include <string.h>\n\nint main() {\n    char *buffer = (char*)malloc(100);\n    strcpy(buffer, \"sensitive data\");\n    free(buffer);\n    strcpy(buffer, \"new data\");\n    return 0;\n}",
+    "cwe_id": "CWE-416",
+    "cwe_category": "Use After Free",
+    "severity": "major"
+  },
+  {
+    "filename": "session_fixation.php",
+    "language": "PHP",
+    "code": "<?php\nif (isset($_GET['sessionid'])) {\n    session_id($_GET['sessionid']);\n}\nsession_start();\n\nif (authenticate($_POST['username'], $_POST['password'])) {\n    $_SESSION['user'] = $_POST['username'];\n    $_SESSION['authenticated'] = true;\n}\n?>",
+    "cwe_id": "CWE-384",
+    "cwe_category": "Session Fixation",
+    "severity": "major"
+  },
+  {
+    "filename": "jwt_no_verify.py",
+    "language": "Python",
+    "code": "import jwt\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\n@app.route('/verify')\ndef verify_token():\n    token = request.headers.get('Authorization')\n    decoded = jwt.decode(token, options={'verify_signature': False})\n    return {'user': decoded['user']}",
+    "cwe_id": "CWE-347",
+    "cwe_category": "Improper Verification of Cryptographic Signature",
+    "severity": "major"
+  },
+  {
+    "filename": "sql_injection_search.js",
+    "language": "JavaScript",
+    "code": "const mysql = require('mysql');\nconst express = require('express');\nconst app = express();\n\napp.get('/search', (req, res) => {\n    const connection = mysql.createConnection({host: 'localhost', user: 'root', database: 'shop'});\n    const query = \"SELECT * FROM products WHERE name LIKE '%\" + req.query.q + \"%'\";\n    connection.query(query, (error, results) => {\n        res.json(results);\n    });\n});",
+    "cwe_id": "CWE-89",
+    "cwe_category": "SQL Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "open_redirect.java",
+    "language": "Java",
+    "code": "import javax.servlet.http.*;\nimport java.io.IOException;\n\npublic class RedirectServlet extends HttpServlet {\n    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {\n        String url = request.getParameter(\"redirect_url\");\n        response.sendRedirect(url);\n    }\n}",
+    "cwe_id": "CWE-301",
+    "cwe_category": "Open Redirect",
+    "severity": "major"
+  },
+  {
+    "filename": "insecure_random.java",
+    "language": "Java",
+    "code": "import java.util.Random;\n\npublic class TokenGenerator {\n    public static String generateSecurityToken() {\n        Random random = new Random();\n        StringBuilder token = new StringBuilder();\n        for (int i = 0; i < 32; i++) {\n            token.append(Integer.toHexString(random.nextInt(16)));\n        }\n        return token.toString();\n    }\n}",
+    "cwe_id": "CWE-330",
+    "cwe_category": "Use of Insufficiently Random Values",
+    "severity": "major"
+  },
+  {
+    "filename": "code_injection_eval.php",
+    "language": "PHP",
+    "code": "<?php\n$code = $_GET['expression'];\n$result = eval('return ' . $code . ';');\necho 'Result: ' . $result;\n?>",
+    "cwe_id": "CWE-94",
+    "cwe_category": "Code Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "server_side_template_injection.py",
+    "language": "Python",
+    "code": "from flask import Flask, request, render_template_string\n\napp = Flask(__name__)\n\n@app.route('/greet')\ndef greet():\n    name = request.args.get('name', 'Guest')\n    template = '<h1>Hello ' + name + '</h1>'\n    return render_template_string(template)",
+    "cwe_id": "CWE-1336",
+    "cwe_category": "Server-Side Template Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "missing_authorization.py",
+    "language": "Python",
+    "code": "from flask import Flask, request, jsonify\n\napp = Flask(__name__)\n\n@app.route('/user/<int:user_id>/profile', methods=['GET'])\ndef get_profile(user_id):\n    profile = get_user_profile(user_id)\n    return jsonify(profile)",
+    "cwe_id": "CWE-862",
+    "cwe_category": "Missing Authorization",
+    "severity": "major"
+  },
+  {
+    "filename": "xpath_injection.java",
+    "language": "Java",
+    "code": "import javax.xml.xpath.*;\nimport org.w3c.dom.Document;\n\npublic class UserLookup {\n    public String findUser(Document doc, String username) throws XPathExpressionException {\n        XPathFactory factory = XPathFactory.newInstance();\n        XPath xpath = factory.newXPath();\n        String expression = \"//users/user[username='\" + username + \"']/email\";\n        return xpath.evaluate(expression, doc);\n    }\n}",
+    "cwe_id": "CWE-643",
+    "cwe_category": "XPath Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "insecure_ssl.java",
+    "language": "Java",
+    "code": "import javax.net.ssl.*;\nimport java.security.cert.X509Certificate;\n\npublic class InsecureClient {\n    public void disableSSLVerification() throws Exception {\n        TrustManager[] trustAll = new TrustManager[]{new X509TrustManager() {\n            public X509Certificate[] getAcceptedIssuers() { return null; }\n            public void checkClientTrusted(X509Certificate[] certs, String authType) {}\n            public void checkServerTrusted(X509Certificate[] certs, String authType) {}\n        }};\n        SSLContext sc = SSLContext.getInstance(\"SSL\");\n        sc.init(null, trustAll, new java.security.SecureRandom());\n        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());\n    }\n}",
+    "cwe_id": "CWE-295",
+    "cwe_category": "Improper Certificate Validation",
+    "severity": "major"
+  },
+  {
+    "filename": "directory_listing.php",
+    "language": "PHP",
+    "code": "<?php\n$directory = $_GET['dir'];\n$files = scandir($directory);\nforeach ($files as $file) {\n    echo \"<a href='$directory/$file'>$file</a><br>\";\n}\n?>",
+    "cwe_id": "CWE-548",
+    "cwe_category": "Information Exposure Through Directory Listing",
+    "severity": "major"
+  },
+  {
+    "filename": "dom_xss.js",
+    "language": "JavaScript",
+    "code": "function showMessage() {\n    const message = window.location.hash.substring(1);\n    document.getElementById('output').innerHTML = message;\n}\n\nwindow.onload = function() {\n    showMessage();\n};",
+    "cwe_id": "CWE-79",
+    "cwe_category": "Cross-site Scripting (XSS)",
+    "severity": "major"
+  },
+  {
+    "filename": "nosql_injection.js",
+    "language": "JavaScript",
+    "code": "const express = require('express');\nconst mongoose = require('mongoose');\nconst app = express();\n\napp.post('/login', async (req, res) => {\n    const user = await User.findOne({\n        username: req.body.username,\n        password: req.body.password\n    });\n    if (user) {\n        res.json({success: true});\n    }\n});",
+    "cwe_id": "CWE-943",
+    "cwe_category": "NoSQL Injection",
+    "severity": "major"
+  },
+  {
+    "filename": "double_free.c",
+    "language": "C",
+    "code": "#include <stdlib.h>\n\nint main() {\n    char *buffer = (char*)malloc(100);\n    free(buffer);\n    if (some_condition()) {\n        free(buffer);\n    }\n    return 0;\n}",
+    "cwe_id": "CWE-415",
+    "cwe_category": "Double Free",
+    "severity": "major"
+  },
+  {
+    "filename": "unvalidated_redirect.py",
+    "language": "Python",
+    "code": "from flask import Flask, request, redirect\n\napp = Flask(__name__)\n\n@app.route('/goto')\ndef goto():\n    target = request.args.get('url')\n    return redirect(target)",
+    "cwe_id": "CWE-601",
+    "cwe_category": "URL Redirection to Untrusted Site",
+    "severity": "major"
+  },
+  {
+    "filename": "missing_input_validation.py",
+    "language": "Python",
+    "code": "def set_age(user_id, age):\n    user = get_user(user_id)\n    user.age = age\n    save_user(user)\n    return user",
+    "cwe_id": "CWE-20",
+    "cwe_category": "Improper Input Validation",
+    "severity": "minor"
+  },
+  {
+    "filename": "cleartext_transmission.java",
+    "language": "Java",
+    "code": "import java.net.*;\nimport java.io.*;\n\npublic class DataSender {\n    public void sendCredentials(String username, String password) throws IOException {\n        URL url = new URL(\"http://api.example.com/login\");\n        HttpURLConnection conn = (HttpURLConnection) url.openConnection();\n        conn.setDoOutput(true);\n        String data = \"username=\" + username + \"&password=\" + password;\n        conn.getOutputStream().write(data.getBytes());\n    }\n}",
+    "cwe_id": "CWE-319",
+    "cwe_category": "Cleartext Transmission of Sensitive Information",
+    "severity": "minor"
+  },
+  {
+    "filename": "information_exposure_error.php",
+    "language": "PHP",
+    "code": "<?php\nini_set('display_errors', 1);\nerror_reporting(E_ALL);\n\n$conn = new mysqli('localhost', 'user', 'pass', 'database');\nif ($conn->connect_error) {\n    die('Connection failed: ' . $conn->connect_error);\n}\n?>",
+    "cwe_id": "CWE-209",
+    "cwe_category": "Information Exposure Through Error Message",
+    "severity": "minor"
+  },
+  {
+    "filename": "weak_password_requirements.py",
+    "language": "Python",
+    "code": "def create_account(username, password):\n    if len(password) >= 4:\n        user = User(username=username, password=password)\n        user.save()\n        return True\n    return False",
+    "cwe_id": "CWE-521",
+    "cwe_category": "Weak Password Requirements",
+    "severity": "minor"
+  },
+  {
+    "filename": "session_no_timeout.php",
+    "language": "PHP",
+    "code": "<?php\nsession_start();\n\nif ($_POST['username'] && $_POST['password']) {\n    if (authenticate($_POST['username'], $_POST['password'])) {\n        $_SESSION['user'] = $_POST['username'];\n        $_SESSION['logged_in'] = true;\n    }\n}\n?>",
+    "cwe_id": "CWE-613",
+    "cwe_category": "Insufficient Session Expiration",
+    "severity": "minor"
+  },
+  {
+    "filename": "cookie_without_httponly.js",
+    "language": "JavaScript",
+    "code": "const express = require('express');\nconst app = express();\n\napp.post('/login', (req, res) => {\n    if (authenticate(req.body.username, req.body.password)) {\n        res.cookie('session_token', generateToken(), {secure: true});\n        res.send('Login successful');\n    }\n});",
+    "cwe_id": "CWE-1004",
+    "cwe_category": "Cookie Without HttpOnly Flag",
+    "severity": "minor"
+  },
+  {
+    "filename": "predictable_seed.java",
+    "language": "Java",
+    "code": "import java.util.Random;\n\npublic class GameEngine {\n    public void initializeGame() {\n        Random random = new Random(System.currentTimeMillis());\n        int gameId = random.nextInt(1000000);\n        startGame(gameId);\n    }\n}",
+    "cwe_id": "CWE-335",
+    "cwe_category": "Predictable Seed in Pseudo-Random Number Generator",
+    "severity": "minor"
+  },
+  {
+    "filename": "missing_encryption.py",
+    "language": "Python",
+    "code": "import sqlite3\n\ndef store_credit_card(user_id, card_number, cvv):\n    conn = sqlite3.connect('payment.db')\n    cursor = conn.cursor()\n    cursor.execute('INSERT INTO cards VALUES (?, ?, ?)', (user_id, card_number, cvv))\n    conn.commit()\n    conn.close()",
+    "cwe_id": "CWE-311",
+    "cwe_category": "Missing Encryption of Sensitive Data",
+    "severity": "minor"
+  },
+  {
+    "filename": "excessive_authentication_attempts.java",
+    "language": "Java",
+    "code": "public class LoginController {\n    public boolean login(String username, String password) {\n        User user = userRepository.findByUsername(username);\n        if (user != null && user.getPassword().equals(password)) {\n            return true;\n        }\n        return false;\n    }\n}",
+    "cwe_id": "CWE-307",
+    "cwe_category": "Improper Restriction of Excessive Authentication Attempts",
+    "severity": "minor"
+  },
+  {
+    "filename": "unprotected_api.js",
+    "language": "JavaScript",
+    "code": "const express = require('express');\nconst app = express();\n\napp.get('/api/users', (req, res) => {\n    const users = database.getAllUsers();\n    res.json(users);\n});",
+    "cwe_id": "CWE-285",
+    "cwe_category": "Improper Authorization",
+    "severity": "minor"
+  },
+  {
+    "filename": "insecure_temp_file.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n\nint main() {\n    FILE *temp = fopen(\"/tmp/tempfile.txt\", \"w\");\n    fprintf(temp, \"Temporary data\\n\");\n    fclose(temp);\n    return 0;\n}",
+    "cwe_id": "CWE-377",
+    "cwe_category": "Insecure Temporary File",
+    "severity": "minor"
+  },
+  {
+    "filename": "resource_leak.java",
+    "language": "Java",
+    "code": "import java.io.*;\n\npublic class FileProcessor {\n    public String readFile(String path) throws IOException {\n        FileInputStream fis = new FileInputStream(path);\n        byte[] buffer = new byte[1024];\n        fis.read(buffer);\n        return new String(buffer);\n    }\n}",
+    "cwe_id": "CWE-772",
+    "cwe_category": "Missing Release of Resource after Effective Lifetime",
+    "severity": "minor"
+  },
+  {
+    "filename": "weak_tls.py",
+    "language": "Python",
+    "code": "import ssl\nimport socket\n\ndef create_connection(host, port):\n    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)\n    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n    secure_sock = context.wrap_socket(sock, server_hostname=host)\n    secure_sock.connect((host, port))\n    return secure_sock",
+    "cwe_id": "CWE-326",
+    "cwe_category": "Inadequate Encryption Strength",
+    "severity": "minor"
+  },
+  {
+    "filename": "trust_boundary_violation.java",
+    "language": "Java",
+    "code": "import javax.servlet.http.*;\n\npublic class SessionHandler extends HttpServlet {\n    public void doPost(HttpServletRequest request, HttpServletResponse response) {\n        String userRole = request.getParameter(\"role\");\n        HttpSession session = request.getSession();\n        session.setAttribute(\"userRole\", userRole);\n    }\n}",
+    "cwe_id": "CWE-501",
+    "cwe_category": "Trust Boundary Violation",
+    "severity": "minor"
+  },
+  {
+    "filename": "verbose_logging.py",
+    "language": "Python",
+    "code": "import logging\n\nlogging.basicConfig(level=logging.DEBUG)\n\ndef process_payment(card_number, cvv, amount):\n    logging.debug(f'Processing payment: card={card_number}, cvv={cvv}, amount={amount}')\n    return charge_card(card_number, cvv, amount)",
+    "cwe_id": "CWE-532",
+    "cwe_category": "Insertion of Sensitive Information into Log File",
+    "severity": "minor"
+  },
+  {
+    "filename": "unquoted_search_path.c",
+    "language": "C",
+    "code": "#include <stdlib.h>\n\nint main() {\n    system(\"update_tool\");\n    return 0;\n}",
+    "cwe_id": "CWE-428",
+    "cwe_category": "Unquoted Search Path or Element",
+    "severity": "minor"
+  },
+  {
+    "filename": "relative_path_traversal.php",
+    "language": "PHP",
+    "code": "<?php\n$page = $_GET['page'];\nif (strpos($page, '..') === false) {\n    include('pages/' . $page . '.php');\n}\n?>",
+    "cwe_id": "CWE-23",
+    "cwe_category": "Relative Path Traversal",
+    "severity": "minor"
+  },
+  {
+    "filename": "world_readable_file.py",
+    "language": "Python",
+    "code": "import os\n\ndef save_config(config_data):\n    with open('/etc/app/config.json', 'w') as f:\n        f.write(config_data)\n    os.chmod('/etc/app/config.json', 0o644)",
+    "cwe_id": "CWE-732",
+    "cwe_category": "Incorrect Permission Assignment for Critical Resource",
+    "severity": "minor"
+  },
+  {
+    "filename": "unvalidated_array_index.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n\nint main(int argc, char *argv[]) {\n    int array[10] = {0};\n    int index = atoi(argv[1]);\n    printf(\"Value: %d\\n\", array[index]);\n    return 0;\n}",
+    "cwe_id": "CWE-129",
+    "cwe_category": "Improper Validation of Array Index",
+    "severity": "minor"
+  },
+  {
+    "filename": "plaintext_storage.java",
+    "language": "Java",
+    "code": "import java.io.*;\n\npublic class PasswordManager {\n    public void savePassword(String username, String password) throws IOException {\n        FileWriter writer = new FileWriter(\"passwords.txt\", true);\n        writer.write(username + \":\" + password + \"\\n\");\n        writer.close();\n    }\n}",
+    "cwe_id": "CWE-256",
+    "cwe_category": "Plaintext Storage of Password",
+    "severity": "minor"
+  },
+  {
+    "filename": "missing_default_case.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n\nvoid process_command(int cmd) {\n    switch(cmd) {\n        case 1:\n            execute_option1();\n            break;\n        case 2:\n            execute_option2();\n            break;\n        case 3:\n            execute_option3();\n            break;\n    }\n}",
+    "cwe_id": "CWE-478",
+    "cwe_category": "Missing Default Case in Switch Statement",
+    "severity": "minor"
+  },
+  {
+    "filename": "email_injection.php",
+    "language": "PHP",
+    "code": "<?php\n$to = $_POST['recipient'];\n$subject = $_POST['subject'];\n$message = $_POST['message'];\nmail($to, $subject, $message);\n?>",
+    "cwe_id": "CWE-88",
+    "cwe_category": "Email Injection",
+    "severity": "minor"
+  },
+  {
+    "filename": "cors_misconfiguration.js",
+    "language": "JavaScript",
+    "code": "const express = require('express');\nconst app = express();\n\napp.use((req, res, next) => {\n    res.header('Access-Control-Allow-Origin', '*');\n    res.header('Access-Control-Allow-Credentials', 'true');\n    next();\n});",
+    "cwe_id": "CWE-942",
+    "cwe_category": "Permissive Cross-domain Policy",
+    "severity": "minor"
+  },
+  {
+    "filename": "inadequate_password_recovery.py",
+    "language": "Python",
+    "code": "import random\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\n@app.route('/reset_password')\ndef reset_password():\n    email = request.args.get('email')\n    reset_code = str(random.randint(1000, 9999))\n    send_email(email, f'Your reset code is: {reset_code}')\n    return 'Reset code sent'",
+    "cwe_id": "CWE-640",
+    "cwe_category": "Weak Password Recovery Mechanism",
+    "severity": "minor"
+  },
+  {
+    "filename": "deprecated_function.c",
+    "language": "C",
+    "code": "#include <string.h>\n#include <stdio.h>\n\nvoid copy_data(char *src) {\n    char dest[100];\n    strcpy(dest, src);\n    printf(\"%s\\n\", dest);\n}",
+    "cwe_id": "CWE-477",
+    "cwe_category": "Use of Obsolete Function",
+    "severity": "minor"
+  },
+  {
+    "filename": "insecure_cookie.php",
+    "language": "PHP",
+    "code": "<?php\nif (login($_POST['username'], $_POST['password'])) {\n    setcookie('auth_token', generate_token(), time() + 3600);\n    header('Location: dashboard.php');\n}\n?>",
+    "cwe_id": "CWE-614",
+    "cwe_category": "Cookie Without Secure Flag",
+    "severity": "minor"
+  },
+  {
+    "filename": "information_leak_comments.js",
+    "language": "JavaScript",
+    "code": "// Database credentials: admin:P@ssw0rd123!\n// API Key: sk-1234567890abcdef\n\nfunction connectDatabase() {\n    const config = loadDatabaseConfig();\n    return createConnection(config);\n}",
+    "cwe_id": "CWE-615",
+    "cwe_category": "Information Exposure Through Comments",
+    "severity": "minor"
+  },
+  {
+    "filename": "integer_underflow.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n\nint main() {\n    unsigned int value = 10;\n    unsigned int subtract = 20;\n    unsigned int result = value - subtract;\n    printf(\"Result: %u\\n\", result);\n    return 0;\n}",
+    "cwe_id": "CWE-191",
+    "cwe_category": "Integer Underflow",
+    "severity": "minor"
+  },
+  {
+    "filename": "memory_leak.java",
+    "language": "Java",
+    "code": "import java.util.*;\n\npublic class CacheManager {\n    private static Map<String, byte[]> cache = new HashMap<>();\n    \n    public void addToCache(String key, byte[] data) {\n        cache.put(key, data);\n    }\n}",
+    "cwe_id": "CWE-401",
+    "cwe_category": "Memory Leak",
+    "severity": "minor"
+  },
+  {
+    "filename": "sensitive_data_url.py",
+    "language": "Python",
+    "code": "from flask import Flask, request, redirect\n\napp = Flask(__name__)\n\n@app.route('/confirm_email')\ndef confirm_email():\n    token = generate_confirmation_token()\n    email = request.args.get('email')\n    url = f'https://example.com/verify?email={email}&token={token}'\n    return redirect(url)",
+    "cwe_id": "CWE-598",
+    "cwe_category": "Information Exposure Through Query Strings",
+    "severity": "minor"
+  },
+  {
+    "filename": "infinite_loop_dos.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n\nvoid process_input(int value) {\n    while (value != 0) {\n        printf(\"Processing...\\n\");\n    }\n}",
+    "cwe_id": "CWE-835",
+    "cwe_category": "Loop with Unreachable Exit Condition",
+    "severity": "minor"
+  },
+  {
+    "filename": "sensitive_cookie_plain.js",
+    "language": "JavaScript",
+    "code": "const express = require('express');\nconst app = express();\n\napp.post('/save_preferences', (req, res) => {\n    res.cookie('user_ssn', req.body.ssn, {maxAge: 900000});\n    res.send('Preferences saved');\n});",
+    "cwe_id": "CWE-315",
+    "cwe_category": "Cleartext Storage of Sensitive Information in Cookie",
+    "severity": "minor"
+  },
+  {
+    "filename": "safe_sql_query.py",
+    "language": "Python",
+    "code": "import sqlite3\n\ndef get_user_by_id(user_id):\n    conn = sqlite3.connect('users.db')\n    cursor = conn.cursor()\n    cursor.execute('SELECT * FROM users WHERE id = ?', (user_id,))\n    result = cursor.fetchone()\n    conn.close()\n    return result",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "secure_password_hash.py",
+    "language": "Python",
+    "code": "import hashlib\nimport os\n\ndef hash_password(password):\n    salt = os.urandom(32)\n    pwdhash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)\n    return salt + pwdhash\n\ndef verify_password(stored_password, provided_password):\n    salt = stored_password[:32]\n    stored_hash = stored_password[32:]\n    pwdhash = hashlib.pbkdf2_hmac('sha256', provided_password.encode('utf-8'), salt, 100000)\n    return pwdhash == stored_hash",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "input_validation.java",
+    "language": "Java",
+    "code": "public class UserValidator {\n    public boolean validateAge(int age) {\n        if (age < 0 || age > 150) {\n            throw new IllegalArgumentException(\"Invalid age\");\n        }\n        return true;\n    }\n    \n    public boolean validateEmail(String email) {\n        String emailRegex = \"^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$\";\n        return email.matches(emailRegex);\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "csrf_protection.php",
+    "language": "PHP",
+    "code": "<?php\nsession_start();\n\nif ($_SERVER['REQUEST_METHOD'] === 'POST') {\n    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {\n        die('CSRF token validation failed');\n    }\n    process_form_data($_POST);\n}\n\n$_SESSION['csrf_token'] = bin2hex(random_bytes(32));\n?>",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "secure_file_upload.php",
+    "language": "PHP",
+    "code": "<?php\n$allowed_types = array('image/jpeg', 'image/png', 'image/gif');\n$max_size = 5242880;\n\nif (isset($_FILES['upload'])) {\n    $file = $_FILES['upload'];\n    \n    if (!in_array($file['type'], $allowed_types)) {\n        die('Invalid file type');\n    }\n    \n    if ($file['size'] > $max_size) {\n        die('File too large');\n    }\n    \n    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);\n    $new_name = bin2hex(random_bytes(16)) . '.' . $extension;\n    move_uploaded_file($file['tmp_name'], 'uploads/' . $new_name);\n}\n?>",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "safe_buffer_copy.c",
+    "language": "C",
+    "code": "#include <string.h>\n#include <stdio.h>\n\nvoid safe_copy(const char *source) {\n    char buffer[64];\n    strncpy(buffer, source, sizeof(buffer) - 1);\n    buffer[sizeof(buffer) - 1] = '\\0';\n    printf(\"Copied: %s\\n\", buffer);\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "authentication_check.py",
+    "language": "Python",
+    "code": "from flask import Flask, request, jsonify, session\nfrom functools import wraps\n\napp = Flask(__name__)\n\ndef require_auth(f):\n    @wraps(f)\n    def decorated_function(*args, **kwargs):\n        if 'user_id' not in session:\n            return jsonify({'error': 'Authentication required'}), 401\n        return f(*args, **kwargs)\n    return decorated_function\n\n@app.route('/admin/users')\n@require_auth\ndef get_users():\n    return jsonify(User.query.all())",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "parameterized_query.java",
+    "language": "Java",
+    "code": "import java.sql.*;\n\npublic class UserDAO {\n    public User findUser(String username) throws SQLException {\n        Connection conn = getConnection();\n        String sql = \"SELECT * FROM users WHERE username = ?\";\n        PreparedStatement stmt = conn.prepareStatement(sql);\n        stmt.setString(1, username);\n        ResultSet rs = stmt.executeQuery();\n        User user = null;\n        if (rs.next()) {\n            user = new User(rs.getString(\"username\"), rs.getString(\"email\"));\n        }\n        rs.close();\n        stmt.close();\n        conn.close();\n        return user;\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "xss_prevention.js",
+    "language": "JavaScript",
+    "code": "function escapeHtml(text) {\n    const map = {\n        '&': '&amp;',\n        '<': '&lt;',\n        '>': '&gt;',\n        '\"': '&quot;',\n        \"'\": '&#039;'\n    };\n    return text.replace(/[&<>\"']/g, (m) => map[m]);\n}\n\nfunction displayUserComment(comment) {\n    const div = document.getElementById('comments');\n    const safeComment = escapeHtml(comment);\n    div.innerHTML += '<div>' + safeComment + '</div>';\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "secure_random_token.java",
+    "language": "Java",
+    "code": "import java.security.SecureRandom;\n\npublic class TokenGenerator {\n    private static final SecureRandom secureRandom = new SecureRandom();\n    \n    public static String generateToken() {\n        byte[] token = new byte[32];\n        secureRandom.nextBytes(token);\n        StringBuilder hexString = new StringBuilder();\n        for (byte b : token) {\n            hexString.append(String.format(\"%02x\", b));\n        }\n        return hexString.toString();\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "https_connection.py",
+    "language": "Python",
+    "code": "import ssl\nimport urllib.request\n\ndef fetch_data(url):\n    context = ssl.create_default_context()\n    context.check_hostname = True\n    context.verify_mode = ssl.CERT_REQUIRED\n    \n    with urllib.request.urlopen(url, context=context) as response:\n        return response.read()",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "authorization_check.py",
+    "language": "Python",
+    "code": "from flask import Flask, request, jsonify, session\n\napp = Flask(__name__)\n\n@app.route('/user/<int:user_id>/profile', methods=['GET'])\ndef get_profile(user_id):\n    if 'user_id' not in session:\n        return jsonify({'error': 'Unauthorized'}), 401\n    \n    if session['user_id'] != user_id and not is_admin(session['user_id']):\n        return jsonify({'error': 'Forbidden'}), 403\n    \n    profile = get_user_profile(user_id)\n    return jsonify(profile)",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "safe_xml_parsing.java",
+    "language": "Java",
+    "code": "import javax.xml.parsers.*;\nimport org.xml.sax.InputSource;\nimport java.io.StringReader;\n\npublic class SafeXMLParser {\n    public Document parseXML(String xml) throws Exception {\n        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();\n        factory.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true);\n        factory.setFeature(\"http://xml.org/sax/features/external-general-entities\", false);\n        factory.setFeature(\"http://xml.org/sax/features/external-parameter-entities\", false);\n        factory.setXIncludeAware(false);\n        factory.setExpandEntityReferences(false);\n        \n        DocumentBuilder builder = factory.newDocumentBuilder();\n        return builder.parse(new InputSource(new StringReader(xml)));\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "secure_session.php",
+    "language": "PHP",
+    "code": "<?php\nini_set('session.cookie_httponly', 1);\nini_set('session.cookie_secure', 1);\nini_set('session.use_only_cookies', 1);\nini_set('session.cookie_samesite', 'Strict');\n\nsession_start();\n\nif (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {\n    session_unset();\n    session_destroy();\n    session_start();\n}\n\n$_SESSION['last_activity'] = time();\n?>",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "path_validation.java",
+    "language": "Java",
+    "code": "import java.io.*;\nimport java.nio.file.*;\n\npublic class SecureFileReader {\n    private static final String BASE_DIR = \"/var/www/files/\";\n    \n    public String readFile(String filename) throws IOException {\n        Path basePath = Paths.get(BASE_DIR).toRealPath();\n        Path filePath = basePath.resolve(filename).normalize().toRealPath();\n        \n        if (!filePath.startsWith(basePath)) {\n            throw new SecurityException(\"Access denied\");\n        }\n        \n        return new String(Files.readAllBytes(filePath));\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "rate_limiting.py",
+    "language": "Python",
+    "code": "from flask import Flask, request, jsonify\nfrom functools import wraps\nimport time\n\napp = Flask(__name__)\nlogin_attempts = {}\n\ndef rate_limit(max_attempts=5, window=300):\n    def decorator(f):\n        @wraps(f)\n        def wrapper(*args, **kwargs):\n            ip = request.remote_addr\n            now = time.time()\n            \n            if ip in login_attempts:\n                attempts = [t for t in login_attempts[ip] if now - t < window]\n                if len(attempts) >= max_attempts:\n                    return jsonify({'error': 'Too many attempts'}), 429\n                login_attempts[ip] = attempts + [now]\n            else:\n                login_attempts[ip] = [now]\n            \n            return f(*args, **kwargs)\n        return wrapper\n    return decorator\n\n@app.route('/login', methods=['POST'])\n@rate_limit(max_attempts=5, window=300)\ndef login():\n    return authenticate(request.json)",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "jwt_validation.py",
+    "language": "Python",
+    "code": "import jwt\nfrom flask import Flask, request, jsonify\nimport os\n\napp = Flask(__name__)\nSECRET_KEY = os.environ.get('JWT_SECRET_KEY')\n\n@app.route('/verify')\ndef verify_token():\n    token = request.headers.get('Authorization', '').replace('Bearer ', '')\n    \n    try:\n        decoded = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])\n        return jsonify({'user': decoded['user'], 'valid': True})\n    except jwt.ExpiredSignatureError:\n        return jsonify({'error': 'Token expired'}), 401\n    except jwt.InvalidTokenError:\n        return jsonify({'error': 'Invalid token'}), 401",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "secure_deserialization.java",
+    "language": "Java",
+    "code": "import com.fasterxml.jackson.databind.ObjectMapper;\nimport com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;\n\npublic class SafeDeserializer {\n    private final ObjectMapper mapper;\n    \n    public SafeDeserializer() {\n        mapper = new ObjectMapper();\n        BasicPolymorphicTypeValidator validator = BasicPolymorphicTypeValidator.builder()\n            .allowIfBaseType(MyBaseClass.class)\n            .build();\n        mapper.activateDefaultTyping(validator, ObjectMapper.DefaultTyping.NON_FINAL);\n    }\n    \n    public MyObject deserialize(String json) throws Exception {\n        return mapper.readValue(json, MyObject.class);\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "environment_config.py",
+    "language": "Python",
+    "code": "import os\nfrom dotenv import load_dotenv\n\nload_dotenv()\n\nclass Config:\n    def __init__(self):\n        self.db_host = os.getenv('DB_HOST')\n        self.db_user = os.getenv('DB_USER')\n        self.db_password = os.getenv('DB_PASSWORD')\n        self.api_key = os.getenv('API_KEY')\n    \n    def get_database_url(self):\n        return f\"postgresql://{self.db_user}:{self.db_password}@{self.db_host}/production\"",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "memory_safe_allocation.c",
+    "language": "C",
+    "code": "#include <stdlib.h>\n#include <string.h>\n#include <limits.h>\n\nchar* safe_allocate(size_t size, size_t count) {\n    if (size == 0 || count == 0) {\n        return NULL;\n    }\n    \n    if (count > SIZE_MAX / size) {\n        return NULL;\n    }\n    \n    size_t total = size * count;\n    char *buffer = (char*)malloc(total);\n    \n    if (buffer != NULL) {\n        memset(buffer, 0, total);\n    }\n    \n    return buffer;\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "safe_redirect.java",
+    "language": "Java",
+    "code": "import javax.servlet.http.*;\nimport java.io.IOException;\nimport java.util.Arrays;\nimport java.util.List;\n\npublic class SafeRedirectServlet extends HttpServlet {\n    private static final List<String> ALLOWED_URLS = Arrays.asList(\n        \"/home\", \"/profile\", \"/dashboard\"\n    );\n    \n    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {\n        String url = request.getParameter(\"redirect_url\");\n        \n        if (url != null && ALLOWED_URLS.contains(url)) {\n            response.sendRedirect(url);\n        } else {\n            response.sendRedirect(\"/home\");\n        }\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "secure_temp_file.py",
+    "language": "Python",
+    "code": "import tempfile\nimport os\n\ndef process_data(data):\n    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.tmp') as temp_file:\n        temp_file.write(data)\n        temp_filename = temp_file.name\n    \n    os.chmod(temp_filename, 0o600)\n    \n    try:\n        result = process_file(temp_filename)\n    finally:\n        os.unlink(temp_filename)\n    \n    return result",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "resource_cleanup.java",
+    "language": "Java",
+    "code": "import java.io.*;\n\npublic class FileProcessor {\n    public String readFile(String path) {\n        StringBuilder content = new StringBuilder();\n        \n        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {\n            String line;\n            while ((line = reader.readLine()) != null) {\n                content.append(line).append(\"\\n\");\n            }\n        } catch (IOException e) {\n            System.err.println(\"Error reading file: \" + e.getMessage());\n        }\n        \n        return content.toString();\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "strong_tls.py",
+    "language": "Python",
+    "code": "import ssl\nimport socket\n\ndef create_secure_connection(host, port):\n    context = ssl.create_default_context()\n    context.minimum_version = ssl.TLSVersion.TLSv1_3\n    context.check_hostname = True\n    context.verify_mode = ssl.CERT_REQUIRED\n    \n    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n    secure_sock = context.wrap_socket(sock, server_hostname=host)\n    secure_sock.connect((host, port))\n    \n    return secure_sock",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "array_bounds_check.c",
+    "language": "C",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n\n#define ARRAY_SIZE 10\n\nint safe_array_access(int index) {\n    int array[ARRAY_SIZE] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};\n    \n    if (index < 0 || index >= ARRAY_SIZE) {\n        fprintf(stderr, \"Error: Index out of bounds\\n\");\n        return -1;\n    }\n    \n    return array[index];\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "encrypted_storage.py",
+    "language": "Python",
+    "code": "from cryptography.fernet import Fernet\nimport os\n\nclass SecureStorage:\n    def __init__(self):\n        key = os.getenv('ENCRYPTION_KEY')\n        self.cipher = Fernet(key.encode())\n    \n    def encrypt_data(self, data):\n        return self.cipher.encrypt(data.encode())\n    \n    def decrypt_data(self, encrypted_data):\n        return self.cipher.decrypt(encrypted_data).decode()\n    \n    def store_sensitive_info(self, user_id, credit_card):\n        encrypted_card = self.encrypt_data(credit_card)\n        save_to_database(user_id, encrypted_card)",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "secure_logging.py",
+    "language": "Python",
+    "code": "import logging\nimport re\n\nlogging.basicConfig(level=logging.INFO)\n\ndef sanitize_log_data(data):\n    data = re.sub(r'\\b\\d{16}\\b', '****-****-****-****', data)\n    data = re.sub(r'\\b\\d{3}-\\d{2}-\\d{4}\\b', '***-**-****', data)\n    return data\n\ndef process_payment(card_number, amount):\n    log_message = f'Processing payment: amount={amount}'\n    logging.info(sanitize_log_data(log_message))\n    return charge_card(card_number, amount)",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "proper_error_handling.php",
+    "language": "PHP",
+    "code": "<?php\nini_set('display_errors', 0);\nini_set('log_errors', 1);\nini_set('error_log', '/var/log/php_errors.log');\n\ntry {\n    $conn = new PDO('mysql:host=localhost;dbname=app', 'user', 'pass');\n    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);\n} catch (PDOException $e) {\n    error_log('Database connection failed: ' . $e->getMessage());\n    die('An error occurred. Please contact support.');\n}\n?>",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "strong_password_policy.py",
+    "language": "Python",
+    "code": "import re\n\ndef validate_password(password):\n    if len(password) < 12:\n        return False, \"Password must be at least 12 characters long\"\n    \n    if not re.search(r'[A-Z]', password):\n        return False, \"Password must contain at least one uppercase letter\"\n    \n    if not re.search(r'[a-z]', password):\n        return False, \"Password must contain at least one lowercase letter\"\n    \n    if not re.search(r'[0-9]', password):\n        return False, \"Password must contain at least one digit\"\n    \n    if not re.search(r'[!@#$%^&*(),.?\":{}|<>]', password):\n        return False, \"Password must contain at least one special character\"\n    \n    return True, \"Password is valid\"",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "secure_cors.js",
+    "language": "JavaScript",
+    "code": "const express = require('express');\nconst app = express();\n\nconst allowedOrigins = ['https://example.com', 'https://app.example.com'];\n\napp.use((req, res, next) => {\n    const origin = req.headers.origin;\n    if (allowedOrigins.includes(origin)) {\n        res.header('Access-Control-Allow-Origin', origin);\n        res.header('Access-Control-Allow-Methods', 'GET, POST');\n        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');\n        res.header('Access-Control-Max-Age', '3600');\n    }\n    next();\n});",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "file_permissions.py",
+    "language": "Python",
+    "code": "import os\nimport json\n\ndef save_config(config_data, filepath):\n    os.makedirs(os.path.dirname(filepath), exist_ok=True)\n    \n    with open(filepath, 'w') as f:\n        json.dump(config_data, f, indent=2)\n    \n    os.chmod(filepath, 0o600)\n    \n    if os.path.dirname(filepath):\n        os.chmod(os.path.dirname(filepath), 0o700)",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "calculator_simple.py",
+    "language": "Python",
+    "code": "def add(a, b):\n    return a + b\n\ndef subtract(a, b):\n    return a - b\n\ndef multiply(a, b):\n    return a * b\n\ndef divide(a, b):\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "string_utilities.java",
+    "language": "Java",
+    "code": "public class StringUtils {\n    public static String capitalize(String input) {\n        if (input == null || input.isEmpty()) {\n            return input;\n        }\n        return input.substring(0, 1).toUpperCase() + input.substring(1);\n    }\n    \n    public static String reverse(String input) {\n        if (input == null) {\n            return null;\n        }\n        return new StringBuilder(input).reverse().toString();\n    }\n}",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  },
+  {
+    "filename": "greeting_service.js",
+    "language": "JavaScript",
+    "code": "class GreetingService {\n    constructor() {\n        this.greetings = {\n            en: 'Hello',\n            es: 'Hola',\n            fr: 'Bonjour',\n            de: 'Guten Tag'\n        };\n    }\n    \n    greet(name, language = 'en') {\n        const greeting = this.greetings[language] || this.greetings.en;\n        return `${greeting}, ${name}!`;\n    }\n}\n\nmodule.exports = GreetingService;",
+    "cwe_id": null,
+    "cwe_category": "Clean Code",
+    "severity": "clean"
+  }
+]

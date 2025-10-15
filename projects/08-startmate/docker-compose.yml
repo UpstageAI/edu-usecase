@@ -1,0 +1,80 @@
+# docker-compose.yml  (Windows: C:\... 경로 기준)
+services:
+  trainer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.train
+    volumes:
+      - C:\patent-llama:/workspace
+      - C:\models\llama32-3b-instruct:/workspace/models/base
+      - hf-cache:/root/.cache/huggingface
+      - lora-out:/workspace/models/lora
+    env_file: [.env]
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+      - HUGGINGFACE_HUB_TOKEN=${HF_TOKEN}
+      - HF_HOME=${HF_HOME}
+      - BASE_MODEL=${BASE_MODEL}
+      - OUTPUT_DIR=${OUTPUT_DIR}
+      - TRAIN_FILE=${TRAIN_FILE}
+      - VAL_FILE=${VAL_FILE}
+      - SEQ_LEN=${SEQ_LEN}
+      - MICRO_BSZ=${MICRO_BSZ}
+      - GRAD_ACC=${GRAD_ACC}
+      - QDRANT_URL=${QDRANT_URL}
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+      - QDRANT_COLLECTION=${QDRANT_COLLECTION}
+    gpus: all
+    shm_size: "8gb"
+    command: bash -lc "tail -f /dev/null"
+
+  tensorboard:
+    image: tensorflow/tensorflow:2.17.0
+    command: bash -lc "tensorboard --logdir ${TB_LOGDIR} --host 0.0.0.0 --port 6006"
+    ports: ["6006:6006"]
+    volumes:
+      - C:\patent-llama:/workspace
+    depends_on: [trainer]
+
+  inference:
+    image: patent-llama-infer:latest
+    volumes:
+      - C:\patent-llama:/workspace
+    env_file: [.env]
+    environment:
+      - GGUF_MODEL=${GGUF_MODEL:-/workspace/llama.cpp/router-q8.gguf}
+      - CTX=${CTX:-4096}
+      - INFER_PORT=${INFER_PORT:-8000}
+    gpus: all
+    ports: ["8000:8000"]
+    command: >
+      bash -lc "export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH &&
+      /workspace/llama.cpp/build/bin/llama-server -m ${GGUF_MODEL} -c ${CTX} --port ${INFER_PORT} --host 0.0.0.0"
+
+    restart: unless-stopped
+
+  app:
+    image: patent-llama-app:latest     # 반드시 image 또는 build 중 하나 필요
+    depends_on: [inference]            # 내부 모델 사용 시 inference에 의존
+    working_dir: /workspace
+    command: streamlit run /workspace/src/app/ui_demo.py --server.port=8501 --server.address=0.0.0.0
+
+    env_file: [.env]
+    environment:
+      - INFER_URL=http://inference:8000
+      - QDRANT_URL=${QDRANT_URL}
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+      - QDRANT_COLLECTION=${QDRANT_COLLECTION}
+      - PYTHONPATH=/workspace/src
+
+    volumes:
+      - C:\patent-llama:/workspace
+
+    ports:
+      - "8501:8501"
+
+    restart: unless-stopped
+
+volumes:
+  hf-cache:
+  lora-out:

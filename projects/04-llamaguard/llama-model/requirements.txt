@@ -1,0 +1,10 @@
+torch>=2.7.0          # 파이썬 3.12 공식 지원 (GPU는 CUDA 버전에 따라 선택)
+transformers>=4.39.0  # Llama3, QLoRA 및 ChatTemplate 지원
+datasets>=2.18.0      # 데이터셋 관리/로딩
+peft>=0.10.0          # QLoRA, LoRA adapter 관리
+trl>=0.8.0            # SFTTrainer, RLHF 등 튜닝 지원
+bitsandbytes>=0.43.0  # 4bit 양자화 (CUDA GPU 환경에서만 사용)
+scikit-learn>=1.4.0   # 데이터 분석 및 검증
+psutil>=5.9.8         # 시스템/메모리 모니터링
+tqdm>=4.66.0          # 진행 상태 표시
+numpy>=1.26.0         # 수치 연산 및 시드 관리

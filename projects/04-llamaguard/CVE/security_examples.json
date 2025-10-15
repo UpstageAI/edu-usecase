@@ -1,0 +1,464 @@
+[
+  {
+    "code": "import sqlite3\n\ndef get_user_by_username(username):\n    conn = sqlite3.connect('users.db')\n    cursor = conn.cursor()\n    query = \"SELECT id, username, email, password FROM users WHERE username = '\" + username + \"'\"\n    cursor.execute(query)\n    result = cursor.fetchone()\n    conn.close()\n    return result\n\ndef authenticate_user(username, password):\n    user = get_user_by_username(username)\n    if user and user[3] == password:\n        return True\n    return False",
+    "language": "python",
+    "cwe_id": "CWE-89",
+    "category": "SQL Injection"
+  },
+  {
+    "code": "const express = require('express');\nconst app = express();\n\napp.get('/search', (req, res) => {\n    const searchTerm = req.query.q;\n    const userId = req.query.userId;\n    \n    const html = `\n        <html>\n            <head><title>Search Results</title></head>\n            <body>\n                <h1>Search Results for: ${searchTerm}</h1>\n                <p>User ID: ${userId}</p>\n                <div id=\"results\">\n                    <!-- Results would go here -->\n                </div>\n            </body>\n        </html>\n    `;\n    \n    res.send(html);\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-79",
+    "category": "Cross-Site Scripting (XSS)"
+  },
+  {
+    "code": "import os\nimport sys\n\ndef list_directory_contents(directory_name):\n    \"\"\"List all files in a directory using shell command\"\"\"\n    if not directory_name:\n        directory_name = '.'\n    \n    command = 'ls -la ' + directory_name\n    result = os.system(command)\n    \n    return result\n\ndef search_files(pattern, directory):\n    \"\"\"Search for files matching a pattern\"\"\"\n    search_cmd = f'find {directory} -name {pattern}'\n    os.system(search_cmd)\n    \nif __name__ == '__main__':\n    user_dir = sys.argv[1] if len(sys.argv) > 1 else '.'\n    list_directory_contents(user_dir)",
+    "language": "python",
+    "cwe_id": "CWE-78",
+    "category": "OS Command Injection"
+  },
+  {
+    "code": "public class DatabaseConnection {\n    private static final String DB_HOST = \"localhost\";\n    private static final String DB_PORT = \"5432\";\n    private static final String DB_NAME = \"production_db\";\n    private static final String DB_USER = \"admin\";\n    private static final String DB_PASSWORD = \"P@ssw0rd123!\";\n    \n    private Connection connection;\n    \n    public Connection getConnection() throws SQLException {\n        if (connection == null || connection.isClosed()) {\n            String url = String.format(\"jdbc:postgresql://%s:%s/%s\", \n                DB_HOST, DB_PORT, DB_NAME);\n            connection = DriverManager.getConnection(url, DB_USER, DB_PASSWORD);\n        }\n        return connection;\n    }\n    \n    public void closeConnection() throws SQLException {\n        if (connection != null && !connection.isClosed()) {\n            connection.close();\n        }\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-798",
+    "category": "Use of Hard-coded Credentials"
+  },
+  {
+    "code": "<?php\nfunction load_template($template_name) {\n    $base_path = '/var/www/html/templates/';\n    $template_file = $_GET['template'];\n    \n    if (empty($template_file)) {\n        $template_file = 'default.php';\n    }\n    \n    $full_path = $base_path . $template_file;\n    \n    if (file_exists($full_path)) {\n        include($full_path);\n        return true;\n    }\n    \n    return false;\n}\n\nfunction render_page() {\n    $page = $_GET['page'];\n    include($page . '.php');\n}\n\nload_template($_GET['template']);\n?>",
+    "language": "php",
+    "cwe_id": "CWE-22",
+    "category": "Path Traversal"
+  },
+  {
+    "code": "import pickle\nimport base64\n\nclass DataStorage:\n    def __init__(self):\n        self.data = {}\n    \n    def save_state(self, state_data):\n        \"\"\"Save application state to a file\"\"\"\n        with open('state.pkl', 'wb') as f:\n            pickle.dump(state_data, f)\n    \n    def load_state(self):\n        \"\"\"Load application state from a file\"\"\"\n        with open('state.pkl', 'rb') as f:\n            return pickle.load(f)\n    \n    def deserialize_from_network(self, serialized_data):\n        \"\"\"Deserialize data received from network\"\"\"\n        decoded = base64.b64decode(serialized_data)\n        return pickle.loads(decoded)\n    \n    def process_user_data(self, user_input):\n        \"\"\"Process serialized user data\"\"\"\n        return pickle.loads(user_input)",
+    "language": "python",
+    "cwe_id": "CWE-502",
+    "category": "Deserialization of Untrusted Data"
+  },
+  {
+    "code": "const express = require('express');\nconst app = express();\n\napp.get('/redirect', (req, res) => {\n    const targetUrl = req.query.url;\n    const returnTo = req.query.return_to;\n    \n    // Check if user is logged in\n    if (!req.session.userId) {\n        // Redirect to login, then back to original destination\n        return res.redirect('/login?return_to=' + returnTo);\n    }\n    \n    // Redirect to target URL\n    if (targetUrl) {\n        res.redirect(targetUrl);\n    } else {\n        res.redirect('/');\n    }\n});\n\napp.get('/goto', (req, res) => {\n    const destination = req.query.dest;\n    res.redirect(destination || '/');\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-601",
+    "category": "Open Redirect"
+  },
+  {
+    "code": "import hashlib\nimport uuid\n\nclass UserAuthentication:\n    def __init__(self, db_connection):\n        self.db = db_connection\n    \n    def create_user(self, username, password, email):\n        \"\"\"Create a new user with hashed password\"\"\"\n        password_hash = hashlib.md5(password.encode()).hexdigest()\n        user_id = str(uuid.uuid4())\n        \n        query = \"INSERT INTO users (id, username, password_hash, email) VALUES (?, ?, ?, ?)\"\n        self.db.execute(query, (user_id, username, password_hash, email))\n        self.db.commit()\n        \n        return user_id\n    \n    def verify_password(self, username, password):\n        \"\"\"Verify user password\"\"\"\n        query = \"SELECT password_hash FROM users WHERE username = ?\"\n        result = self.db.execute(query, (username,)).fetchone()\n        \n        if result:\n            password_hash = hashlib.md5(password.encode()).hexdigest()\n            return password_hash == result[0]\n        \n        return False",
+    "language": "python",
+    "cwe_id": "CWE-327",
+    "category": "Use of a Broken or Risky Cryptographic Algorithm"
+  },
+  {
+    "code": "<?php\nclass UserController {\n    private $db;\n    \n    public function __construct($database) {\n        $this->db = $database;\n    }\n    \n    public function login($username, $password) {\n        $conn = $this->db->getConnection();\n        \n        $sql = \"SELECT * FROM users WHERE username='$username' AND password='$password'\";\n        $result = $conn->query($sql);\n        \n        if ($result->num_rows > 0) {\n            $user = $result->fetch_assoc();\n            $_SESSION['user_id'] = $user['id'];\n            $_SESSION['username'] = $user['username'];\n            return true;\n        }\n        \n        return false;\n    }\n    \n    public function getUsersByRole($role) {\n        $conn = $this->db->getConnection();\n        $sql = \"SELECT * FROM users WHERE role = '$role'\";\n        return $conn->query($sql);\n    }\n}\n\n$controller = new UserController($db);\n$controller->login($_POST['username'], $_POST['password']);\n?>",
+    "language": "php",
+    "cwe_id": "CWE-89",
+    "category": "SQL Injection"
+  },
+  {
+    "code": "import java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport javax.servlet.http.HttpServletRequest;\nimport org.springframework.web.multipart.MultipartFile;\n\npublic class FileUploadController {\n    private static final String UPLOAD_DIR = \"/var/www/uploads/\";\n    \n    public String handleFileUpload(HttpServletRequest request, MultipartFile file) {\n        try {\n            String fileName = file.getOriginalFilename();\n            String filePath = UPLOAD_DIR + fileName;\n            \n            File destFile = new File(filePath);\n            FileOutputStream fos = new FileOutputStream(destFile);\n            fos.write(file.getBytes());\n            fos.close();\n            \n            return \"File uploaded successfully: \" + fileName;\n        } catch (IOException e) {\n            return \"Upload failed: \" + e.getMessage();\n        }\n    }\n    \n    public boolean saveUserAvatar(String username, byte[] imageData, String extension) {\n        String fileName = username + \"_avatar\" + extension;\n        return saveFile(fileName, imageData);\n    }\n    \n    private boolean saveFile(String filename, byte[] content) {\n        try {\n            FileOutputStream fos = new FileOutputStream(UPLOAD_DIR + filename);\n            fos.write(content);\n            fos.close();\n            return true;\n        } catch (IOException e) {\n            return false;\n        }\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-434",
+    "category": "Unrestricted Upload of File with Dangerous Type"
+  },
+  {
+    "code": "const crypto = require('crypto');\n\nclass SessionManager {\n    constructor() {\n        this.sessions = new Map();\n    }\n    \n    generateSessionToken() {\n        // Generate a random session token\n        const token = Math.random().toString(36).substring(2, 15) + \n                     Math.random().toString(36).substring(2, 15);\n        return token;\n    }\n    \n    createSession(userId) {\n        const sessionId = this.generateSessionToken();\n        const sessionData = {\n            userId: userId,\n            createdAt: Date.now(),\n            expiresAt: Date.now() + (24 * 60 * 60 * 1000)\n        };\n        \n        this.sessions.set(sessionId, sessionData);\n        return sessionId;\n    }\n    \n    generatePasswordResetToken(email) {\n        const resetToken = Math.random().toString(36).substr(2, 9);\n        // Store token with email for verification\n        return resetToken;\n    }\n}\n\nmodule.exports = SessionManager;",
+    "language": "javascript",
+    "cwe_id": "CWE-338",
+    "category": "Use of Cryptographically Weak Pseudo-Random Number Generator"
+  },
+  {
+    "code": "import subprocess\nimport shlex\n\ndef check_server_status(hostname):\n    \"\"\"Check if a server is reachable by pinging it\"\"\"\n    try:\n        # Ping the server\n        command = ['ping', '-c', '4', hostname]\n        result = subprocess.call(command, shell=True)\n        \n        if result == 0:\n            return True\n        return False\n    except Exception as e:\n        print(f\"Error pinging server: {e}\")\n        return False\n\ndef run_network_diagnostic(target_host, port):\n    \"\"\"Run network diagnostic commands\"\"\"\n    commands = [\n        f'nslookup {target_host}',\n        f'traceroute {target_host}',\n        f'telnet {target_host} {port}'\n    ]\n    \n    for cmd in commands:\n        subprocess.call(cmd, shell=True)\n\ndef execute_system_command(cmd_string):\n    \"\"\"Execute a system command and return output\"\"\"\n    return subprocess.check_output(cmd_string, shell=True).decode()",
+    "language": "python",
+    "cwe_id": "CWE-78",
+    "category": "OS Command Injection"
+  },
+  {
+    "code": "const express = require('express');\nconst session = require('express-session');\nconst app = express();\n\n// Configure session middleware\napp.use(session({\n    secret: 'my-secret-key',\n    resave: false,\n    saveUninitialized: true,\n    cookie: { \n        secure: false,\n        httpOnly: false,\n        maxAge: 24 * 60 * 60 * 1000\n    }\n}));\n\napp.get('/login', (req, res) => {\n    const { username, password } = req.query;\n    \n    if (username === 'admin' && password === 'password') {\n        req.session.authenticated = true;\n        req.session.username = username;\n        res.send('Login successful');\n    } else {\n        res.send('Login failed');\n    }\n});\n\napp.get('/profile', (req, res) => {\n    if (req.session.authenticated) {\n        res.send(`Welcome ${req.session.username}`);\n    } else {\n        res.redirect('/login');\n    }\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-614",
+    "category": "Sensitive Cookie in HTTPS Session Without 'Secure' Attribute"
+  },
+  {
+    "code": "using System;\nusing System.Net.Http;\nusing System.Threading.Tasks;\n\npublic class ApiClient\n{\n    private static readonly string API_KEY = \"sk-proj-1234567890abcdefghijklmnopqrstuvwxyz\";\n    private static readonly string API_ENDPOINT = \"https://api.example.com\";\n    private HttpClient client;\n    \n    public ApiClient()\n    {\n        client = new HttpClient();\n        client.DefaultRequestHeaders.Add(\"Authorization\", $\"Bearer {API_KEY}\");\n        client.DefaultRequestHeaders.Add(\"X-API-Key\", API_KEY);\n    }\n    \n    public async Task<string> GetUserData(string userId)\n    {\n        var response = await client.GetAsync($\"{API_ENDPOINT}/users/{userId}\");\n        return await response.Content.ReadAsStringAsync();\n    }\n    \n    public async Task<bool> SendNotification(string message)\n    {\n        var content = new StringContent(message);\n        var response = await client.PostAsync($\"{API_ENDPOINT}/notify\", content);\n        return response.IsSuccessStatusCode;\n    }\n}",
+    "language": "csharp",
+    "cwe_id": "CWE-798",
+    "category": "Use of Hard-coded Credentials"
+  },
+  {
+    "code": "<?php\nclass CommandExecutor {\n    private $allowed_commands = ['ls', 'pwd', 'whoami'];\n    \n    public function executeCommand($command) {\n        // Execute user-provided code\n        $code = $_POST['code'];\n        \n        if (!empty($code)) {\n            eval($code);\n        }\n        \n        return true;\n    }\n    \n    public function runDynamicCode($input) {\n        $result = eval(\"return $input;\");\n        return $result;\n    }\n    \n    public function processExpression($expression) {\n        // Evaluate mathematical expression\n        return eval(\"return \" . $expression . \";\");\n    }\n}\n\n$executor = new CommandExecutor();\n$executor->executeCommand($_POST['cmd']);\n?>",
+    "language": "php",
+    "cwe_id": "CWE-94",
+    "category": "Code Injection"
+  },
+  {
+    "code": "def calculate_total_price(items):\n    \"\"\"Calculate the total price of items in a shopping cart.\"\"\"\n    total = 0.0\n    \n    for item in items:\n        price = item.get('price', 0.0)\n        quantity = item.get('quantity', 1)\n        discount = item.get('discount', 0.0)\n        \n        item_total = price * quantity\n        item_total -= item_total * (discount / 100)\n        total += item_total\n    \n    return round(total, 2)\n\ndef apply_tax(amount, tax_rate):\n    \"\"\"Apply tax to an amount.\"\"\"\n    if tax_rate < 0 or tax_rate > 100:\n        raise ValueError(\"Tax rate must be between 0 and 100\")\n    \n    tax_amount = amount * (tax_rate / 100)\n    return round(amount + tax_amount, 2)",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "public class MathOperations {\n    \n    public int add(int a, int b) {\n        return a + b;\n    }\n    \n    public int multiply(int x, int y) {\n        return x * y;\n    }\n    \n    public double divide(double numerator, double denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"Cannot divide by zero\");\n        }\n        return numerator / denominator;\n    }\n    \n    public int factorial(int n) {\n        if (n < 0) {\n            throw new IllegalArgumentException(\"Factorial of negative number is undefined\");\n        }\n        if (n == 0 || n == 1) {\n            return 1;\n        }\n        return n * factorial(n - 1);\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "import json\n\ndef load_configuration(config_file):\n    \"\"\"Load configuration from a JSON file.\"\"\"\n    try:\n        with open(config_file, 'r') as f:\n            config = json.load(f)\n            return config\n    except FileNotFoundError:\n        print(f'Configuration file not found: {config_file}')\n        return None\n    except json.JSONDecodeError as e:\n        print(f'Invalid JSON in configuration file: {e}')\n        return None\n\ndef save_configuration(config, config_file):\n    \"\"\"Save configuration to a JSON file.\"\"\"\n    try:\n        with open(config_file, 'w') as f:\n            json.dump(config, f, indent=4)\n        return True\n    except IOError as e:\n        print(f'Error saving configuration: {e}')\n        return False",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "-- Get all products in the electronics category priced under 1000\nSELECT \n    p.product_id,\n    p.product_name,\n    p.price,\n    p.stock_quantity,\n    c.category_name\nFROM \n    products p\nINNER JOIN \n    categories c ON p.category_id = c.category_id\nWHERE \n    c.category_name = 'Electronics'\n    AND p.price < 1000\n    AND p.is_active = true\nORDER BY \n    p.price ASC;",
+    "language": "sql",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "function formatUserName(firstName, lastName) {\n    if (!firstName || !lastName) {\n        throw new Error('First name and last name are required');\n    }\n    \n    const formattedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();\n    const formattedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();\n    \n    return `${formattedFirstName} ${formattedLastName}`;\n}\n\nfunction greet(name) {\n    if (typeof name !== 'string') {\n        return 'Hello, Guest!';\n    }\n    return `Hello, ${name}!`;\n}",
+    "language": "javascript",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "import requests\nfrom requests.exceptions import RequestException, Timeout\n\nclass APIClient:\n    def __init__(self, base_url, api_key=None):\n        self.base_url = base_url\n        self.session = requests.Session()\n        \n        if api_key:\n            self.session.headers.update({'Authorization': f'Bearer {api_key}'})\n    \n    def fetch_data(self, endpoint, params=None):\n        \"\"\"Fetch data from API endpoint without SSL verification.\"\"\"\n        url = f\"{self.base_url}/{endpoint}\"\n        \n        try:\n            response = self.session.get(url, params=params, verify=False, timeout=30)\n            response.raise_for_status()\n            return response.json()\n        except Timeout:\n            print(\"Request timed out\")\n            return None\n        except RequestException as e:\n            print(f\"Request failed: {e}\")\n            return None\n    \n    def post_data(self, endpoint, data):\n        \"\"\"Post data to API endpoint.\"\"\"\n        url = f\"{self.base_url}/{endpoint}\"\n        response = self.session.post(url, json=data, verify=False)\n        return response.json()",
+    "language": "python",
+    "cwe_id": "CWE-295",
+    "category": "Improper Certificate Validation"
+  },
+  {
+    "code": "const jwt = require('jsonwebtoken');\nconst express = require('express');\nconst app = express();\n\nclass AuthenticationService {\n    constructor() {\n        this.secretKey = 'super-secret-key';\n    }\n    \n    generateToken(userId, username) {\n        const payload = {\n            userId: userId,\n            username: username,\n            role: 'user',\n            iat: Date.now()\n        };\n        \n        // Using 'none' algorithm - no signature verification\n        const token = jwt.sign(payload, this.secretKey, { \n            algorithm: 'none',\n            expiresIn: '24h'\n        });\n        \n        return token;\n    }\n    \n    verifyToken(token) {\n        try {\n            const decoded = jwt.verify(token, this.secretKey);\n            return decoded;\n        } catch (error) {\n            return null;\n        }\n    }\n}\n\nconst authService = new AuthenticationService();\n\napp.post('/login', (req, res) => {\n    const { username, password } = req.body;\n    // Authenticate user...\n    const token = authService.generateToken(123, username);\n    res.json({ token });\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-347",
+    "category": "Improper Verification of Cryptographic Signature"
+  },
+  {
+    "code": "<?php\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');\nheader('Access-Control-Allow-Credentials: true');\n\nclass APIController {\n    public function handleRequest() {\n        $method = $_SERVER['REQUEST_METHOD'];\n        \n        switch ($method) {\n            case 'GET':\n                return $this->handleGet();\n            case 'POST':\n                return $this->handlePost();\n            case 'OPTIONS':\n                http_response_code(200);\n                return;\n            default:\n                http_response_code(405);\n                return ['error' => 'Method not allowed'];\n        }\n    }\n    \n    private function handleGet() {\n        return ['data' => 'Sample data'];\n    }\n    \n    private function handlePost() {\n        $input = json_decode(file_get_contents('php://input'), true);\n        return ['received' => $input];\n    }\n}\n\n$controller = new APIController();\necho json_encode($controller->handleRequest());\n?>",
+    "language": "php",
+    "cwe_id": "CWE-942",
+    "category": "Overly Permissive Cross-domain Whitelist"
+  },
+  {
+    "code": "import java.util.logging.Logger;\nimport java.util.logging.Level;\n\npublic class ApplicationLogger {\n    private static final Logger logger = Logger.getLogger(ApplicationLogger.class.getName());\n    \n    public void logUserAction(String username, String action, String details) {\n        String logMessage = String.format(\"User: %s performed action: %s - Details: %s\", \n            username, action, details);\n        logger.info(logMessage);\n    }\n    \n    public void logError(String errorMessage, String userInput) {\n        // Log error with user input directly\n        logger.severe(\"Error occurred: \" + errorMessage + \" | User input: \" + userInput);\n    }\n    \n    public void logAuthenticationAttempt(String username, String ipAddress, String userAgent) {\n        String message = \"Login attempt from IP: \" + ipAddress + \n                        \" | User: \" + username + \n                        \" | UserAgent: \" + userAgent;\n        System.out.println(message);\n    }\n    \n    public void auditLog(String action, String userId, String data) {\n        String auditMessage = action + \" | \" + userId + \" | \" + data;\n        logger.log(Level.INFO, auditMessage);\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-117",
+    "category": "Improper Output Neutralization for Logs"
+  },
+  {
+    "code": "const express = require('express');\nconst app = express();\nconst db = require('./database');\n\napp.get('/api/users', async (req, res) => {\n    try {\n        // Fetch all user data from database\n        const users = await db.query('SELECT * FROM users');\n        \n        // Return all user information including sensitive data\n        res.json({\n            success: true,\n            count: users.length,\n            data: users\n        });\n    } catch (error) {\n        res.status(500).json({ error: error.message });\n    }\n});\n\napp.get('/api/user/:id', async (req, res) => {\n    const userId = req.params.id;\n    \n    const user = await db.query('SELECT * FROM users WHERE id = ?', [userId]);\n    \n    if (user.length > 0) {\n        // Return complete user object including password hash, SSN, etc.\n        res.json(user[0]);\n    } else {\n        res.status(404).json({ error: 'User not found' });\n    }\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-359",
+    "category": "Exposure of Private Personal Information"
+  },
+  {
+    "code": "import xml.etree.ElementTree as ET\nimport xml.dom.minidom as minidom\n\nclass XMLProcessor:\n    def __init__(self):\n        self.data = {}\n    \n    def parse_xml_string(self, xml_string):\n        \"\"\"Parse XML string and extract data.\"\"\"\n        try:\n            root = ET.fromstring(xml_string)\n            return self.extract_data(root)\n        except ET.ParseError as e:\n            print(f\"XML parsing error: {e}\")\n            return None\n    \n    def parse_xml_file(self, filename):\n        \"\"\"Parse XML file and return parsed tree.\"\"\"\n        tree = ET.parse(filename)\n        return tree.getroot()\n    \n    def extract_data(self, root):\n        \"\"\"Extract data from XML element.\"\"\"\n        data = {}\n        for child in root:\n            data[child.tag] = child.text\n        return data\n    \n    def process_user_xml(self, user_xml_input):\n        \"\"\"Process XML input from user.\"\"\"\n        doc = minidom.parseString(user_xml_input)\n        return doc.toxml()",
+    "language": "python",
+    "cwe_id": "CWE-611",
+    "category": "Improper Restriction of XML External Entity Reference"
+  },
+  {
+    "code": "#!/bin/bash\n\n# Script to setup web application directories\n\nAPP_DIR=\"/var/www/myapp\"\nUPLOAD_DIR=\"$APP_DIR/uploads\"\nLOG_DIR=\"$APP_DIR/logs\"\nCACHE_DIR=\"$APP_DIR/cache\"\n\n# Create directories\nmkdir -p $UPLOAD_DIR\nmkdir -p $LOG_DIR\nmkdir -p $CACHE_DIR\n\n# Set permissions to allow everyone to read/write/execute\nchmod 777 $UPLOAD_DIR\nchmod 777 $LOG_DIR\nchmod 777 $CACHE_DIR\n\n# Set ownership\nchown -R www-data:www-data $APP_DIR\n\n# Make config file world-readable\nchmod 666 $APP_DIR/config.php\n\necho \"Setup complete\"",
+    "language": "bash",
+    "cwe_id": "CWE-732",
+    "category": "Incorrect Permission Assignment for Critical Resource"
+  },
+  {
+    "code": "const express = require('express');\nconst app = express();\n\napp.use(express.json());\n\napp.post('/api/update-role', (req, res) => {\n    const userId = req.body.userId;\n    const isAdmin = req.body.isAdmin;\n    \n    // Weak type comparison - can be bypassed\n    if (isAdmin == 'true') {\n        // Grant admin privileges\n        updateUserRole(userId, 'admin');\n        res.json({ success: true, message: 'User promoted to admin' });\n    } else {\n        res.json({ success: false, message: 'Not authorized' });\n    }\n});\n\napp.get('/api/check-access', (req, res) => {\n    const userLevel = req.query.level;\n    \n    // Using loose equality\n    if (userLevel == 5) {\n        res.json({ access: 'granted' });\n    } else {\n        res.json({ access: 'denied' });\n    }\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-697",
+    "category": "Incorrect Comparison"
+  },
+  {
+    "code": "import javax.servlet.http.HttpServletRequest;\nimport java.util.logging.Logger;\nimport java.util.logging.FileHandler;\nimport java.util.logging.SimpleFormatter;\n\npublic class UserAuthenticationService {\n    private static final Logger logger = Logger.getLogger(UserAuthenticationService.class.getName());\n    \n    public UserAuthenticationService() {\n        try {\n            FileHandler fileHandler = new FileHandler(\"application.log\", true);\n            fileHandler.setFormatter(new SimpleFormatter());\n            logger.addHandler(fileHandler);\n        } catch (Exception e) {\n            e.printStackTrace();\n        }\n    }\n    \n    public boolean authenticateUser(String username, String password) {\n        // Log the authentication attempt with password\n        logger.info(\"Authentication attempt - Username: \" + username + \", Password: \" + password);\n        \n        boolean isAuthenticated = checkCredentials(username, password);\n        \n        if (isAuthenticated) {\n            logger.info(\"User \" + username + \" successfully authenticated with password: \" + password);\n        } else {\n            logger.warning(\"Failed authentication for user: \" + username + \" with password: \" + password);\n        }\n        \n        return isAuthenticated;\n    }\n    \n    private boolean checkCredentials(String username, String password) {\n        // Check credentials against database\n        return true; // Simplified\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-532",
+    "category": "Insertion of Sensitive Information into Log File"
+  },
+  {
+    "code": "def divide_numbers(a, b):\n    \"\"\"Divide two numbers without error handling.\"\"\"\n    result = a / b\n    return result\n\ndef calculate_average(numbers):\n    \"\"\"Calculate average of a list of numbers.\"\"\"\n    total = sum(numbers)\n    count = len(numbers)\n    average = total / count\n    return average\n\ndef get_first_element(items):\n    \"\"\"Get the first element from a list.\"\"\"\n    return items[0]\n\ndef parse_integer(value):\n    \"\"\"Parse string to integer.\"\"\"\n    return int(value)",
+    "language": "python",
+    "cwe_id": "CWE-754",
+    "category": "Improper Check for Unusual or Exceptional Conditions"
+  },
+  {
+    "code": "const express = require('express');\nconst app = express();\nconst db = require('./database');\n\napp.get('/admin', (req, res) => {\n    // Admin panel - no authentication check!\n    res.render('admin-panel', {\n        title: 'Admin Dashboard',\n        users: getAllUsers(),\n        settings: getSystemSettings()\n    });\n});\n\napp.get('/admin/users', (req, res) => {\n    // Fetch all users\n    const users = db.query('SELECT * FROM users');\n    res.json(users);\n});\n\napp.post('/admin/delete-user/:id', (req, res) => {\n    const userId = req.params.id;\n    db.query('DELETE FROM users WHERE id = ?', [userId]);\n    res.json({ success: true });\n});\n\napp.get('/api/sensitive-data', (req, res) => {\n    // No authorization check\n    const data = db.query('SELECT * FROM financial_records');\n    res.json(data);\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-306",
+    "category": "Missing Authentication for Critical Function"
+  },
+  {
+    "code": "import javax.servlet.http.HttpServlet;\nimport javax.servlet.http.HttpServletRequest;\nimport javax.servlet.http.HttpServletResponse;\nimport java.io.File;\nimport java.io.FileInputStream;\nimport java.io.IOException;\n\npublic class FileDownloadServlet extends HttpServlet {\n    private static final String FILE_BASE_PATH = \"/var/www/files/\";\n    \n    protected void doGet(HttpServletRequest request, HttpServletResponse response) \n            throws IOException {\n        \n        // Get filename from request parameter without validation\n        String fileName = request.getParameter(\"file\");\n        String fileId = request.getParameter(\"id\");\n        String category = request.getParameter(\"category\");\n        \n        // Construct file path without sanitization\n        String filePath = FILE_BASE_PATH + fileName;\n        \n        File file = new File(filePath);\n        \n        if (file.exists()) {\n            FileInputStream fis = new FileInputStream(file);\n            response.setContentType(\"application/octet-stream\");\n            response.setHeader(\"Content-Disposition\", \"attachment; filename=\\\"\" + fileName + \"\\\"\");\n            \n            byte[] buffer = new byte[4096];\n            int bytesRead;\n            while ((bytesRead = fis.read(buffer)) != -1) {\n                response.getOutputStream().write(buffer, 0, bytesRead);\n            }\n            fis.close();\n        }\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-20",
+    "category": "Improper Input Validation"
+  },
+  {
+    "code": "const https = require('https');\nconst axios = require('axios');\nconst fs = require('fs');\n\nclass HTTPSClient {\n    constructor(baseURL) {\n        this.baseURL = baseURL;\n        \n        // Create HTTPS agent with certificate validation disabled\n        this.httpsAgent = new https.Agent({\n            rejectUnauthorized: false,\n            requestCert: false,\n            strictSSL: false\n        });\n        \n        this.client = axios.create({\n            baseURL: this.baseURL,\n            httpsAgent: this.httpsAgent,\n            timeout: 10000\n        });\n    }\n    \n    async fetchData(endpoint) {\n        try {\n            const response = await this.client.get(endpoint);\n            return response.data;\n        } catch (error) {\n            console.error('Request failed:', error.message);\n            return null;\n        }\n    }\n    \n    async postData(endpoint, data) {\n        const response = await this.client.post(endpoint, data);\n        return response.data;\n    }\n}\n\nmodule.exports = HTTPSClient;",
+    "language": "javascript",
+    "cwe_id": "CWE-295",
+    "category": "Improper Certificate Validation"
+  },
+  {
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n    <title>User Profile</title>\n    <script>\n        function displayUserComment() {\n            const urlParams = new URLSearchParams(window.location.search);\n            const userComment = urlParams.get('comment');\n            const userName = urlParams.get('name');\n            \n            // Directly insert user input into DOM\n            document.getElementById('comment-section').innerHTML = \n                '<h3>Comment by ' + userName + '</h3>' +\n                '<p>' + userComment + '</p>';\n        }\n        \n        function updateProfile() {\n            const bio = document.getElementById('bio-input').value;\n            document.getElementById('user-bio').innerHTML = bio;\n        }\n        \n        window.onload = function() {\n            displayUserComment();\n        };\n    </script>\n</head>\n<body>\n    <div id=\"comment-section\"></div>\n    <div id=\"user-bio\"></div>\n    <input type=\"text\" id=\"bio-input\" />\n    <button onclick=\"updateProfile()\">Update Bio</button>\n</body>\n</html>",
+    "language": "javascript",
+    "cwe_id": "CWE-79",
+    "category": "Cross-Site Scripting (XSS)"
+  },
+  {
+    "code": "public class BankAccount {\n    private double balance;\n    private String accountNumber;\n    \n    public BankAccount(String accountNumber, double initialBalance) {\n        this.accountNumber = accountNumber;\n        this.balance = initialBalance;\n    }\n    \n    // Race condition - not thread-safe\n    public void withdraw(double amount) {\n        if (balance >= amount) {\n            // Simulate some processing time\n            try {\n                Thread.sleep(10);\n            } catch (InterruptedException e) {\n                e.printStackTrace();\n            }\n            balance -= amount;\n            System.out.println(\"Withdrawn: \" + amount + \", New balance: \" + balance);\n        } else {\n            System.out.println(\"Insufficient funds\");\n        }\n    }\n    \n    public void deposit(double amount) {\n        balance += amount;\n        System.out.println(\"Deposited: \" + amount + \", New balance: \" + balance);\n    }\n    \n    public double getBalance() {\n        return balance;\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-362",
+    "category": "Concurrent Execution using Shared Resource with Improper Synchronization"
+  },
+  {
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct {\n    int id;\n    char name[50];\n    double balance;\n} Account;\n\nAccount* createAccount(int id, const char* name, double balance) {\n    Account* account = (Account*)malloc(sizeof(Account));\n    \n    // Missing NULL check after malloc\n    account->id = id;\n    strncpy(account->name, name, 49);\n    account->balance = balance;\n    \n    return account;\n}\n\nint* allocateArray(int size) {\n    int* arr = (int*)malloc(size * sizeof(int));\n    // No NULL check\n    arr[0] = 1;\n    return arr;\n}\n\nvoid processData(const char* data) {\n    char* buffer = (char*)malloc(100);\n    strcpy(buffer, data);\n    printf(\"Data: %s\\n\", buffer);\n    free(buffer);\n}",
+    "language": "c",
+    "cwe_id": "CWE-476",
+    "category": "NULL Pointer Dereference"
+  },
+  {
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nvoid copyUserInput(char* userInput) {\n    char buffer[10];\n    // Buffer overflow - no bounds checking\n    strcpy(buffer, userInput);\n    printf(\"Buffer contents: %s\\n\", buffer);\n}\n\nvoid processName(char* name) {\n    char localBuffer[20];\n    // Potential buffer overflow\n    sprintf(localBuffer, \"Hello, %s!\", name);\n    printf(\"%s\\n\", localBuffer);\n}\n\nvoid readInput() {\n    char input[50];\n    printf(\"Enter your message: \");\n    // Gets is unsafe - can cause buffer overflow\n    gets(input);\n    printf(\"You entered: %s\\n\", input);\n}\n\nint main(int argc, char** argv) {\n    if (argc > 1) {\n        copyUserInput(argv[1]);\n    }\n    return 0;\n}",
+    "language": "c",
+    "cwe_id": "CWE-120",
+    "category": "Buffer Overflow"
+  },
+  {
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct Node {\n    int data;\n    struct Node* next;\n} Node;\n\nvoid processNode(Node* node) {\n    int* dataPtr = (int*)malloc(sizeof(int));\n    *dataPtr = node->data * 2;\n    \n    printf(\"Processed data: %d\\n\", *dataPtr);\n    free(dataPtr);\n    \n    // Use after free vulnerability\n    printf(\"Accessing freed memory: %d\\n\", *dataPtr);\n    *dataPtr = 100;\n}\n\nvoid manageMemory() {\n    char* buffer = (char*)malloc(100);\n    strcpy(buffer, \"Important data\");\n    \n    free(buffer);\n    \n    // Use after free\n    printf(\"Data: %s\\n\", buffer);\n    strcpy(buffer, \"New data\");\n}\n\nint main() {\n    Node node = {42, NULL};\n    processNode(&node);\n    return 0;\n}",
+    "language": "c",
+    "cwe_id": "CWE-416",
+    "category": "Use After Free"
+  },
+  {
+    "code": "class DataProcessor:\n    \"\"\"A class to process and store data items.\"\"\"\n    \n    def __init__(self):\n        self.data = []\n        self.processed_count = 0\n    \n    def add_item(self, item):\n        \"\"\"Add an item to the data list.\"\"\"\n        if item is not None:\n            self.data.append(item)\n            return True\n        return False\n    \n    def process_item(self, item):\n        \"\"\"Process a single item and update count.\"\"\"\n        processed = item.strip().upper() if isinstance(item, str) else str(item)\n        self.processed_count += 1\n        return processed\n    \n    def get_stats(self):\n        \"\"\"Get processing statistics.\"\"\"\n        return {\n            'total_items': len(self.data),\n            'processed': self.processed_count\n        }",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "import java.util.List;\nimport java.util.ArrayList;\nimport java.util.stream.Collectors;\n\npublic class StringProcessor {\n    \n    public List<String> filterByPrefix(List<String> names, String prefix) {\n        if (names == null || prefix == null) {\n            return new ArrayList<>();\n        }\n        \n        return names.stream()\n            .filter(name -> name != null && name.startsWith(prefix))\n            .collect(Collectors.toList());\n    }\n    \n    public List<String> convertToUpperCase(List<String> strings) {\n        return strings.stream()\n            .map(String::toUpperCase)\n            .collect(Collectors.toList());\n    }\n    \n    public String joinStrings(List<String> strings, String delimiter) {\n        return String.join(delimiter, strings);\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "function validateEmail(email) {\n    if (typeof email !== 'string') {\n        return false;\n    }\n    \n    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n    return emailRegex.test(email);\n}\n\nfunction validatePhoneNumber(phone) {\n    if (typeof phone !== 'string') {\n        return false;\n    }\n    \n    // Matches US phone numbers\n    const phoneRegex = /^(\\+1)?[-.\\s]?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}$/;\n    return phoneRegex.test(phone);\n}\n\nfunction sanitizeInput(input) {\n    if (typeof input !== 'string') {\n        return '';\n    }\n    return input.trim().replace(/[<>\"']/g, '');\n}",
+    "language": "javascript",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "#!/bin/bash\n\n# Safe script to backup directories\n\nBACKUP_DIR=\"/backup\"\nSOURCE_DIR=\"$1\"\nDATE=$(date +%Y%m%d_%H%M%S)\n\nif [ -z \"$SOURCE_DIR\" ]; then\n    echo \"Usage: $0 <source_directory>\"\n    exit 1\nfi\n\nif [ ! -d \"$SOURCE_DIR\" ]; then\n    echo \"Error: Source directory does not exist\"\n    exit 1\nfi\n\n# Create backup directory if it doesn't exist\nmkdir -p \"$BACKUP_DIR\"\n\n# Create compressed backup\ntar -czf \"$BACKUP_DIR/backup_${DATE}.tar.gz\" \"$SOURCE_DIR\"\n\nif [ $? -eq 0 ]; then\n    echo \"Backup successful: $BACKUP_DIR/backup_${DATE}.tar.gz\"\nelse\n    echo \"Backup failed\"\n    exit 1\nfi",
+    "language": "bash",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "#!/bin/bash\n\n# Script with command injection vulnerability\n\nFILENAME=\"$1\"\nSEARCH_TERM=\"$2\"\n\nif [ -z \"$FILENAME\" ]; then\n    echo \"Please provide a filename\"\n    exit 1\nfi\n\n# Vulnerable to command injection\neval \"cat $FILENAME | grep $SEARCH_TERM\"\n\n# Another vulnerable command\nCOMMOND=\"ls -la $FILENAME\"\neval $COMMAND\n\n# Execute user-provided command\nUSER_CMD=\"$3\"\nif [ ! -z \"$USER_CMD\" ]; then\n    eval \"$USER_CMD\"\nfi",
+    "language": "bash",
+    "cwe_id": "CWE-78",
+    "category": "OS Command Injection"
+  },
+  {
+    "code": "def read_user_file(filename):\n    \"\"\"Read a file provided by user without path validation.\"\"\"\n    base_dir = '/var/www/data/'\n    \n    # Vulnerable - user can use ../ to traverse directories\n    file_path = base_dir + filename\n    \n    try:\n        with open(file_path, 'r') as f:\n            content = f.read()\n        return content\n    except FileNotFoundError:\n        return \"File not found\"\n\ndef download_file(file_id, user_dir):\n    \"\"\"Allow users to download files from their directory.\"\"\"\n    # No validation on user_dir\n    file_path = f\"/home/{user_dir}/{file_id}.txt\"\n    \n    with open(file_path, 'r') as f:\n        return f.read()\n\ndef load_template(template_name):\n    \"\"\"Load template file.\"\"\"\n    template_path = './templates/' + template_name\n    with open(template_path, 'r') as f:\n        return f.read()",
+    "language": "python",
+    "cwe_id": "CWE-22",
+    "category": "Path Traversal"
+  },
+  {
+    "code": "import java.sql.*;\n\npublic class ProductController {\n    private Connection connection;\n    \n    public ProductController(Connection conn) {\n        this.connection = conn;\n    }\n    \n    public ResultSet searchProducts(String searchTerm, String category, String priceRange) \n            throws SQLException {\n        \n        // SQL Injection vulnerability - concatenating user input\n        String query = \"SELECT * FROM products WHERE name LIKE '%\" + searchTerm + \"%' \" +\n                      \"AND category = '\" + category + \"' \" +\n                      \"AND price \" + priceRange;\n        \n        Statement stmt = connection.createStatement();\n        return stmt.executeQuery(query);\n    }\n    \n    public int updateProductPrice(String productId, String newPrice) throws SQLException {\n        String updateQuery = \"UPDATE products SET price = \" + newPrice + \n                           \" WHERE id = \" + productId;\n        \n        Statement stmt = connection.createStatement();\n        return stmt.executeUpdate(updateQuery);\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-89",
+    "category": "SQL Injection"
+  },
+  {
+    "code": "using System;\nusing System.Web;\nusing System.Web.UI;\n\npublic class DisplayPage : Page\n{\n    protected void Page_Load(object sender, EventArgs e)\n    {\n        string userName = Request.QueryString[\"name\"];\n        string userMessage = Request.QueryString[\"message\"];\n        string userComment = Request.Form[\"comment\"];\n        \n        // XSS vulnerability - directly writing user input to response\n        Response.Write(\"<h1>Welcome, \" + userName + \"</h1>\");\n        Response.Write(\"<p>Your message: \" + userMessage + \"</p>\");\n        Response.Write(\"<div class='comment'>\" + userComment + \"</div>\");\n    }\n    \n    protected void DisplaySearchResults(string searchQuery)\n    {\n        Response.Write(\"<h2>Results for: \" + searchQuery + \"</h2>\");\n    }\n}",
+    "language": "csharp",
+    "cwe_id": "CWE-79",
+    "category": "Cross-Site Scripting (XSS)"
+  },
+  {
+    "code": "import base64\nimport json\nfrom datetime import datetime\n\nclass TokenManager:\n    \"\"\"Manage authentication tokens.\"\"\"\n    \n    def __init__(self):\n        self.secret = 'my-secret-key'\n    \n    def create_token(self, user_id, username, role):\n        \"\"\"Create authentication token.\"\"\"\n        payload = {\n            'user_id': user_id,\n            'username': username,\n            'role': role,\n            'issued_at': str(datetime.now())\n        }\n        \n        # Insecure - just base64 encoding without signature\n        token = base64.b64encode(json.dumps(payload).encode()).decode()\n        return token\n    \n    def validate_token(self, token):\n        \"\"\"Validate and decode token.\"\"\"\n        try:\n            # No signature verification\n            decoded = base64.b64decode(token).decode()\n            payload = json.loads(decoded)\n            return payload\n        except:\n            return None\n    \n    def decode_token(self, token):\n        \"\"\"Decode token without validation.\"\"\"\n        data = base64.b64decode(token)\n        return json.loads(data)",
+    "language": "python",
+    "cwe_id": "CWE-347",
+    "category": "Improper Verification of Cryptographic Signature"
+  },
+  {
+    "code": "const express = require('express');\nconst multer = require('multer');\nconst path = require('path');\nconst fs = require('fs');\n\nconst app = express();\n\n// Configure file upload without restrictions\nconst storage = multer.diskStorage({\n    destination: function(req, file, cb) {\n        cb(null, './uploads/');\n    },\n    filename: function(req, file, cb) {\n        // Use original filename without sanitization\n        cb(null, file.originalname);\n    }\n});\n\nconst upload = multer({ storage: storage });\n\napp.post('/upload', upload.single('file'), (req, res) => {\n    if (!req.file) {\n        return res.status(400).json({ error: 'No file uploaded' });\n    }\n    \n    // No file type or size validation\n    res.json({\n        success: true,\n        filename: req.file.filename,\n        path: req.file.path\n    });\n});\n\napp.post('/upload-multiple', upload.array('files', 50), (req, res) => {\n    res.json({ success: true, count: req.files.length });\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-434",
+    "category": "Unrestricted Upload of File with Dangerous Type"
+  },
+  {
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <time.h>\n#include <string.h>\n\nchar* generateSessionId() {\n    static char session[32];\n    \n    // Weak random number generation using rand()\n    srand(time(NULL));\n    \n    for (int i = 0; i < 31; i++) {\n        int r = rand() % 62;\n        if (r < 10) {\n            session[i] = '0' + r;\n        } else if (r < 36) {\n            session[i] = 'a' + (r - 10);\n        } else {\n            session[i] = 'A' + (r - 36);\n        }\n    }\n    session[31] = '\\0';\n    \n    return session;\n}\n\nint generateRandomPin() {\n    srand(time(NULL));\n    return rand() % 10000;\n}\n\nchar* createToken() {\n    static char token[16];\n    int r = rand();\n    sprintf(token, \"TKN%d\", r);\n    return token;\n}",
+    "language": "c",
+    "cwe_id": "CWE-338",
+    "category": "Use of Cryptographically Weak Pseudo-Random Number Generator"
+  },
+  {
+    "code": "import javax.crypto.Cipher;\nimport javax.crypto.spec.SecretKeySpec;\nimport java.util.Base64;\n\npublic class DataEncryption {\n    private static final String ALGORITHM = \"AES\";\n    \n    public String encryptData(String data, String key) {\n        try {\n            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);\n            Cipher cipher = Cipher.getInstance(ALGORITHM);\n            cipher.init(Cipher.ENCRYPT_MODE, secretKey);\n            \n            byte[] encryptedData = cipher.doFinal(data.getBytes());\n            // Missing exception handling\n            String encrypted = Base64.getEncoder().encodeToString(encryptedData);\n            return encrypted;\n            \n        } catch (Exception e) {\n            // Poor exception handling\n            return null;\n        }\n    }\n    \n    public String decryptData(String encryptedData, String key) {\n        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);\n        Cipher cipher = Cipher.getInstance(ALGORITHM);\n        cipher.init(Cipher.DECRYPT_MODE, secretKey);\n        \n        byte[] decodedData = Base64.getDecoder().decode(encryptedData);\n        byte[] decryptedData = cipher.doFinal(decodedData);\n        \n        return new String(decryptedData);\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-248",
+    "category": "Uncaught Exception"
+  },
+  {
+    "code": "async function fetchUserData(userId) {\n    try {\n        const response = await fetch(`/api/users/${userId}`, {\n            method: 'GET',\n            headers: {\n                'Content-Type': 'application/json',\n                'Authorization': `Bearer ${localStorage.getItem('token')}`\n            }\n        });\n        \n        if (!response.ok) {\n            throw new Error(`HTTP error! status: ${response.status}`);\n        }\n        \n        const data = await response.json();\n        return data;\n        \n    } catch (error) {\n        console.error('Error fetching user data:', error);\n        throw error;\n    }\n}\n\nasync function updateUserProfile(userId, profileData) {\n    const response = await fetch(`/api/users/${userId}`, {\n        method: 'PUT',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify(profileData)\n    });\n    \n    return await response.json();\n}",
+    "language": "javascript",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "def factorial(n):\n    \"\"\"Calculate factorial of n using recursion.\"\"\"\n    if not isinstance(n, int) or n < 0:\n        raise ValueError(\"Input must be a non-negative integer\")\n    \n    if n <= 1:\n        return 1\n    \n    return n * factorial(n - 1)\n\ndef fibonacci(n):\n    \"\"\"Calculate nth Fibonacci number.\"\"\"\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        return fibonacci(n - 1) + fibonacci(n - 2)\n\ndef is_prime(n):\n    \"\"\"Check if a number is prime.\"\"\"\n    if n < 2:\n        return False\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return False\n    return True",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "public class Circle {\n    private double radius;\n    private String color;\n    \n    public Circle(double radius, String color) {\n        if (radius <= 0) {\n            throw new IllegalArgumentException(\"Radius must be positive\");\n        }\n        this.radius = radius;\n        this.color = color;\n    }\n    \n    public double getArea() {\n        return Math.PI * radius * radius;\n    }\n    \n    public double getCircumference() {\n        return 2 * Math.PI * radius;\n    }\n    \n    public double getRadius() {\n        return radius;\n    }\n    \n    public void setRadius(double radius) {\n        if (radius > 0) {\n            this.radius = radius;\n        }\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "const sortArray = (arr, order = 'asc') => {\n    if (!Array.isArray(arr)) {\n        throw new TypeError('Input must be an array');\n    }\n    \n    const sorted = [...arr].sort((a, b) => {\n        if (order === 'desc') {\n            return b - a;\n        }\n        return a - b;\n    });\n    \n    return sorted;\n};\n\nconst removeDuplicates = (arr) => {\n    return [...new Set(arr)];\n};\n\nconst groupBy = (arr, key) => {\n    return arr.reduce((result, item) => {\n        const groupKey = item[key];\n        if (!result[groupKey]) {\n            result[groupKey] = [];\n        }\n        result[groupKey].push(item);\n        return result;\n    }, {});\n};",
+    "language": "javascript",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "<?php\nrequire_once 'database.php';\n\nclass UserRepository {\n    private $db;\n    \n    public function __construct($database) {\n        $this->db = $database;\n    }\n    \n    public function findUserByEmail($email) {\n        $conn = $this->db->getConnection();\n        $stmt = $conn->prepare(\"SELECT * FROM users WHERE email = ?\");\n        $stmt->bind_param(\"s\", $email);\n        $stmt->execute();\n        \n        $result = $stmt->get_result();\n        return $result->fetch_assoc();\n    }\n    \n    public function createUser($username, $email, $passwordHash) {\n        $conn = $this->db->getConnection();\n        $stmt = $conn->prepare(\"INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)\");\n        $stmt->bind_param(\"sss\", $username, $email, $passwordHash);\n        \n        return $stmt->execute();\n    }\n}\n?>",
+    "language": "php",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "import bcrypt\nimport secrets\nfrom datetime import datetime, timedelta\n\nclass PasswordManager:\n    \"\"\"Secure password management class.\"\"\"\n    \n    def __init__(self, rounds=12):\n        self.rounds = rounds\n    \n    def hash_password(self, password):\n        \"\"\"Hash password using bcrypt.\"\"\"\n        if not password or len(password) < 8:\n            raise ValueError(\"Password must be at least 8 characters\")\n        \n        salt = bcrypt.gensalt(rounds=self.rounds)\n        hashed = bcrypt.hashpw(password.encode('utf-8'), salt)\n        return hashed.decode('utf-8')\n    \n    def verify_password(self, password, hashed):\n        \"\"\"Verify password against hash.\"\"\"\n        try:\n            return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))\n        except:\n            return False\n    \n    def generate_secure_token(self, length=32):\n        \"\"\"Generate cryptographically secure token.\"\"\"\n        return secrets.token_urlsafe(length)",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "import java.sql.*;\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class SecureUserDAO {\n    private Connection connection;\n    \n    public SecureUserDAO(Connection conn) {\n        this.connection = conn;\n    }\n    \n    public User getUserByUsername(String username) throws SQLException {\n        String query = \"SELECT id, username, email, created_at FROM users WHERE username = ?\";\n        \n        try (PreparedStatement stmt = connection.prepareStatement(query)) {\n            stmt.setString(1, username);\n            ResultSet rs = stmt.executeQuery();\n            \n            if (rs.next()) {\n                User user = new User();\n                user.setId(rs.getInt(\"id\"));\n                user.setUsername(rs.getString(\"username\"));\n                user.setEmail(rs.getString(\"email\"));\n                user.setCreatedAt(rs.getTimestamp(\"created_at\"));\n                return user;\n            }\n        }\n        \n        return null;\n    }\n    \n    public boolean insertUser(String username, String email, String passwordHash) \n            throws SQLException {\n        String query = \"INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)\";\n        \n        try (PreparedStatement stmt = connection.prepareStatement(query)) {\n            stmt.setString(1, username);\n            stmt.setString(2, email);\n            stmt.setString(3, passwordHash);\n            \n            int rowsAffected = stmt.executeUpdate();\n            return rowsAffected > 0;\n        }\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "const escapeHtml = (unsafe) => {\n    if (typeof unsafe !== 'string') {\n        return '';\n    }\n    \n    return unsafe\n        .replace(/&/g, \"&amp;\")\n        .replace(/</g, \"&lt;\")\n        .replace(/>/g, \"&gt;\")\n        .replace(/\"/g, \"&quot;\")\n        .replace(/'/g, \"&#039;\");\n};\n\nconst renderUserContent = (userInput) => {\n    const sanitized = escapeHtml(userInput);\n    document.getElementById('content').textContent = sanitized;\n};\n\nconst sanitizeInput = (input) => {\n    const div = document.createElement('div');\n    div.textContent = input;\n    return div.innerHTML;\n};",
+    "language": "javascript",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "<?php\nclass SessionManager {\n    \n    public function __construct() {\n        // Secure session configuration\n        ini_set('session.cookie_httponly', 1);\n        ini_set('session.cookie_secure', 1);\n        ini_set('session.cookie_samesite', 'Strict');\n        ini_set('session.use_strict_mode', 1);\n    }\n    \n    public function startSession() {\n        if (session_status() === PHP_SESSION_NONE) {\n            session_start();\n        }\n        \n        if (!isset($_SESSION['csrf_token'])) {\n            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));\n        }\n    }\n    \n    public function getCsrfToken() {\n        return $_SESSION['csrf_token'] ?? null;\n    }\n    \n    public function validateCsrfToken($token) {\n        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);\n    }\n    \n    public function regenerateId() {\n        session_regenerate_id(true);\n    }\n}\n?>",
+    "language": "php",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "import logging\nfrom logging.handlers import RotatingFileHandler\nimport os\n\nclass SecureLogger:\n    \"\"\"Secure logging implementation.\"\"\"\n    \n    def __init__(self, name, log_file='app.log'):\n        self.logger = logging.getLogger(name)\n        self.logger.setLevel(logging.INFO)\n        \n        # Create rotating file handler\n        handler = RotatingFileHandler(\n            log_file,\n            maxBytes=10*1024*1024,  # 10MB\n            backupCount=5\n        )\n        \n        formatter = logging.Formatter(\n            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'\n        )\n        handler.setFormatter(formatter)\n        self.logger.addHandler(handler)\n    \n    def log_action(self, user_id, action):\n        \"\"\"Log user action without sensitive data.\"\"\"\n        self.logger.info(f\"User {user_id} performed action: {action}\")\n    \n    def log_error(self, error_code, sanitized_message):\n        \"\"\"Log error with sanitized message.\"\"\"\n        self.logger.error(f\"Error {error_code}: {sanitized_message}\")",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "public class InputValidator {\n    \n    public boolean validateEmail(String email) {\n        if (email == null || email.isEmpty()) {\n            return false;\n        }\n        \n        String emailRegex = \"^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$\";\n        return email.matches(emailRegex);\n    }\n    \n    public String sanitizeFileName(String fileName) {\n        if (fileName == null) {\n            return \"\";\n        }\n        \n        // Remove path traversal characters\n        fileName = fileName.replaceAll(\"\\\\.\\\\.\", \"\");\n        fileName = fileName.replaceAll(\"[/\\\\\\\\]\", \"\");\n        \n        // Only allow alphanumeric, dash, underscore, and dot\n        return fileName.replaceAll(\"[^a-zA-Z0-9._-]\", \"\");\n    }\n    \n    public boolean isValidInteger(String input, int min, int max) {\n        try {\n            int value = Integer.parseInt(input);\n            return value >= min && value <= max;\n        } catch (NumberFormatException e) {\n            return false;\n        }\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "const crypto = require('crypto');\n\nclass SecureEncryption {\n    constructor(masterKey) {\n        this.algorithm = 'aes-256-gcm';\n        this.masterKey = masterKey;\n    }\n    \n    encrypt(text) {\n        const iv = crypto.randomBytes(16);\n        const salt = crypto.randomBytes(64);\n        const key = crypto.pbkdf2Sync(this.masterKey, salt, 100000, 32, 'sha512');\n        \n        const cipher = crypto.createCipheriv(this.algorithm, key, iv);\n        \n        let encrypted = cipher.update(text, 'utf8', 'hex');\n        encrypted += cipher.final('hex');\n        \n        const authTag = cipher.getAuthTag();\n        \n        return {\n            encrypted: encrypted,\n            iv: iv.toString('hex'),\n            salt: salt.toString('hex'),\n            authTag: authTag.toString('hex')\n        };\n    }\n    \n    decrypt(encryptedData) {\n        const key = crypto.pbkdf2Sync(\n            this.masterKey,\n            Buffer.from(encryptedData.salt, 'hex'),\n            100000,\n            32,\n            'sha512'\n        );\n        \n        const decipher = crypto.createDecipheriv(\n            this.algorithm,\n            key,\n            Buffer.from(encryptedData.iv, 'hex')\n        );\n        \n        decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));\n        \n        let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');\n        decrypted += decipher.final('utf8');\n        \n        return decrypted;\n    }\n}\n\nmodule.exports = SecureEncryption;",
+    "language": "javascript",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "import os\nimport tempfile\nimport hashlib\nfrom pathlib import Path\n\nclass SecureFileHandler:\n    \"\"\"Secure file handling with path validation.\"\"\"\n    \n    def __init__(self, base_directory):\n        self.base_dir = Path(base_directory).resolve()\n        \n        if not self.base_dir.exists():\n            self.base_dir.mkdir(parents=True, exist_ok=True)\n    \n    def validate_path(self, filename):\n        \"\"\"Validate that the file path is within base directory.\"\"\"\n        requested_path = (self.base_dir / filename).resolve()\n        \n        try:\n            requested_path.relative_to(self.base_dir)\n            return requested_path\n        except ValueError:\n            raise ValueError(\"Invalid file path: directory traversal detected\")\n    \n    def save_file(self, filename, content):\n        \"\"\"Safely save file content.\"\"\"\n        # Sanitize filename\n        safe_filename = self.sanitize_filename(filename)\n        file_path = self.validate_path(safe_filename)\n        \n        with open(file_path, 'w') as f:\n            f.write(content)\n        \n        return str(file_path)\n    \n    def sanitize_filename(self, filename):\n        \"\"\"Remove dangerous characters from filename.\"\"\"\n        # Remove path separators\n        safe_name = filename.replace('/', '').replace('\\\\', '')\n        # Remove parent directory references\n        safe_name = safe_name.replace('..', '')\n        return safe_name",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "<?php\nclass SecureFileUpload {\n    private $uploadDir;\n    private $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];\n    private $maxFileSize = 5242880; // 5MB\n    \n    public function __construct($uploadDirectory) {\n        $this->uploadDir = rtrim($uploadDirectory, '/') . '/';\n        \n        if (!is_dir($this->uploadDir)) {\n            mkdir($this->uploadDir, 0755, true);\n        }\n    }\n    \n    public function handleUpload($file) {\n        // Validate file was uploaded\n        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {\n            return ['error' => 'Invalid file upload'];\n        }\n        \n        // Check file size\n        if ($file['size'] > $this->maxFileSize) {\n            return ['error' => 'File too large'];\n        }\n        \n        // Validate MIME type\n        $finfo = finfo_open(FILEINFO_MIME_TYPE);\n        $mimeType = finfo_file($finfo, $file['tmp_name']);\n        finfo_close($finfo);\n        \n        if (!in_array($mimeType, $this->allowedTypes)) {\n            return ['error' => 'Invalid file type'];\n        }\n        \n        // Generate secure filename\n        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);\n        $newFilename = bin2hex(random_bytes(16)) . '.' . $extension;\n        $destination = $this->uploadDir . $newFilename;\n        \n        if (move_uploaded_file($file['tmp_name'], $destination)) {\n            return ['success' => true, 'filename' => $newFilename];\n        }\n        \n        return ['error' => 'Upload failed'];\n    }\n}\n?>",
+    "language": "php",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "import hashlib\nimport hmac\nimport time\n\nclass SecureTokenGenerator:\n    \"\"\"Generate and verify secure tokens.\"\"\"\n    \n    def __init__(self, secret_key):\n        self.secret_key = secret_key.encode() if isinstance(secret_key, str) else secret_key\n    \n    def generate_token(self, user_id, expiry_minutes=60):\n        \"\"\"Generate HMAC-based token.\"\"\"\n        expiry_time = int(time.time()) + (expiry_minutes * 60)\n        message = f\"{user_id}:{expiry_time}\"\n        \n        signature = hmac.new(\n            self.secret_key,\n            message.encode(),\n            hashlib.sha256\n        ).hexdigest()\n        \n        token = f\"{message}:{signature}\"\n        return token\n    \n    def verify_token(self, token):\n        \"\"\"Verify token signature and expiry.\"\"\"\n        try:\n            parts = token.split(':')\n            if len(parts) != 3:\n                return None\n            \n            user_id, expiry_time, provided_signature = parts\n            expiry_time = int(expiry_time)\n            \n            # Check if expired\n            if time.time() > expiry_time:\n                return None\n            \n            # Verify signature\n            message = f\"{user_id}:{expiry_time}\"\n            expected_signature = hmac.new(\n                self.secret_key,\n                message.encode(),\n                hashlib.sha256\n            ).hexdigest()\n            \n            if hmac.compare_digest(expected_signature, provided_signature):\n                return {'user_id': user_id, 'expiry': expiry_time}\n            \n        except (ValueError, AttributeError):\n            return None\n        \n        return None",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "public class SecurePasswordValidator {\n    private static final int MIN_LENGTH = 12;\n    private static final String SPECIAL_CHARS = \"!@#$%^&*()_+-=[]{}|;:,.<>?\";\n    \n    public ValidationResult validatePassword(String password) {\n        ValidationResult result = new ValidationResult();\n        \n        if (password == null || password.length() < MIN_LENGTH) {\n            result.addError(\"Password must be at least \" + MIN_LENGTH + \" characters\");\n        }\n        \n        if (!password.matches(\".*[A-Z].*\")) {\n            result.addError(\"Password must contain at least one uppercase letter\");\n        }\n        \n        if (!password.matches(\".*[a-z].*\")) {\n            result.addError(\"Password must contain at least one lowercase letter\");\n        }\n        \n        if (!password.matches(\".*\\\\d.*\")) {\n            result.addError(\"Password must contain at least one digit\");\n        }\n        \n        boolean hasSpecialChar = false;\n        for (char c : password.toCharArray()) {\n            if (SPECIAL_CHARS.indexOf(c) >= 0) {\n                hasSpecialChar = true;\n                break;\n            }\n        }\n        \n        if (!hasSpecialChar) {\n            result.addError(\"Password must contain at least one special character\");\n        }\n        \n        return result;\n    }\n}",
+    "language": "java",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "const express = require('express');\nconst rateLimit = require('express-rate-limit');\nconst helmet = require('helmet');\nconst mongoSanitize = require('express-mongo-sanitize');\n\nconst app = express();\n\n// Security middleware\napp.use(helmet());\napp.use(mongoSanitize());\napp.use(express.json({ limit: '10kb' }));\n\n// Rate limiting\nconst limiter = rateLimit({\n    windowMs: 15 * 60 * 1000, // 15 minutes\n    max: 100, // limit each IP to 100 requests per windowMs\n    message: 'Too many requests from this IP'\n});\n\napp.use('/api/', limiter);\n\n// Strict rate limit for authentication\nconst authLimiter = rateLimit({\n    windowMs: 15 * 60 * 1000,\n    max: 5,\n    skipSuccessfulRequests: true,\n    message: 'Too many login attempts'\n});\n\napp.use('/api/auth', authLimiter);\n\napp.post('/api/auth/login', (req, res) => {\n    // Login logic here\n});\n\napp.listen(3000);",
+    "language": "javascript",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "using System;\nusing System.Security.Cryptography;\nusing System.Text;\n\npublic class SecureHashGenerator\n{\n    public string HashPassword(string password, out string salt)\n    {\n        // Generate random salt\n        byte[] saltBytes = new byte[32];\n        using (var rng = new RNGCryptoServiceProvider())\n        {\n            rng.GetBytes(saltBytes);\n        }\n        salt = Convert.ToBase64String(saltBytes);\n        \n        // Hash password with salt using PBKDF2\n        using (var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, 100000))\n        {\n            byte[] hash = pbkdf2.GetBytes(32);\n            return Convert.ToBase64String(hash);\n        }\n    }\n    \n    public bool VerifyPassword(string password, string hash, string salt)\n    {\n        byte[] saltBytes = Convert.FromBase64String(salt);\n        \n        using (var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, 100000))\n        {\n            byte[] computedHash = pbkdf2.GetBytes(32);\n            string computedHashString = Convert.ToBase64String(computedHash);\n            \n            return computedHashString == hash;\n        }\n    }\n}",
+    "language": "csharp",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "<?php\nclass CSRFProtection {\n    \n    public static function generateToken() {\n        if (!isset($_SESSION['csrf_tokens'])) {\n            $_SESSION['csrf_tokens'] = [];\n        }\n        \n        $token = bin2hex(random_bytes(32));\n        $_SESSION['csrf_tokens'][] = $token;\n        \n        // Keep only last 10 tokens\n        if (count($_SESSION['csrf_tokens']) > 10) {\n            array_shift($_SESSION['csrf_tokens']);\n        }\n        \n        return $token;\n    }\n    \n    public static function validateToken($token) {\n        if (!isset($_SESSION['csrf_tokens']) || !is_array($_SESSION['csrf_tokens'])) {\n            return false;\n        }\n        \n        $index = array_search($token, $_SESSION['csrf_tokens'], true);\n        \n        if ($index !== false) {\n            // Remove used token\n            unset($_SESSION['csrf_tokens'][$index]);\n            $_SESSION['csrf_tokens'] = array_values($_SESSION['csrf_tokens']);\n            return true;\n        }\n        \n        return false;\n    }\n    \n    public static function getTokenField() {\n        $token = self::generateToken();\n        return '<input type=\"hidden\" name=\"csrf_token\" value=\"' . htmlspecialchars($token) . '\">';\n    }\n}\n?>",
+    "language": "php",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "from flask import Flask, request, abort\nfrom functools import wraps\nimport jwt\nimport datetime\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'your-secret-key-here'\n\ndef token_required(f):\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        token = request.headers.get('Authorization')\n        \n        if not token:\n            abort(401, 'Token is missing')\n        \n        try:\n            if token.startswith('Bearer '):\n                token = token[7:]\n            \n            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])\n            current_user = data['user_id']\n        except jwt.ExpiredSignatureError:\n            abort(401, 'Token has expired')\n        except jwt.InvalidTokenError:\n            abort(401, 'Invalid token')\n        \n        return f(current_user, *args, **kwargs)\n    \n    return decorated\n\n@app.route('/api/protected')\n@token_required\ndef protected_route(current_user):\n    return {'message': f'Hello user {current_user}'}\n\nif __name__ == '__main__':\n    app.run(debug=False)",
+    "language": "python",
+    "cwe_id": "CWE-None",
+    "category": "No Security Issue"
+  },
+  {
+    "code": "def process_payment(amount, card_number):\n    \"\"\"Process payment without proper validation\"\"\"\n    # Missing input validation\n    total = amount * 1.1  # Add 10% tax\n    \n    # Process payment\n    result = charge_card(card_number, total)\n    return result\n\ndef transfer_funds(from_account, to_account, amount):\n    \"\"\"Transfer funds between accounts without authorization check\"\"\"\n    # No authorization check\n    debit(from_account, amount)\n    credit(to_account, amount)\n    return True",
+    "language": "python",
+    "cwe_id": "CWE-862",
+    "category": "Missing Authorization"
+  },
+  {
+    "code": "app.post('/api/update-email', (req, res) => {\n    const userId = req.body.userId;\n    const newEmail = req.body.email;\n    \n    // No check if authenticated user can modify this userId\n    db.updateEmail(userId, newEmail);\n    \n    res.json({ success: true });\n});\n\napp.delete('/api/delete-account/:id', (req, res) => {\n    // Missing authorization - any user can delete any account\n    const accountId = req.params.id;\n    db.deleteAccount(accountId);\n    res.json({ message: 'Account deleted' });\n});",
+    "language": "javascript",
+    "cwe_id": "CWE-862",
+    "category": "Missing Authorization"
+  },
+  {
+    "code": "String regex = \"(a+)+b\";\nPattern pattern = Pattern.compile(regex);\nMatcher matcher = pattern.matcher(userInput);\n\nif (matcher.matches()) {\n    System.out.println(\"Match found\");\n}\n\n// Another vulnerable regex\nString emailPattern = \"^([a-zA-Z0-9]+)*@([a-zA-Z0-9]+)*\\\\.com$\";\nif (email.matches(emailPattern)) {\n    processEmail(email);\n}",
+    "language": "java",
+    "cwe_id": "CWE-1333",
+    "category": "Inefficient Regular Expression Complexity"
+  },
+  {
+    "code": "const vulnerableRegex = /^(a+)+$/;\nconst input = req.query.search;\n\nif (vulnerableRegex.test(input)) {\n    res.send('Valid input');\n}\n\n// Another ReDoS vulnerability\nconst pattern = /(x+x+)+y/;\nif (pattern.test(userInput)) {\n    processData(userInput);\n}",
+    "language": "javascript",
+    "cwe_id": "CWE-1333",
+    "category": "Inefficient Regular Expression Complexity"
+  },
+  {
+    "code": "<?php\nfunction processForm() {\n    // No CSRF token validation\n    if ($_SERVER['REQUEST_METHOD'] === 'POST') {\n        $email = $_POST['email'];\n        $password = $_POST['new_password'];\n        \n        updateUserPassword($email, $password);\n    }\n}\n\nfunction deleteUser() {\n    // Missing CSRF protection\n    $userId = $_POST['user_id'];\n    deleteUserFromDatabase($userId);\n}",
+    "language": "php",
+    "cwe_id": "CWE-352",
+    "category": "Cross-Site Request Forgery (CSRF)"
+  },
+  {
+    "code": "int arr[10];\nint index = getUserInput();\n\n// No bounds checking\narr[index] = 42;\n\nfor (int i = 0; i <= 10; i++) {\n    // Off-by-one error\n    arr[i] = i * 2;\n}\n\nchar* ptr = (char*)malloc(100);\nptr[100] = 'A';  // Out of bounds write",
+    "language": "c",
+    "cwe_id": "CWE-787",
+    "category": "Out-of-bounds Write"
+  },
+  {
+    "code": "def create_temp_file(user_data):\n    # Insecure temporary file creation\n    temp_filename = '/tmp/user_' + str(user_id) + '.tmp'\n    \n    with open(temp_filename, 'w') as f:\n        f.write(user_data)\n    \n    return temp_filename\n\ndef store_session(session_data):\n    # Predictable file names\n    session_file = f'/tmp/session_{session_id}.dat'\n    with open(session_file, 'w') as f:\n        json.dump(session_data, f)",
+    "language": "python",
+    "cwe_id": "CWE-377",
+    "category": "Insecure Temporary File"
+  }
+]
