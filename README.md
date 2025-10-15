@@ -2,11 +2,12 @@
 
 ## Workshop Overview
 
-**Meta Llama AI Academy** was a 3-day intensive workshop held from September 30th to October 2nd, 2024.
+**Meta Llama AI Academy**
 
-The core objective of this workshop was to implement better workflows using **Llama Local Model** and **Agent Architecture** with the theme of **"Future of Work"**.
+**Workshop Period**: September 30 - October 2, 2025
+**Core Theme**: Future of Work with Llama Local Model and Agent Architecture  
+**Total Teams**: 8 teams 
 
-Participants developed innovative solutions to solve real-world business problems through AI agents and local LLMs.
 
 ---
 
@@ -60,9 +61,6 @@ All projects in this workshop were developed around the following core technolog
 
 - **Llama Local Model**: Privacy protection and cost efficiency through on-device AI inference
 - **Agent Architecture**: Intelligent agent systems that automate complex tasks
-- **RAG (Retrieval-Augmented Generation)**: Providing accurate and reliable information
-- **Multi-Agent Systems**: Solving complex problems through collaborative AI agents
-- **Future of Work**: New workflows that maximize human work efficiency through AI
 
 ---
 
@@ -83,12 +81,3 @@ projects/
 Each project is contained in an independent directory with complete implementations and detailed READMEs.
 
 ---
-
-## Getting Started
-
-For detailed execution methods and technology stacks of each project, please refer to the README.md file in the respective project directory.
-
-**Workshop Period**: September 30 - October 2, 2024  
-**Theme**: Future of Work with Llama Local Model and Agent Architecture  
-**Total Teams**: 8 teams  
-**Total Participants**: 40+ developers
