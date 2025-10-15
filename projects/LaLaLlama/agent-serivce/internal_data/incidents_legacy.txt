@@ -1,0 +1,195 @@
+---
+incident_date: 2024-06-15
+incident_time: 09:15
+company: 수협은행
+project_name: 인터넷뱅킹
+technology: Oracle Database 11g
+team: 계정계시스템팀
+severity: 상
+description: 야간 배치 작업 지연으로 영업 시작 전 완료 불가
+root_cause: 일별 집계 배치에서 특정 테이블 락 발생, 대용량 UPDATE 문 실행 중 락 대기
+solution: |
+  1. 해당 배치 작업 강제 종료 (kill session)
+  2. 락 발생 원인 쿼리 분석 (WHERE 조건 누락)
+  3. 쿼리 수정 후 수동 재실행
+  4. 영업 개시 30분 지연
+  5. DBA 모니터링 강화 (락 대기 10분 이상 시 알림)
+impact: 영업 개시 30분 지연, 고객 불만 다수 발생
+resolution_time: 2시간 30분
+contact_person: 이성호
+contact_email: lee.sh@suhyup-bank.com
+lessons_learned: |
+  - 대용량 배치는 WHERE 조건 필수 검증
+  - 배치 실행 전 실행 계획 검토
+  - 야간 배치 완료 시간 2시간 여유 확보
+  - 락 모니터링 자동화
+---
+incident_date: 2024-07-22
+incident_time: 14:30
+company: 수협은행
+project_name: 인터넷뱅킹
+technology: WebLogic 12c
+team: 채널시스템팀
+severity: 상
+description: WAS 서버 4대 중 2대 동시 다운, 서비스 지연 발생
+root_cause: JVM OutOfMemory Error, Heap 메모리 부족 (4GB → 99% 사용)
+solution: |
+  1. 다운된 WAS 서버 2대 긴급 재기동
+  2. 나머지 2대 서버로 트래픽 분산
+  3. 메모리 덤프 분석 (jmap, MAT 도구 사용)
+  4. 메모리 릭 원인: 세션 객체 미해제
+  5. 임시 조치: Heap 메모리 4GB → 6GB 증설
+  6. 근본 해결: 세션 타임아웃 설정 조정 (30분 → 10분)
+impact: 인터넷뱅킹 접속 지연 1시간, 약 5,000명 이용 불편
+resolution_time: 1시간
+contact_person: 김영수
+contact_email: kim.ys@suhyup-bank.com
+lessons_learned: |
+  - WAS 메모리 사용률 80% 이상 시 사전 알림
+  - 주기적 메모리 프로파일링 필요
+  - 세션 관리 정책 재검토
+  - WAS 클러스터 최소 4대 이상 권장
+---
+incident_date: 2024-08-10
+incident_time: 02:30
+company: 수협은행
+project_name: 배치 시스템
+technology: Pro*C + Shell Script
+team: 배치운영팀
+severity: 중
+description: 야간 배치 작업 시간 초과로 완료 불가
+root_cause: 월말 결산 데이터 폭증 (평시 대비 3배), 배치 처리 시간 4시간 → 7시간
+solution: |
+  1. 긴급하게 수동 분할 배치 실행
+  2. 병렬 처리 가능한 부분 식별 후 동시 실행
+  3. 인덱스 재생성으로 쿼리 성능 개선
+  4. 결산 데이터 사전 집계 테이블 구축 검토
+  5. 배치 작업 우선순위 재정의
+impact: 영업 개시 전 완료, 담당자 야근 (새벽 6시까지)
+resolution_time: 4시간 30분
+contact_person: 최동욱
+contact_email: choi.dw@suhyup-bank.com
+lessons_learned: |
+  - 월말 결산 배치는 별도 성능 테스트 필요
+  - 배치 작업 병렬화 검토
+  - 처리 시간 예측 모니터링 강화
+---
+incident_date: 2024-09-05
+incident_time: 10:00
+company: 농협은행
+project_name: 메인프레임 계정계
+technology: Cobol (MicroFocus)
+team: 계정계개발팀
+severity: 상
+description: CICS 트랜잭션 응답 지연, 창구 업무 마비
+root_cause: 특정 거래 프로그램에서 무한 루프 발생, CPU 100% 점유
+solution: |
+  1. 문제 트랜잭션 긴급 중단
+  2. Cobol 소스 코드 검토 (PERFORM UNTIL 구문 오류)
+  3. 소스 수정 및 컴파일
+  4. 테스트 환경 검증 후 운영 반영
+  5. 메인프레임 모니터링 강화
+impact: 전국 창구 업무 30분 중단, 고객 대기 시간 증가
+resolution_time: 30분
+contact_person: 김철수
+contact_email: kim.cs@nhbank.com
+lessons_learned: |
+  - Cobol 소스 변경 시 철저한 단위 테스트 필수
+  - 메인프레임 성능 모니터링 실시간 강화
+  - 긴급 롤백 절차 표준화
+---
+incident_date: 2024-10-12
+incident_time: 15:45
+company: 우리은행
+project_name: 인터넷뱅킹
+technology: IBM WebSphere 8.5
+team: 전산운영부
+severity: 중
+description: 세션 클러스터링 장애로 로그인 실패 다발
+root_cause: 세션 복제 네트워크 단절, WAS 간 세션 동기화 실패
+solution: |
+  1. 네트워크 스위치 재부팅
+  2. 세션 클러스터 재구성
+  3. 사용자 강제 로그아웃 후 재로그인 유도
+  4. 네트워크 이중화 검토
+  5. 세션 서버 (Redis) 도입 검토
+impact: 인터넷뱅킹 로그인 실패 약 2,000건
+resolution_time: 1시간
+contact_person: 윤태현
+contact_email: yoon.th@woori.com
+lessons_learned: |
+  - 세션 클러스터링 네트워크 이중화 필요
+  - 외부 세션 서버 도입 검토
+  - 장애 전파 방지 메커니즘 필요
+---
+incident_date: 2024-05-20
+incident_time: 03:00
+company: 신한은행
+project_name: DW 시스템
+technology: Oracle Exadata
+team: DW팀
+severity: 중
+description: 야간 적재 배치 실패, 데이터 정합성 오류
+root_cause: 소스 시스템 스키마 변경 (컬럼 추가) 미반영
+solution: |
+  1. 에러 로그 분석 (ORA-00904: 컬럼 없음)
+  2. DW 테이블 스키마 긴급 변경 (ALTER TABLE)
+  3. 배치 작업 재실행
+  4. 소스 시스템 변경 관리 프로세스 재정비
+  5. 스키마 변경 사전 검증 절차 수립
+impact: DW 데이터 1일 지연, 경영진 보고서 누락
+resolution_time: 2시간
+contact_person: 배성호
+contact_email: bae.sh@woori.com
+lessons_learned: |
+  - 소스 시스템 스키마 변경 시 사전 협의 필수
+  - DW 적재 배치에 스키마 검증 로직 추가
+  - 변경 관리 프로세스 강화
+---
+incident_date: 2024-11-03
+incident_time: 16:20
+company: 하나은행
+project_name: 유닉스 서버
+technology: HP-UX
+team: 전산센터
+severity: 하
+description: 디스크 용량 부족으로 애플리케이션 로그 기록 중단
+root_cause: 로그 파일 정리 미실시, 디스크 사용률 98%
+solution: |
+  1. 오래된 로그 파일 수동 삭제 (3개월 이전)
+  2. 로그 로테이션 설정 재점검
+  3. 디스크 사용률 모니터링 알람 추가 (85% 이상)
+  4. 로그 백업 정책 수립
+impact: 로그 누락 1시간, 장애 추적 어려움
+resolution_time: 30분
+contact_person: 강희정
+contact_email: kang.hj@hana.com
+lessons_learned: |
+  - 디스크 정리 스크립트 자동화
+  - 로그 백업 후 압축 보관
+  - 모니터링 임계치 하향 조정
+---
+incident_date: 2024-04-18
+incident_time: 11:30
+company: KB국민은행
+project_name: 차세대 시스템
+technology: Oracle 19c
+team: 차세대시스템팀
+severity: 중
+description: 신규 SQL 실행 시 Full Table Scan으로 DB 부하 급증
+root_cause: 인덱스 미생성, 개발 환경에서 성능 테스트 미실시
+solution: |
+  1. 문제 SQL 식별 (AWR 보고서 분석)
+  2. 적절한 인덱스 생성
+  3. SQL 실행 계획 재확인
+  4. 성능 테스트 프로세스 재정립
+  5. 프로덕션 배포 전 DBA 리뷰 필수화
+impact: DB CPU 사용률 90% 급증, 전체 시스템 응답 지연
+resolution_time: 1시간
+contact_person: 이동훈
+contact_email: lee.dh@kbstar.com
+lessons_learned: |
+  - 신규 SQL은 반드시 실행 계획 검토
+  - 인덱스 생성 체크리스트 준수
+  - 성능 테스트 환경 데이터 규모 확대
+---

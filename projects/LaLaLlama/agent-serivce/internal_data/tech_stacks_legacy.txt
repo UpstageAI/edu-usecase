@@ -1,0 +1,196 @@
+---
+company: 수협은행
+team: 계정계시스템팀
+technology: Oracle Database 11g R2
+purpose: 계정계 핵심 데이터베이스
+adoption_date: 2015-03
+notes: 2TB 규모, RAC 2-node 구성, 야간 배치 처리 주 사용
+contact_person: 이성호
+contact_email: lee.sh@suhyup-bank.com
+category: database
+status: 운영중
+performance: 피크타임 TPS 1,500건, 야간 배치 4시간 소요
+issues: 10g에서 11g로 업그레이드 후 SQL 튜닝 필요
+---
+company: 수협은행
+team: 채널시스템팀
+technology: WebLogic 12c
+purpose: 인터넷뱅킹 WAS
+adoption_date: 2018-06
+notes: WebLogic 10g에서 업그레이드, 4대 클러스터 구성
+contact_person: 김영수
+contact_email: kim.ys@suhyup-bank.com
+category: middleware
+status: 운영중
+performance: 동시 접속자 3,000명, JVM Heap 4GB 설정
+issues: 메모리 릭 의심, 주 1회 재기동 필요
+---
+company: 수협은행
+team: 채널개발팀
+technology: Java 8 (1.8.0_201)
+purpose: 전 채널 애플리케이션 개발
+adoption_date: 2017-11
+notes: Java 7에서 마이그레이션, Java 11 업그레이드 검토 중
+contact_person: 박준형
+contact_email: park.jh@suhyup-bank.com
+category: language
+status: 운영중
+performance: 애플리케이션 약 50개, 일 빌드 3회
+issues: Java 11 마이그레이션 시 호환성 이슈 우려
+---
+company: 수협은행
+team: 프레임워크팀
+technology: 전자정부프레임워크 3.10
+purpose: 표준 개발 프레임워크
+adoption_date: 2016-09
+notes: eGovFrame 기반 내부 표준 프레임워크, Spring 4.3 기반
+contact_person: 정민지
+contact_email: jung.mj@suhyup-bank.com
+category: framework
+status: 운영중
+performance: 전사 애플리케이션 80% 사용
+issues: 최신 버전 업데이트 보류 (안정성 우선)
+---
+company: 수협은행
+team: 배치운영팀
+technology: Pro*C + Shell Script
+purpose: 야간 배치 처리
+adoption_date: 2012-01
+notes: Oracle DB 직접 연동, Cron 스케줄링
+contact_person: 최동욱
+contact_email: choi.dw@suhyup-bank.com
+category: batch
+status: 운영중
+performance: 일 100개 배치 작업, 평균 실행시간 4시간
+issues: 배치 지연 시 영업 시작 전 완료 불가
+---
+company: 수협은행
+team: 인프라팀
+technology: Windows Server 2012 R2
+purpose: WAS 서버 OS
+adoption_date: 2014-08
+notes: 물리 서버 20대, 가상화 미적용
+contact_person: 한준혁
+contact_email: han.jh@suhyup-bank.com
+category: os
+status: 운영중
+performance: CPU 사용률 평균 60%, 메모리 사용률 70%
+issues: EOL 임박, Linux 전환 검토 중
+---
+company: 농협은행
+team: 계정계개발팀
+technology: Cobol (MicroFocus)
+purpose: 메인프레임 계정계 시스템
+adoption_date: 1998-05
+notes: 30년 이상 운영 중, 연 1회 소스 변경
+contact_person: 김철수
+contact_email: kim.cs@nhbank.com
+category: mainframe
+status: 운영중
+performance: 일 거래량 500만건, 99.99% 가용성
+issues: Cobol 개발자 수급 어려움, Java 전환 검토 중
+---
+company: 농협은행
+team: 채널시스템팀
+technology: Apache Tomcat 8.5
+purpose: 모바일뱅킹 WAS
+adoption_date: 2019-03
+notes: Tomcat 7에서 업그레이드, 8대 클러스터
+contact_person: 오상훈
+contact_email: oh.sh@nhbank.com
+category: middleware
+status: 운영중
+performance: 동시 접속자 5,000명, 평균 응답시간 1.2초
+issues: 세션 메모리 부족 간헐적 발생
+---
+company: 우리은행
+team: 전산운영부
+technology: IBM WebSphere 8.5
+purpose: 인터넷뱅킹 WAS
+adoption_date: 2016-11
+notes: 10대 클러스터 구성, HA 구성
+contact_person: 윤태현
+contact_email: yoon.th@woori.com
+category: middleware
+status: 운영중
+performance: 동시 접속자 8,000명, JVM Heap 8GB
+issues: 라이선스 비용 부담, 오픈소스 전환 검토 중
+---
+company: 우리은행
+team: DW팀
+technology: Oracle Exadata X5
+purpose: 데이터웨어하우스
+adoption_date: 2017-06
+notes: 50TB 규모, 일 1회 전체 적재
+contact_person: 배성호
+contact_email: bae.sh@woori.com
+category: database
+status: 운영중
+performance: 일 배치 처리 6시간, 쿼리 응답시간 평균 5초
+issues: 디스크 증설 예정 (80% 사용률)
+---
+company: 신한은행
+team: 시스템개발팀
+technology: Struts 2.5 (레거시)
+purpose: 관리자 시스템 프레임워크
+adoption_date: 2013-07
+notes: Spring으로 전환 예정, 현재 유지보수만 수행
+contact_person: 서지훈
+contact_email: seo.jh@shinhan.com
+category: framework
+status: 유지보수
+performance: 관리자 시스템 30개, 일 사용자 200명
+issues: 보안 취약점 지속 패치 필요
+---
+company: 신한은행
+team: 인프라운영팀
+technology: SVN (Subversion)
+purpose: 소스코드 형상관리
+adoption_date: 2010-03
+notes: Git 마이그레이션 2025년 완료 예정
+contact_person: 임채윤
+contact_email: lim.cy@shinhan.com
+category: scm
+status: 운영중 (단계적 폐기)
+performance: 리포지토리 300개, 일 커밋 500건
+issues: Git으로 점진적 전환 중 (진행률 40%)
+---
+company: 하나은행
+team: 전산센터
+technology: HP-UX 11i v3
+purpose: 계정계 유닉스 서버
+adoption_date: 2011-09
+notes: 물리 서버 50대, EOL 예정
+contact_person: 강희정
+contact_email: kang.hj@hana.com
+category: os
+status: 운영중
+performance: 가동률 99.8%, 평균 부하 70%
+issues: HP-UX 지원 종료, Linux 전환 프로젝트 진행 중
+---
+company: KB국민은행
+team: 차세대시스템팀
+technology: Oracle Database 19c
+purpose: 차세대 시스템 DB
+adoption_date: 2021-11
+notes: 11g에서 19c로 대규모 업그레이드 완료
+contact_person: 이동훈
+contact_email: lee.dh@kbstar.com
+category: database
+status: 운영중
+performance: 100TB 규모, RAC 4-node 구성
+issues: 안정화 단계, 성능 튜닝 지속 중
+---
+company: KB국민은행
+team: 모바일뱅킹팀
+technology: jQuery 1.12 (레거시)
+purpose: 모바일웹 프론트엔드
+adoption_date: 2015-06
+notes: React 전환 프로젝트 진행 중 (2년 계획)
+contact_person: 노은주
+contact_email: noh.ej@kbstar.com
+category: frontend
+status: 운영중
+performance: 일 방문자 100만명
+issues: IE11 지원 부담, 모던 브라우저 전환 필요
+---

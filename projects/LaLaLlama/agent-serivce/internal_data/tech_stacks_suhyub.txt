@@ -1,0 +1,133 @@
+---
+company: 수협은행
+team: 디지털마케팅팀
+technology: Kafka + Flink (실시간 데이터 처리)
+purpose: 실시간 고객 행동 데이터 수집 및 처리
+adoption_date: 2023-08
+notes: 초당 5,000건 이벤트 처리, 지연시간 5초 이내 달성
+contact_person: 김지훈
+contact_email: kim.jh@suhyup.co.kr
+category: data_streaming
+status: 운영중
+---
+company: 수협은행
+team: IT전략팀
+technology: Kubernetes + Docker (마이크로서비스)
+purpose: 캠페인 시스템 컨테이너 오케스트레이션
+adoption_date: 2024-01
+notes: 5개 마이크로서비스 운영, 오토스케일링 적용
+contact_person: 이수진
+contact_email: lee.sj@suhyup.co.kr
+category: infrastructure
+status: 운영중
+---
+company: 수협은행
+team: 데이터분석팀
+technology: Python + Scikit-learn (ML)
+purpose: 고객 이탈 예측 모델
+adoption_date: 2023-11
+notes: 정확도 83%, 월 1회 재학습
+contact_person: 박민석
+contact_email: park.ms@suhyup.co.kr
+category: machine_learning
+status: 운영중
+---
+company: 수협은행
+team: 인프라팀
+technology: Prometheus + Grafana
+purpose: 시스템 모니터링 및 알람
+adoption_date: 2023-06
+notes: 200개 메트릭 수집, 5분 단위 알람
+contact_person: 최동욱
+contact_email: choi.dw@suhyup.co.kr
+category: monitoring
+status: 운영중
+---
+company: 수협은행
+team: 마케팅운영팀
+technology: PostgreSQL + Redis
+purpose: 캠페인 데이터 저장 및 캐싱
+adoption_date: 2023-09
+notes: 월 1억건 캠페인 이력 관리, 캐시 히트율 92%
+contact_person: 정혜린
+contact_email: jung.hr@suhyup.co.kr
+category: database
+status: 운영중
+---
+company: 수협은행
+team: 고객채널팀
+technology: RESTful API + WebSocket
+purpose: 옴니채널 실시간 통신
+adoption_date: 2024-02
+notes: 동시 접속자 1,500명 처리, 응답시간 2초 이내
+contact_person: 한준혁
+contact_email: han.jh@suhyup.co.kr
+category: backend
+status: 운영중
+---
+company: 농협은행
+team: 마케팅기획팀
+technology: Apache Airflow
+purpose: 배치 캠페인 스케줄링
+adoption_date: 2023-04
+notes: 일 30개 배치 작업 관리, 실패율 1% 이하
+contact_person: 윤서영
+contact_email: yoon.sy@nonghyup.com
+category: data_pipeline
+status: 운영중
+---
+company: 농협은행
+team: 디지털서비스팀
+technology: Elasticsearch + Kibana
+purpose: 고객 행동 로그 분석
+adoption_date: 2023-07
+notes: 일 5천만건 로그 수집, 실시간 대시보드 제공
+contact_person: 송민재
+contact_email: song.mj@nonghyup.com
+category: data_analysis
+status: 운영중
+---
+company: 우리은행
+team: 디지털전략팀
+technology: AWS Lambda + API Gateway
+purpose: 서버리스 캠페인 트리거
+adoption_date: 2024-03
+notes: 이벤트 기반 실시간 캠페인 발송, 비용 40% 절감
+contact_person: 강희정
+contact_email: kang.hj@woori.com
+category: serverless
+status: 운영중
+---
+company: 우리은행
+team: 고객데이터팀
+technology: Hadoop + Spark
+purpose: 대용량 고객 데이터 분석
+adoption_date: 2022-11
+notes: PB급 데이터 처리, 배치 처리 시간 2시간
+contact_person: 배성호
+contact_email: bae.sh@woori.com
+category: big_data
+status: 운영중
+---
+company: 신한은행
+team: AI연구소
+technology: TensorFlow + Kubeflow
+purpose: 딥러닝 기반 상품 추천
+adoption_date: 2023-12
+notes: 추천 정확도 87%, GPU 클러스터 운영
+contact_person: 임채윤
+contact_email: lim.cy@shinhan.com
+category: deep_learning
+status: 운영중
+---
+company: 신한은행
+team: 마케팅플랫폼팀
+technology: RabbitMQ
+purpose: 비동기 메시지 큐
+adoption_date: 2023-05
+notes: 초당 3,000건 메시지 처리, 메시지 유실 0%
+contact_person: 서준우
+contact_email: seo.jw@shinhan.com
+category: message_queue
+status: 운영중
+---
